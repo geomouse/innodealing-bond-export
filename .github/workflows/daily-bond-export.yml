@@ -1,0 +1,69 @@
+name: 信用债发行每日导出
+
+on:
+  schedule:
+    # 周一至周五 08:00 北京时间 = 00:00 UTC
+    - cron: '0 0 * * 1-5'
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+jobs:
+  export:
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+
+      - name: 安装 Node.js 依赖
+        run: npm install
+
+      - name: 安装 Chromium
+        run: npx playwright install --with-deps chromium
+
+      - name: 安装 Python 依赖
+        run: pip install openpyxl
+
+      - name: 导出今日数据
+        env:
+          INNODEALING_USERNAME: ${{ secrets.INNODEALING_USERNAME }}
+          INNODEALING_PASSWORD: ${{ secrets.INNODEALING_PASSWORD }}
+        run: node innodealing_cloud.js
+
+      - name: 生成汇总 Excel
+        id: process
+        run: |
+          python generate_excel_cloud.py 2>&1 | tee /tmp/process.log
+          STATS=$(grep '__STATS__:' /tmp/process.log | sed 's/__STATS__://')
+          echo "stats=$STATS" >> $GITHUB_OUTPUT
+
+      - name: 提交数据到仓库
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "github-actions[bot]@users.noreply.github.com"
+          git add data/
+          if git diff --cached --quiet; then
+            echo "没有新数据，跳过推送"
+          else
+            git commit -m "📊 $(date +%Y-%m-%d) 信用债发行数据"
+            git push
+            echo "数据已推送到仓库"
+          fi
+
+      - name: 发送汇总邮件
+        if: always() && steps.process.outcome == 'success'
+        env:
+          EMAIL_USER: ${{ secrets.EMAIL_USER }}
+          EMAIL_PASS: ${{ secrets.EMAIL_PASS }}
+          EMAIL_TO: ${{ secrets.EMAIL_TO }}
+          STATS: ${{ steps.process.outputs.stats }}
+        run: node send_email.js

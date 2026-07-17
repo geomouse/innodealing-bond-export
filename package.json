@@ -1,0 +1,14 @@
+{
+  "name": "innodealing-bond-export",
+  "version": "1.0.0",
+  "description": "债立方信用债发行数据每日导出",
+  "main": "innodealing_cloud.js",
+  "scripts": {
+    "start": "node innodealing_cloud.js"
+  },
+  "dependencies": {
+    "playwright": "^1.56.0",
+    "nodemailer": "^6.9.0",
+    "xlsx": "^0.18.5"
+  }
+}
