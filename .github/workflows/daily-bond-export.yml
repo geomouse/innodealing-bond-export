@@ -67,3 +67,5 @@ jobs:
           EMAIL_TO: ${{ secrets.EMAIL_TO }}
           STATS: ${{ steps.process.outputs.stats }}
         run: node send_email.js
+
+# reactivated 2026-07-20: repository set to public to fix queued runners and disabled schedule
