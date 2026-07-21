@@ -1,5 +1,7 @@
 #!/usr/bin/env python3
 # 债立方信用债数据汇总 - 云端版
+# 核心补全逻辑：票面利率从所有日期取非空值，优先最新日期
+# 导出脚本会导出最近5个交易日，确保截标后更新的票面利率被捕获
 import openpyxl
 from openpyxl.styles import Font, Alignment, PatternFill, Border, Side
 from openpyxl.utils import get_column_letter
@@ -65,6 +67,8 @@ today_rows = all_data.get(TODAY, [])
 print(f"\n今天({TODAY})数据: {len(today_rows)} 条")
 
 # ===== 汇总 =====
+# 票面利率补全策略：从所有日期取非空值，优先最新日期
+# 导出脚本现在会导出最近5个交易日，所以截标后更新的票面利率会自动捕获
 summary_bonds = {}
 for dt in DATES:
     for row in all_data[dt]:
@@ -84,16 +88,42 @@ for dt in DATES:
         for key, value in row.items():
             if value is not None and value != '' and value != 0:
                 if key in ('债券代码', '票面利率(%)'):
-                    summary_bonds[bond_name]['data'][key] = value
+                    # 优先取最新日期的非空值
+                    if dt >= summary_bonds[bond_name]['latest_date'] or key not in summary_bonds[bond_name]['data'] or summary_bonds[bond_name]['data'][key] is None:
+                        summary_bonds[bond_name]['data'][key] = value
                 else:
                     if dt >= summary_bonds[bond_name]['latest_date'] or key not in summary_bonds[bond_name]['data']:
                         summary_bonds[bond_name]['data'][key] = value
             elif key not in summary_bonds[bond_name]['data']:
                 summary_bonds[bond_name]['data'][key] = value
 
+# ===== 票面利率补全验证 =====
+missing_rate_bonds = []
+for name, info in summary_bonds.items():
+    d = info['data']
+    if not d.get('票面利率(%)'):
+        start_date = d.get('发行起始日', '未知')
+        missing_rate_bonds.append((name, start_date))
+
 total_bonds = len(summary_bonds)
-rate_filled = sum(1 for v in summary_bonds.values() if v['data'].get('票面利率(%)'))
+rate_filled = total_bonds - len(missing_rate_bonds)
 print(f"\n汇总唯一债券数: {total_bonds} (票面利率补全: {rate_filled}/{total_bonds})")
+
+for name, info in summary_bonds.items():
+    d = info['data']
+    rate = d.get('票面利率(%)')
+    start_date = d.get('发行起始日', '未知')
+    marker = ' ⚠️未补全' if not rate else ''
+    print(f"  {name}: 票面利率={rate}{marker}, 发行起始日={start_date}")
+
+if missing_rate_bonds:
+    print(f"\n⚠️ {len(missing_rate_bonds)} 只债券票面利率未补全:")
+    for name, start_date in missing_rate_bonds:
+        print(f"  - {name} (发行起始日: {start_date})")
+        if start_date != '未知' and start_date not in DATES:
+            print(f"    💡 需要导出 {start_date} 的数据以补全票面利率")
+else:
+    print(f"\n✅ 全部 {total_bonds} 只债券票面利率均已补全")
 
 # ===== 创建输出Excel =====
 wb_out = openpyxl.Workbook()
@@ -109,6 +139,7 @@ thin_border = Border(
     bottom=Side(style='thin', color='D9D9D9')
 )
 today_fill = PatternFill(start_color='FFF2CC', end_color='FFF2CC', fill_type='solid')
+missing_fill = PatternFill(start_color='FFC7CE', end_color='FFC7CE', fill_type='solid')
 
 # Sheet1: 当天提取
 ws1 = wb_out.active
@@ -126,6 +157,8 @@ for row_idx, row_data in enumerate(today_rows, 2):
         cell.font = data_font
         cell.alignment = data_alignment
         cell.border = thin_border
+        if header == '票面利率(%)' and not value:
+            cell.fill = missing_fill
 
 col_widths = {
     '截标时间': 12, '债券简称': 18, '债券代码': 16, '发行期限': 8, '计划发行(亿)': 10,
@@ -166,6 +199,8 @@ for row_idx, (bond_name, info) in enumerate(sorted_bonds, 2):
         cell.border = thin_border
         if header in ('债券代码', '票面利率(%)') and value:
             cell.fill = today_fill
+        if header == '票面利率(%)' and not value:
+            cell.fill = missing_fill
 
 ws2.column_dimensions['A'].width = 12
 for col_idx, header in enumerate(TARGET_HEADERS, 2):
@@ -179,4 +214,5 @@ print(f"  Sheet1: {len(today_rows)} 条")
 print(f"  Sheet2: {len(sorted_bonds)} 条 (票面利率: {rate_filled}/{total_bonds})")
 
 # 输出统计信息供 Node.js 读取
-print(f"__STATS__:{len(today_rows)}:{len(sorted_bonds)}:{rate_filled}:{total_bonds}")
+missing_count = len(missing_rate_bonds)
+print(f"__STATS__:{len(today_rows)}:{len(sorted_bonds)}:{rate_filled}:{total_bonds}:{missing_count}")
