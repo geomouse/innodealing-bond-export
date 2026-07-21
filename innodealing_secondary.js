@@ -1061,8 +1061,82 @@ async function main() {
     }
 
     // 筛选 ≥ MIN_VOLUME
-    const filtered = rows.filter(r => r.maxVal >= MIN_VOLUME);
+    let filtered = rows.filter(r => r.maxVal >= MIN_VOLUME);
     log(`  筛选 ≥${MIN_VOLUME}：${filtered.length} 行`);
+
+    // 健壮性：下框数据为空时自动重试（云端 chromium 偶发加载慢导致一次性快照抓空）
+    if (rows.length === 0 || (filtered.length === 0 && rows.length > 0)) {
+      const maxInRows = rows.length > 0 ? Math.max(...rows.map(r => r.maxVal || 0)) : 0;
+      for (let retry = 1; retry <= 3; retry++) {
+        log(`  ⚠️ 下框数据异常(rows=${rows.length}, filtered=${filtered.length}, max=${maxInRows})，重试 ${retry}/3...`);
+        await sleep(3000);
+        // 重新执行下框提取（复用视口已加宽状态）
+        const reExtract = await targetFrame.evaluate(() => {
+          let curHeaderY = 0;
+          document.querySelectorAll('*').forEach(el => {
+            if (el.children.length === 0 && (el.textContent||'').trim().includes('最新成交')) {
+              const r = el.getBoundingClientRect();
+              if (r.width > 0 && r.y > curHeaderY) curHeaderY = r.y;
+            }
+          });
+          const dcells = [];
+          document.querySelectorAll('*').forEach(el => {
+            if (el.children.length !== 0) return;
+            const raw = (el.textContent||'').trim();
+            if (!raw || raw.length > 60) return;
+            const r = el.getBoundingClientRect();
+            if (r.x < 140 || r.x > 3380) return;
+            if (r.width < 8 || r.height < 5 || r.height > 50) return;
+            if (/^(成交行情|我的关注|关注列表|利率债|一级发行|信用债|二级|市场观点|行情|关注|发行|市场)$/.test(raw)) return;
+            if (raw === '权' || raw === '免') return;
+            if (r.y > curHeaderY + 6 && r.y < curHeaderY + 900)
+              dcells.push({ x: Math.round(r.x), y: Math.round(r.y), w: Math.round(r.width), text: raw });
+          });
+          // 按y分组构建行(同原始逻辑)
+          const groups = {};
+          dcells.forEach(c => { if (!groups[c.y]) groups[c.y] = []; groups[c.y].push(c); });
+          const out = [];
+          for (const [by, cells] of Object.entries(groups).sort((a,b)=>Number(a[0])-Number(b[0]))) {
+            cells.sort((a,b)=>a.x-b.x);
+            const vals = {};
+            colDefs.forEach(cd => { vals[cd.name] = ''; });
+            cells.forEach(c => {
+              let matched = false;
+              for (const cd of colDefs) { if (!matched && c.x >= cd.center - cd.w/2 - 25 && c.x <= cd.center + cd.w/2 + 25) { vals[cd.name] = c.text; matched = true; } }
+            });
+            out.push({ y: Number(by), vals });
+          }
+          return out;
+        }, colDefs);  // 传入 colDefs
+        if (reExtract.length > 0) {
+          // 重新计算 maxVal + 构建 rows
+          const latestColIdx = colDefs.findIndex(c => c.name.includes('最新成交'));
+          const avgColIdx = colDefs.findIndex(c => c.name.includes('平均成交'));
+          const reRows = [];
+          for (const r of reExtract) {
+            let maxVal = 0;
+            if (latestColIdx >= 0 && r.vals[latestColIdx]) {
+              const rv = parseFloat(r.vals[latestColIdx]);
+              if (!isNaN(rv)) maxVal = rv;
+              else if (/^休/.test(r.vals[latestColIdx]) && avgColIdx >= 0 && r.vals[avgColIdx]) {
+                const av = parseFloat(r.vals[avgColIdx]);
+                if (!isNaN(av) && av > 0) maxVal = av;
+              }
+            }
+            const cells = colDefs.map(c => r.vals[c.name]);
+            const bondName = cells[colDefs.findIndex(c=>c.name.includes('债券简称'))];
+            reRows.push({ ...r, cells, maxVal, bondName: bondName.trim() || '' });
+          }
+          rows = reRows;
+          filtered = rows.filter(r => r.maxVal >= MIN_VOLUME);
+          log(`  重试 ${retry}: 提取到 ${rows.length} 行, 筛选 ≥${MIN_VOLUME}: ${filtered.length} 行`);
+          if (rows.length > 0 && (filtered.length > 0 || Math.max(...rows.map(r=>r.maxVal||0)) < MIN_VOLUME))
+            break;
+        } else {
+          log(`  重试 ${retry}: 仍无数据`);
+        }
+      }
+    }
 
     // 上框"休市"/解析失败行 → 回退用下框同债券的最新成交值（保证上下框一致，均为≥2）
     // 下框(成交行情)含 开盘/最高/最低/平均成交，最新成交解析可靠；上框无平均成交列时以此补全
