@@ -8,32 +8,73 @@ on:
 
 permissions:
   contents: write
+  actions: read
 
 jobs:
   export:
     runs-on: ubuntu-latest
     timeout-minutes: 15
     steps:
+      - name: 去重检查（今日已运行则跳过）
+        id: dedup
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          export TODAY=$(date -u +%Y-%m-%d)
+          echo "检查今日($TODAY)是否已有运行..."
+          RUNS=$(curl -s -H "Authorization: Bearer $GH_TOKEN" -H "Accept: application/vnd.github+json" \
+            "https://api.github.com/repos/$GITHUB_REPOSITORY/actions/runs?per_page=50")
+          ALREADY=$(echo "$RUNS" | TODAY="$TODAY" GITHUB_RUN_ID="$GITHUB_RUN_ID" python3 -c "
+          import json, sys, os
+          d = json.load(sys.stdin)
+          today = os.environ['TODAY']
+          me = os.environ['GITHUB_RUN_ID']
+          for r in d.get('workflow_runs', []):
+              if r['created_at'][:10] != today:
+                  continue
+              if str(r['id']) == me:
+                  continue
+              if r['event'] not in ('schedule', 'workflow_dispatch'):
+                  continue
+              if r['status'] in ('completed', 'in_progress', 'queued'):
+                  print(r['id'])
+                  break
+          ")
+          if [ -n "$ALREADY" ]; then
+            echo "今日已运行 run#$ALREADY，跳过本次导出与邮件"
+            echo "skip=true" >> "$GITHUB_OUTPUT"
+          else
+            echo "今日尚无运行，继续执行"
+            echo "skip=false" >> "$GITHUB_OUTPUT"
+          fi
+
       - uses: actions/checkout@v4
+        if: steps.dedup.outputs.skip != 'true'
 
       - uses: actions/setup-node@v4
+        if: steps.dedup.outputs.skip != 'true'
         with:
           node-version: '22'
 
       - uses: actions/setup-python@v5
+        if: steps.dedup.outputs.skip != 'true'
         with:
           python-version: '3.12'
 
       - name: 安装 Node.js 依赖
+        if: steps.dedup.outputs.skip != 'true'
         run: npm install
 
       - name: 安装 Chromium
+        if: steps.dedup.outputs.skip != 'true'
         run: npx playwright install --with-deps chromium
 
       - name: 安装 Python 依赖
+        if: steps.dedup.outputs.skip != 'true'
         run: pip install openpyxl
 
       - name: 导出今日数据
+        if: steps.dedup.outputs.skip != 'true'
         env:
           INNODEALING_USERNAME: ${{ secrets.INNODEALING_USERNAME }}
           INNODEALING_PASSWORD: ${{ secrets.INNODEALING_PASSWORD }}
@@ -41,12 +82,14 @@ jobs:
 
       - name: 生成汇总 Excel
         id: process
+        if: steps.dedup.outputs.skip != 'true'
         run: |
           python generate_excel_cloud.py 2>&1 | tee /tmp/process.log
           STATS=$(grep '__STATS__:' /tmp/process.log | sed 's/__STATS__://')
           echo "stats=$STATS" >> $GITHUB_OUTPUT
 
       - name: 提交数据到仓库
+        if: steps.dedup.outputs.skip != 'true'
         run: |
           git config user.name "github-actions[bot]"
           git config user.email "github-actions[bot]@users.noreply.github.com"
@@ -60,7 +103,7 @@ jobs:
           fi
 
       - name: 发送汇总邮件
-        if: always() && steps.process.outcome == 'success'
+        if: steps.dedup.outputs.skip != 'true' && steps.process.outcome == 'success'
         env:
           EMAIL_USER: ${{ secrets.EMAIL_USER }}
           EMAIL_PASS: ${{ secrets.EMAIL_PASS }}
@@ -69,3 +112,4 @@ jobs:
         run: node send_email.js
 
 # reactivated 2026-07-20: repository set to public to fix queued runners and disabled schedule
+# 2026-07-21: 增加「今日去重」——GitHub 自带 schedule 跑过当天后，cron(workflow_dispatch) 触发的这次自动跳过，避免重复导出/邮件
