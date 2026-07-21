@@ -27,7 +27,7 @@ jobs:
           export TODAY=$(date -u +%Y-%m-%d)
           echo "检查今日($TODAY)是否已有运行..."
           RUNS=$(curl -s -H "Authorization: Bearer $GH_TOKEN" -H "Accept: application/vnd.github+json" \
-            "https://api.github.com/repos/$GITHUB_REPOSITORY/actions/runs?per_page=50")
+            "https://api.github.com/repos/$GITHUB_REPOSITORY/actions/workflows/secondary-quote-export.yml/runs?per_page=50")
           ALREADY=$(echo "$RUNS" | TODAY="$TODAY" GITHUB_RUN_ID="$GITHUB_RUN_ID" python3 -c "
           import json, sys, os
           d = json.load(sys.stdin)
@@ -104,3 +104,4 @@ jobs:
 
 # 2026-07-21: 新增二级行情(我的关注)成交汇总 → 4-Sheet 输出 + 历史累积(Sheet4)
 # 主触发器 GitHub schedule(北京16:40) + cron-job.org 兜底(北京16:45)；workflow 内部去重避免双邮件
+# 2026-07-20: 修复去重误判——只查本 workflow 自己的 runs，避免与一级发行 workflow 互相误跳过
