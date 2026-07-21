@@ -132,6 +132,96 @@ async function main() {
     try { await targetFrame.keyboard.press('Escape'); } catch (e) {}
   }
 
+  // 关闭债立方内部标签页（服务端绑定账号，详情页 tab 不关会在账号里无限堆积）
+  // 多策略：① 右键"我的关注"标签 → 菜单点"关闭其他/全部标签页" ② 逐个点击标签上的关闭×
+  async function closeAppTabs() {
+    try {
+      // 先回到我的关注（让 my-focus 标签处于活动状态）
+      if (targetFrame) {
+        await targetFrame.evaluate(() => {
+          window.location.hash = '#/bond/my-focus';
+          window.dispatchEvent(new HashChangeEvent('hashchange'));
+        }).catch(() => {});
+      }
+      await sleep(1500);
+
+      // 统计当前标签数（顶部 y<130 区域，文本像标签名）
+      const countTabs = async () => page.evaluate(() => {
+        const seen = new Set();
+        Array.from(document.querySelectorAll('*')).forEach(el => {
+          const r = el.getBoundingClientRect();
+          const t = (el.textContent || '').trim();
+          if (r.y < 130 && r.y > 0 && r.height > 14 && r.height < 50 && r.width > 20 && r.width < 240 &&
+              t && t.length >= 2 && t.length <= 20 && el.children.length <= 2 &&
+              /关注|详情|债|市场|发行|观点|首页|行情/.test(t)) {
+            seen.add(t + '@' + Math.round(r.x));
+          }
+        });
+        return seen.size;
+      }).catch(() => 0);
+
+      const before = await countTabs();
+
+      // 策略①：右键"我的关注"标签 → 上下文菜单"关闭其他标签页"
+      let menuClosed = false;
+      for (let attempt = 0; attempt < 2 && !menuClosed; attempt++) {
+        const pos = await page.evaluate(() => {
+          const tabs = Array.from(document.querySelectorAll('*')).filter(el => {
+            const t = (el.textContent || '').trim();
+            const r = el.getBoundingClientRect();
+            return t === '我的关注' && r.y < 130 && r.y > 0 && r.width > 20 && r.width < 200 && r.height > 14 && r.height < 50;
+          });
+          if (!tabs.length) return null;
+          const r = tabs[0].getBoundingClientRect();
+          return { x: r.x + r.width / 2, y: r.y + r.height / 2 };
+        }).catch(() => null);
+        if (!pos) break;
+        try { await page.mouse.click(pos.x, pos.y, { button: 'right' }); } catch (e) {}
+        await sleep(700);
+        const clicked = await page.evaluate(() => {
+          const items = Array.from(document.querySelectorAll('*')).filter(el => {
+            const t = (el.textContent || '').trim();
+            const r = el.getBoundingClientRect();
+            return (t === '关闭全部标签页' || t === '关闭其他标签页' || t === '关闭其他' || t === '关闭所有') &&
+                   r.width > 0 && r.height > 0 && el.children.length <= 1;
+          });
+          // 优先"关闭全部"，其次"关闭其他"
+          items.sort((a, b) => (a.textContent.includes('全部') ? -1 : 1));
+          if (items.length) { items[0].click(); return items[0].textContent.trim(); }
+          return '';
+        }).catch(() => '');
+        if (clicked) { menuClosed = true; log(`  关闭标签(右键菜单): ${clicked}`); }
+        await sleep(1200);
+      }
+
+      // 策略②：逐个点击标签自带的关闭×图标（兜底，最多 30 轮）
+      let round = 0;
+      for (; round < 30; round++) {
+        const clicked = await page.evaluate(() => {
+          const closeEls = Array.from(document.querySelectorAll('i, span, svg, a, button')).filter(el => {
+            const r = el.getBoundingClientRect();
+            if (r.y > 130 || r.y <= 0 || r.width === 0 || r.width > 36 || r.height > 36) return false;
+            const cls = String(el.className && el.className.baseVal !== undefined ? el.className.baseVal : el.className || '').toLowerCase();
+            const txt = (el.textContent || '').trim();
+            const aria = (el.getAttribute && (el.getAttribute('aria-label') || '')).toLowerCase();
+            return cls.includes('close') || cls.includes('tab-close') || cls.includes('anticon-close') ||
+                   txt === '×' || txt === '✕' || txt === '✖' || aria.includes('close') || aria.includes('关闭');
+          });
+          if (!closeEls.length) return 0;
+          closeEls[0].click(); // 一次关一个，关完重新枚举（DOM 会变）
+          return 1;
+        }).catch(() => 0);
+        if (!clicked) break;
+        await sleep(350);
+      }
+
+      const after = await countTabs();
+      log(`  关闭标签页完成: ${before} → ${after}（菜单:${menuClosed ? '✅' : '❌'} 逐个×:${round}轮）`);
+    } catch (e) {
+      log(`  关闭标签页异常: ${e.message}`);
+    }
+  }
+
   try {
     // ===== 1. 登录 =====
     log('1. 登录');
@@ -1353,10 +1443,22 @@ async function main() {
         const urls = [page.url(), ...page.frames().map(f=>f.url())].join('|');
         return urls.includes('bond/detail') || urls.includes('/detail/');
       };
+      // 导航签名：所有 frame 的 URL 拼接。切换债券会改变详情页内部ID → 签名变化，用于判断"真的换了页"
+      const getNavSig = () => [page.url(), ...page.frames().map(f=>f.url())].join('|');
       const isDetailContent = (frame) => frame.evaluate(() => /性质|主体评级|债项评级/.test(document.body?.textContent||'')).catch(()=>false);
+      // 目标债券校验：详情页正文/标题里必须出现目标债券的代码(纯数字部分)或简称，否则说明还是上一只的缓存
+      const isTargetBond = (frame, bCode, bName) => {
+        const code = String(bCode||'').split('.')[0];
+        return frame.evaluate(({ code, name }) => {
+          const body = document.body?.textContent || '';
+          const hitCode = code && code.length >= 4 && body.includes(code);
+          const hitName = name && name.length >= 3 && body.includes(name);
+          return !!(hitCode || hitName);
+        }, { code, name: bName }).catch(() => false);
+      };
 
-      // 首只：在列表页dispatch双击债券名称 → 进详情页（带重试）
-      async function dblclickIntoDetail(frame, name) {
+      // 首只：在列表页dispatch双击债券名称 → 进详情页（带重试）；校验目标债券真正加载
+      async function dblclickIntoDetail(frame, name, bCode, prevSig) {
         const fired = await frame.evaluate((nm) => {
           const els = Array.from(document.querySelectorAll('*')).filter(el => {
             const t = (el.textContent||'').trim();
@@ -1373,19 +1475,22 @@ async function main() {
           return true;
         }, name).catch(() => false);
         if (!fired) return false;
-        for (let i=0; i<12; i++) {
+        // 等到：签名变化 + 是详情页 + 详情内容就绪 + 目标债券确实出现
+        for (let i=0; i<20; i++) {
           await sleep(500);
-          if (isDetailUrl()) break;
-        }
-        for (let vi=0; vi<8; vi++) {
-          await sleep(500);
-          if (await isDetailContent(frame)) return true;
+          if (getNavSig() !== prevSig && isDetailUrl()) {
+            if (await isDetailContent(frame) && await isTargetBond(frame, bCode, name)) {
+              await sleep(800); // 额外渲染缓冲
+              return true;
+            }
+          }
         }
         return false;
       }
 
       // 详情页搜索框：填代码 + Enter 切换债券（停留详情页，无需回列表）
-      async function searchSwitch(frame, bCode) {
+      // prevSig: 切换前的导航签名，用于确认页面真的换了（避免读到上一只的缓存 → 数据串行）
+      async function searchSwitch(frame, bCode, bName, prevSig) {
         const code = String(bCode||'').split('.')[0];
         if (!code) return false;
         const box = await frame.evaluate(() => {
@@ -1409,27 +1514,26 @@ async function main() {
         await page.keyboard.type(code, { delay: 30 });
         await sleep(900);
         await page.keyboard.press('Enter');
-        let switched = false;
-        for (let i=0; i<14; i++) {
+        // 关键：必须等【导航签名变化 + 详情内容就绪 + 目标债券(代码/简称)确实出现】三者同时满足
+        // 否则会读到上一只债券的缓存数据（区域/发行人串行 bug 的根因）
+        for (let i=0; i<24; i++) {   // 最长约 12s
           await sleep(500);
-          if (isDetailUrl()) {
-            for (let vi=0; vi<6; vi++) {
-              await sleep(400);
-              if (await isDetailContent(frame)) { switched = true; break; }
+          if (getNavSig() !== prevSig && isDetailUrl()) {
+            const contentOk = await isDetailContent(frame);
+            const targetOk = await isTargetBond(frame, code, bName);
+            if (contentOk && targetOk) {
+              await sleep(900); // 额外渲染缓冲，确保省份/发行人字段刷新到位
+              return true;
             }
-            if (switched) break;
           }
         }
-        if (switched) {
-          const curVal = await frame.evaluate(() => {
-            const input = document.querySelector('input.ant-select-search__field');
-            return input ? (input.value||'') : '';
-          }).catch(()=> '');
-          if (curVal && !curVal.includes(code)) {
-            log(`  ⚠️ 搜索框切换后值[${curVal}]未含目标代码[${code}]`);
-          }
-        }
-        return switched;
+        // 兜底诊断：超时未确认切换到目标债券
+        const curVal = await frame.evaluate(() => {
+          const input = document.querySelector('input.ant-select-search__field');
+          return input ? (input.value||'') : '';
+        }).catch(()=> '');
+        log(`  ⚠️ [${bName}] 切换未确认(签名/目标债券未就绪) 搜索框值=[${curVal}]`);
+        return false;
       }
 
       // 提取省份 + 发行人全称
@@ -1519,13 +1623,16 @@ async function main() {
       // 首只进入详情页
       let onDetail = false;
       const firstName = getLowerVal(needRegion[0], '债券简称');
+      const firstCode = getLowerVal(needRegion[0], '债券代码');
       for (let attempt=0; attempt<3 && !onDetail; attempt++) {
         if (attempt>0) await sleep(800);
-        onDetail = await dblclickIntoDetail(targetFrame, firstName);
+        const sigBefore = getNavSig();
+        onDetail = await dblclickIntoDetail(targetFrame, firstName, firstCode, sigBefore);
         log(`  首只双击进入详情页(尝试${attempt+1}): ${onDetail ? '✅' : '❌'}`);
       }
 
       // 逐只处理
+      let prevIssuerFull = ''; // 用于串行检测：连续两只全称相同则可能读到缓存
       for (let ri = 0; ri < needRegion.length; ri++) {
         const ur = needRegion[ri];
         const bCode = getLowerVal(ur, '债券代码') || '';
@@ -1533,12 +1640,24 @@ async function main() {
         if (!bCode) continue;
 
         if (ri > 0 || !onDetail) {
-          const ok = await searchSwitch(targetFrame, bCode);
-          if (!ok) { log(`  [${ri+1}] ${bName} 导航失败，跳过`); continue; }
+          const sigBefore = getNavSig();
+          let ok = await searchSwitch(targetFrame, bCode, bName, sigBefore);
+          if (!ok) {
+            // 重试一次（更长等待）
+            await sleep(1200);
+            ok = await searchSwitch(targetFrame, bCode, bName, getNavSig());
+          }
+          if (!ok) { log(`  [${ri+1}] ${bName} 导航失败，跳过（保留映射值）`); continue; }
           onDetail = true;
         }
 
-        const ex = await extractFrom(targetFrame);
+        let ex = await extractFrom(targetFrame);
+        // 串行防护：若提取到的全称与上一只完全相同，极可能是缓存 → 再等一次重取
+        if (ex.issuerFull && ex.issuerFull === prevIssuerFull) {
+          log(`  [${ri+1}] ${bName} 全称与上一只相同(${ex.issuerFull})，疑似缓存，重取...`);
+          await sleep(1500);
+          ex = await extractFrom(targetFrame);
+        }
         const existing = bondRegionMap.get(bCode);
         // 详情页提取失败(province为空)时，保留已有映射值不被覆盖
         const finalRegion = (ex.province || existing?.region || '');
@@ -1550,30 +1669,13 @@ async function main() {
           issuerFull: ex.issuerFull || existing?.issuerFull,
           extra: ex.extra || existing?.extra || {}
         });
-        log(`  [${ri+1}/${needRegion.length}] ${bName} → 省:${ex.province||'(空)'} 全称:${ex.issuerFull||'(无)'} (${ex.method||'none'}) extra=${JSON.stringify(ex.extra||{})} `);
+        if (ex.issuerFull) prevIssuerFull = ex.issuerFull;
+        log(`  [${ri+1}/${needRegion.length}] ${bName} → 省:${ex.province||'(空)'} 全称:${ex.issuerFull||'(无)'} (${ex.method||'none'})`);
         try { await page.screenshot({ path: path.join(SCREENSHOT_DIR, `detail-${bCode.split('.').join('_')}.png`) }); } catch(e) {}
       }
 
-      // 关闭所有打开的详情标签页：回到我的关注 → 点"关闭其他标签页"
-      try {
-        // 先回到我的关注
-        await targetFrame.evaluate(() => {
-          window.location.hash = '#/bond/my-focus';
-          window.dispatchEvent(new HashChangeEvent('hashchange'));
-        });
-        await sleep(1500);
-        // 点顶部导航栏的"关闭其他标签页"
-        const closed = await page.evaluate(() => {
-          const els = Array.from(document.querySelectorAll('*'));
-          const btn = els.find(el => {
-            const t = (el.textContent||'').trim();
-            return t.includes('关闭其他标签页') && el.getBoundingClientRect().width > 0;
-          });
-          if (btn) { btn.click(); return true; }
-          return false;
-        });
-        log(`  关闭其他标签页: ${closed ? '✅' : '❌ 未找到按钮'}`);
-      } catch(e) { log(`  关闭标签页异常: ${e.message}`); }
+      // 关闭所有打开的详情标签页（债立方内部标签是服务端绑定账号的，不关会在账号里堆积）
+      await closeAppTabs();
 
       log(`  详情页提取完成，覆盖: ${[...bondRegionMap.values()].filter(v=>v.region).length}/${bondRegionMap.size}`);
     }
