@@ -776,11 +776,17 @@ async function main() {
       // 只保留出现足够多的列（过滤展开子行/噪声）
       const minCount = Math.max(3, Math.floor(rawRows.length * 0.3));
       const cols = centers.filter(c => c.n >= minCount).map(c => ({ x: Math.round(c.sum / c.n) }));
-      // 给每列配表头名（最近表头 x，阈值 45px），否则 列N
-      cols.forEach((col, i) => {
-        let md = Infinity, nm = '';
-        for (const h of heads) { const d = Math.abs(h.x - col.x); if (d < md) { md = d; nm = h.name; } }
-        col.name = (md < 45 && nm) ? nm : `列${i + 1}`;
+      // 给每列配表头名：数值列文本右对齐会右移，最近距离法易错 → 改用「区间归属」
+      // 数据列文本框落在 [表头x-30, 表头x+列间距) 内即归属该表头（列间距=下一表头x-本表头x）
+      heads.sort((a, b) => a.x - b.x);
+      cols.forEach((col) => {
+        let nm = `列${cols.indexOf(col) + 1}`;
+        for (let i = 0; i < heads.length; i++) {
+          const h = heads[i];
+          const spacing = (i + 1 < heads.length) ? (heads[i + 1].x - h.x) : 150;
+          if (col.x >= h.x - 30 && col.x < h.x + spacing) { nm = h.name; break; }
+        }
+        col.name = nm;
       });
 
       // 每行 cell 分配到最近列（阈值 30px）；债券简称列多选优，避开 休/纯数字/纯代码
@@ -812,7 +818,9 @@ async function main() {
     log(`  下面框表头 y=${extract.headerY}，识别 ${extract.cols.length} 列: ${extract.cols.join(' | ')}`);
     log(`  列 x 坐标: ${extract.colX.join(', ')}`);
 
-    const colDefs = extract.cols.map(name => ({ name }));
+    // 过滤无名占位列（列N）：加宽视口后右侧出现的无表头列（如 信唐/CHG 经纪商报价块，其表头在 y≈636 与主表头 y≈627 错位未被捕获）→ 统一剔除，避免 Sheet1 出现"列N"
+    const keepMask = extract.cols.map(n => !/^列\d+$/.test(n));
+    const colDefs = extract.cols.filter((n, i) => keepMask[i]).map(name => ({ name }));
     const nameIdx = colDefs.findIndex(c => c.name.includes('债券简称'));
     const latestColIdx = colDefs.findIndex(c => c.name.includes('最新成交'));
     const avgColIdx = colDefs.findIndex(c => c.name.includes('平均成交'));
@@ -822,7 +830,7 @@ async function main() {
     for (const row of extract.rows) {
       const bondName = nameIdx >= 0 ? (row.vals[nameIdx] || '').trim() : '';
       if (!bondName) continue; // 无债券简称 = 表头/空行
-      const cells = row.vals.slice();
+      const cells = row.vals.filter((v, i) => keepMask[i]);
       let maxVal = 0;
       if (latestColIdx >= 0 && cells[latestColIdx]) {
         const rv = cells[latestColIdx].trim();
@@ -942,35 +950,30 @@ async function main() {
           for (const c of dcells) if (!yKeys.find(k => Math.abs(k - c.y) <= 8)) yKeys.push(c.y);
           yKeys.sort((a, b) => a - b);
           const rawRows = yKeys.map(by => dcells.filter(c => Math.abs(c.y - by) <= 8).sort((a, b) => a.x - b.x));
-          // 用表头 x 强制初始化列 centers（确保每个表头列都有锚点，不会因数据稀疏丢失/串列）
-          const seedCenters = heads.map(h => ({ sum: h.x, n: 1, max: h.x, _seed: true }));
-          // 再加入数据 cell 的 x 做增量合并（gap<=30 合并到最近 center）
-          const allX = dcells.map(c => c.x).sort((a, b) => a - b);
-          const centers = [...seedCenters];
-          for (const x of allX) {
-            const last = centers[centers.length - 1];
-            if (last && x - last.max <= 30) { last.sum += x; last.n++; last.max = x; }
-            else centers.push({ sum: x, n: 1, max: x, _seed: false });
-          }
-          // 保留所有表头种子列 + 数据足够密集的非种子列
-          const dataMinCount = Math.max(2, Math.floor(rawRows.length * 0.25));
-          const cols = centers.filter(c => c._seed || c.n >= dataMinCount).map(c => ({ x: Math.round(c.sum / c.n) }));
-          cols.forEach((col, i) => {
-            let md = Infinity, nm = '';
-            for (const h of heads) { const d = Math.abs(h.x - col.x); if (d < md) { md = d; nm = h.name; } }
-            col.name = (md < 45 && nm) ? nm : `列${i + 1}`;
-          });
-          // 每行 cell 分配到最近列（阈值 30px）；债券简称列多选优，避开 休/纯数字/纯代码
+          // 列定义：直接以上框表头为基准（保证全部表头列都在，不受虚拟滚动稀疏/单帧行数少影响）
+          heads.sort((a, b) => a.x - b.x);
+          const colSpacing = (i) => (i + 1 < heads.length) ? (heads[i + 1].x - heads[i].x) : 150;
+          const cols = heads.map(h => ({ name: h.name, x: h.x }));
+          // 单元格 → 列下标：数值列文本右对齐会右移 30~77px，最近距离 30px 阈值会漏/串列
+          // → 改用「区间归属」：cell.x 落在 [表头x-30, 表头x+列间距) 内即归属该列；重叠区取最近表头
+          const assignCol = (x) => {
+            let best = -1, bestD = Infinity;
+            for (let i = 0; i < heads.length; i++) {
+              const sp = colSpacing(i);
+              if (x >= heads[i].x - 30 && x < heads[i].x + sp) {
+                const d = Math.abs(x - heads[i].x);
+                if (d < bestD) { bestD = d; best = i; }
+              }
+            }
+            return best;
+          };
+          // 每行 cell 分配到对应列（按名字归集）；债券简称列多选优，其余列取最左（first-wins）
           const out = [];
           for (const row of rawRows) {
             const colCells = {};
             for (const c of row) {
-              let md = Infinity, mi = -1;
-              for (let i = 0; i < cols.length; i++) { const d = Math.abs(c.x - cols[i].x); if (d < md) { md = d; mi = i; } }
-              if (mi >= 0 && md < 30) {
-                const cn = cols[mi].name;
-                (colCells[cn] || (colCells[cn] = [])).push({ text: c.text, x: c.x });
-              }
+              const ci = assignCol(c.x);
+              if (ci >= 0) { (colCells[cols[ci].name] || (colCells[cols[ci].name] = [])).push({ text: c.text, x: c.x }); }
             }
             const vals = {};
             for (const cn in colCells) {
@@ -1029,7 +1032,7 @@ async function main() {
       // 主循环：纵向滚动收集所有行（按 债券代码 优先、债券简称 兜底的稳定 key 去重，确保不遗漏）
       const upperMap = new Map();
       let stall = 0, iter = 0;
-      while (stall < 3 && iter < 80) {
+      while (stall < 4 && iter < 120) {
         iter++;
         const snap = await snapshotUpper();
         let added = 0;
@@ -1044,10 +1047,20 @@ async function main() {
           if (!upperMap.has(key)) {
             upperMap.set(key, vals); added++;
           } else {
-            // 合并：若已存条目的债券简称异常、当前更完整，则替换（保留真实名称）
-            const prevName = (upperMap.get(key)['债券简称'] || '').trim();
-            const curName = n0;
-            if (isAbnormalName(prevName) && !isAbnormalName(curName)) upperMap.set(key, vals);
+            // 合并：把当前快照中"已存在但之前缺失"的列值补全（应对渲染不全/偶发漏行）
+            // 旧逻辑只保留首次捕获，首次若渲染不全则永久缺列；改为累加补全
+            const prev = upperMap.get(key);
+            let improved = false;
+            for (const k of Object.keys(vals)) {
+              const v = vals[k];
+              const p = prev[k];
+              if ((p === undefined || p === '' || p === '--' || p === '·') && v && v !== '--' && v !== '·') {
+                prev[k] = v; improved = true;
+              }
+            }
+            // 债券简称异常则用当前更完整的替换
+            if (isAbnormalName((prev['债券简称'] || '').trim()) && !isAbnormalName(n0)) { prev['债券简称'] = n0; improved = true; }
+            if (improved) added++;
           }
         }
         log(`  [上面框快照${iter}] 本帧 ${snap.length} 行, 新增 ${added}, 累计 ${upperMap.size}`);
@@ -1086,6 +1099,26 @@ async function main() {
       if (abnormalCount > 0) { log(`  ⚠️ 上框发现 ${abnormalCount} 个异常简称:`); for (const a of abnormalList) log(`    ${a}`); }
       if (codeOnlyCount > 0) { log(`  ℹ️ 上框有 ${codeOnlyCount} 个仅含代码的条目（债券简称未能捕获，已按代码保留，建议人工核对）:`); for (const a of codeOnlyList) log(`    ${a}`); }
       if (abnormalCount === 0 && codeOnlyCount === 0) log(`  ✅ 上框债券简称全部正常捕获，无异常/遗漏`);
+
+      // ===== DEBUG_COLS：导出上下框原始单元格（含真实表头文字），用于核对列名/缺失列根因 =====
+      if (process.env.DEBUG_COLS === '1') {
+        log('  [DEBUG_COLS] 导出上下框原始单元格...');
+        const allCells = await targetFrame.evaluate(() => {
+          const out = [];
+          document.querySelectorAll('*').forEach(el => {
+            if (el.children.length !== 0) return;
+            const raw = (el.textContent || '').trim();
+            if (!raw || raw.length > 40) return;
+            const r = el.getBoundingClientRect();
+            if (r.width < 4 || r.height < 4) return;
+            out.push({ x: Math.round(r.x), y: Math.round(r.y), w: Math.round(r.width), t: raw });
+          });
+          return out;
+        }).catch(() => []);
+        fs.writeFileSync(path.join(WORKSPACE, 'debug_all_cells.json'), JSON.stringify(allCells, null, 1), 'utf8');
+        fs.writeFileSync(path.join(WORKSPACE, 'debug_upper_map.json'), JSON.stringify([...upperMap.values()], null, 1), 'utf8');
+        log(`  [DEBUG_COLS] allCells=${allCells.length}, upperMap=${upperMap.size} → debug_all_cells.json / debug_upper_map.json`);
+      }
 
       // 对比上下框一致性（归一化 key：债券代码优先，否则债券简称）
       const lowerNorm = new Map();
@@ -1331,8 +1364,8 @@ async function main() {
     for (let i = 0; i < colDefs.length; i++) lIdx[colDefs[i].name] = i;
 
     // ---- 逐只点击债券，从详情面板抓取"区域" ----
-    // 主方案：发行人简称 → 区域映射表（稳定可靠）
-    // 辅助方案：双击债券行从页面提取（可能因DOM变化失败）
+    // 权威来源：详情页"省/直辖市"字段（含全国性银行，不区分是否全国性）
+    // 映射表仅作兜底（详情页提取失败时使用）
     log('  填充区域信息...');
     const ISSUER_REGION_MAP = {
       // 重庆
@@ -1349,12 +1382,7 @@ async function main() {
       '恒丰银行': '山东',
       // 四川
       '鸿飞集团': '四川', '达州投资': '四川', '达州': '四川',
-      // 全国性银行（无特定省份，留空）
-      '农业银行': '', '农行': '', '中国银行': '', '建设银行': '',
-      '工商银行': '', '交通银行': '', '邮储银行': '',
-      '招商银行': '', '中信银行': '', '浦发银行': '',
-      '民生银行': '', '兴业银行': '', '光大银行': '',
-      '平安银行': '', '华夏银行': '', '渤海银行': '',
+      // 注：不再为"全国性银行"留空 —— 一律走详情页提取省份/直辖市（用户要求：以详情页省份为准，不区分是否全国性）
     };
 
     function inferRegion(issuerName) {
@@ -1370,14 +1398,7 @@ async function main() {
 
     const bondRegionMap = new Map();
 
-    // 银行判定：映射表中值为 '' 的发行人视为全国性银行（区域留空，不截图）
-    const BANK_NAMES = Object.keys(ISSUER_REGION_MAP).filter(k => ISSUER_REGION_MAP[k] === '');
-    function isBank(issuer) {
-      if (!issuer) return false;
-      return BANK_NAMES.some(b => issuer === b || issuer.includes(b) || b.includes(issuer));
-    }
-
-    // 先用发行人映射预填区域（已知省份 / 已知银行留空），未知发行人留待详情页提取
+    // 先用发行人映射预填区域作为兜底（已知省份），未知发行人留待详情页提取
     // 注意：下框（成交行情）可能没有"发行人简称"列，此时 fallback 用债券简称匹配映射表
     for (const r of filtered) {
       const bCode = getLowerVal(r, '债券代码');
@@ -1393,16 +1414,8 @@ async function main() {
       }
       if (region) {
         bondRegionMap.set(bCode, { region, bondName, method });
-      } else if (isBank(issuer) || (bondName && isBankByBondName(bondName))) {
-        bondRegionMap.set(bCode, { region: '', bondName, method: '映射-银行' });
       }
-      // 其余（region 为空且非银行）不写入 → 进入详情页提取补充
-    }
-
-    // 辅助：通过债券名称判断是否为全国性银行（用于下框无发行人简称列的场景）
-    function isBankByBondName(bondName) {
-      if (!bondName) return false;
-      return BANK_NAMES.some(b => bondName.includes(b));
+      // 未命中映射的一律进入详情页提取省份（含全国性银行，不再留空）
     }
 
     // 计算 quote-web iframe 在页面中的偏移（用于裁剪截图坐标换算）
@@ -1425,7 +1438,8 @@ async function main() {
     const needRegion = [];
     for (const r of filtered) {
       const bCode = getLowerVal(r, '债券代码');
-      if (FORCE_REGION || !bondRegionMap.has(bCode)) needRegion.push(r);
+      // 详情页省份为权威来源（含全国性银行）；映射仅作兜底，故所有债券都进详情页提取
+      needRegion.push(r);
     }
     log(`  需从详情页提取区域的债券: ${needRegion.length}/${filtered.length}`);
 
@@ -1652,9 +1666,17 @@ async function main() {
         }
 
         let ex = await extractFrom(targetFrame);
-        // 串行防护：若提取到的全称与上一只完全相同，极可能是缓存 → 再等一次重取
+        // 串行防护1：提取到的全称与上一只完全相同 → 疑似缓存，重取一次
         if (ex.issuerFull && ex.issuerFull === prevIssuerFull) {
           log(`  [${ri+1}] ${bName} 全称与上一只相同(${ex.issuerFull})，疑似缓存，重取...`);
+          await sleep(1500);
+          ex = await extractFrom(targetFrame);
+        }
+        // 串行防护2：全称或省份为空（详情页信息栏未渲染/读到空缓存）→ 重试最多2次，避免回退到简称
+        let retry = 0;
+        while ((!ex.issuerFull || !ex.province) && retry < 2) {
+          retry++;
+          log(`  [${ri+1}] ${bName} 全称/省份为空，重取(${retry})...`);
           await sleep(1500);
           ex = await extractFrom(targetFrame);
         }
@@ -1672,6 +1694,28 @@ async function main() {
         if (ex.issuerFull) prevIssuerFull = ex.issuerFull;
         log(`  [${ri+1}/${needRegion.length}] ${bName} → 省:${ex.province||'(空)'} 全称:${ex.issuerFull||'(无)'} (${ex.method||'none'})`);
         try { await page.screenshot({ path: path.join(SCREENSHOT_DIR, `detail-${bCode.split('.').join('_')}.png`) }); } catch(e) {}
+      }
+
+      // 回填：对详情页提取为空（全称或省份）的债券，重新进详情页补取，确保 Sheet3/Sheet4 发行人简称一律为详情页全称（不回退简称）
+      const missFull = [...bondRegionMap.entries()].filter(([, v]) => !v.issuerFull || !v.region);
+      if (missFull.length) {
+        log(`  回填: ${missFull.length} 只债券全称/省份为空，重新进详情页补取...`);
+        for (const [bCode, v] of missFull) {
+          const sigBefore = getNavSig();
+          let ok = await searchSwitch(targetFrame, bCode, v.bondName, sigBefore);
+          if (!ok) { await sleep(1200); ok = await searchSwitch(targetFrame, bCode, v.bondName, getNavSig()); }
+          if (!ok) { log(`  ⚠️ 回填导航失败: ${v.bondName}`); continue; }
+          await sleep(800);
+          let ex = await extractFrom(targetFrame);
+          let rt = 0;
+          while ((!ex.issuerFull || !ex.province) && rt < 2) { rt++; await sleep(1500); ex = await extractFrom(targetFrame); }
+          const merged = { ...v };
+          if (ex.province) merged.region = ex.province;
+          if (ex.issuerFull) merged.issuerFull = ex.issuerFull;
+          if (ex.city) merged.city = ex.city;
+          bondRegionMap.set(bCode, merged);
+          log(`  ↺ 回填 [${v.bondName}] 省:${ex.province || '(空)'} 全称:${ex.issuerFull || '(无)'}`);
+        }
       }
 
       // 关闭所有打开的详情标签页（债立方内部标签是服务端绑定账号的，不关会在账号里堆积）
