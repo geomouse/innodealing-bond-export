@@ -1138,6 +1138,36 @@ async function main() {
       }
     }
 
+    // 诊断：下框为空时记录云/本地差异，便于用截图核证（用户要求"用截图验证，不要猜测"）
+    if (filtered.length === 0) {
+      try {
+        const diag = await targetFrame.evaluate(() => {
+          const iframes = Array.from(document.querySelectorAll('iframe')).map(f => ({ src: f.src, w: f.offsetWidth, h: f.offsetHeight }));
+          const bodyText = document.body ? document.body.innerText : '';
+          return {
+            url: location.href,
+            title: document.title,
+            iframeCount: iframes.length,
+            iframes,
+            bodyTextLen: bodyText.length,
+            bodyTextSample: bodyText.slice(0, 600).replace(/\n/g, ' ⏎ '),
+            hasHengFeng: bodyText.includes('恒丰'),
+            hasChengJiao: bodyText.includes('成交行情'),
+            hasMyFocus: bodyText.includes('我的关注'),
+          };
+        });
+        log('  ⚠️【诊断】下框为空: ' + JSON.stringify(diag));
+        // 导出下框(目标iframe)HTML 供核对
+        let frameHtml = '';
+        try { frameHtml = await targetFrame.content(); } catch (e) { frameHtml = 'content() failed: ' + e.message; }
+        fs.writeFileSync(path.join(WORKSPACE, 'debug_frame.html'), frameHtml, 'utf8');
+        // 目标iframe截图
+        try { await targetFrame.screenshot({ path: path.join(SCREENSHOT_DIR, '08-empty-frame.png') }); } catch (e) { log('  frame截图失败: ' + e.message); }
+      } catch (e) {
+        log('  ⚠️ 诊断失败: ' + e.message);
+      }
+    }
+
     // 上框"休市"/解析失败行 → 回退用下框同债券的最新成交值（保证上下框一致，均为≥2）
     // 下框(成交行情)含 开盘/最高/最低/平均成交，最新成交解析可靠；上框无平均成交列时以此补全
     const lowerLatestByKey = new Map();
@@ -1659,15 +1689,34 @@ async function main() {
     }
     log(`  Sheet3 完成: ${sheet3Count} 行 (成交日期=${dateFormatted})`);
 
-    // ===== 历史存储：把今天的 Sheet3 存为 daily/{BJ_DATE}.json（Sheet4 的单一数据源）=====
+    // ===== 保护机制：本次无数据时不覆盖已有的有效历史文件 =====
     const todayJsonPath = path.join(HISTORY_DIR, `${BJ_DATE}.json`);
-    fs.writeFileSync(todayJsonPath, JSON.stringify({
-      date: BJ_DATE,
-      dateFormatted,
-      headers: SHEET3_HEADERS,
-      rows: sheet3Rows,
-    }, null, 1), 'utf8');
-    log(`  历史已写: ${todayJsonPath} (${sheet3Rows.length} 行)`);
+    let skipEmptyWrite = false;
+    if (sheet3Count === 0) {
+      let existingRows = 0;
+      if (fs.existsSync(todayJsonPath)) {
+        try { existingRows = JSON.parse(fs.readFileSync(todayJsonPath, 'utf8')).rows?.length || 0; } catch(e) {}
+      }
+      const outPath = path.join(SECONDARY_DIR, `secondary_quote_${BJ_DATE}.xlsx`);
+      const hasExistingXlsx = fs.existsSync(outPath) && fs.statSync(outPath).size > 2000;
+      if (existingRows > 0 || hasExistingXlsx) {
+        skipEmptyWrite = true;
+        log(`  ⚠️ 本次无数据(${existingRows}行历史/${hasExistingXlsx?'有xlsx':'无xlsx'})，保留历史文件，跳过写入`);
+      } else {
+        log(`  ⚠️ 本次无数据且无历史文件（首次运行），仍将写入空文件`);
+      }
+    }
+
+    // ===== 历史存储：把今天的 Sheet3 存为 daily/{BJ_DATE}.json（Sheet4 的单一数据源）=====
+    if (!skipEmptyWrite) {
+      fs.writeFileSync(todayJsonPath, JSON.stringify({
+        date: BJ_DATE,
+        dateFormatted,
+        headers: SHEET3_HEADERS,
+        rows: sheet3Rows,
+      }, null, 1), 'utf8');
+      log(`  历史已写: ${todayJsonPath} (${sheet3Rows.length} 行)`);
+    }
 
     // ===== Sheet4 = 历史累积（读取所有 daily/*.json，按日期升序合并）=====
     log('10. 构建 Sheet4: 历史累积汇总');
@@ -1711,8 +1760,9 @@ async function main() {
     const outName = `secondary_quote_${BJ_DATE}.xlsx`;
     const outPath = path.join(SECONDARY_DIR, outName);
     await wb.xlsx.writeFile(outPath);
-    log(`✅ 已保存: ${outPath}`);
+    log(`✅ 已保存: ${outPath}${skipEmptyWrite ? ' (空数据保留历史daily json)' : ''}`);
     log(`   共 4 Sheet: 下框${filtered.length} + 上框${filtered.length} + 当天汇总${sheet3Count} + 历史累积${sheet4Count}(${sheet4Days}个交易日)（均≥${MIN_VOLUME}）`);
+
 
     // 截全页（含上面框+下面框），便于核对
     const finalShot = path.join(SCREENSHOT_DIR, '07-final.png');
