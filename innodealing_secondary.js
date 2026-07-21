@@ -1184,17 +1184,31 @@ async function main() {
     }
 
     // 先用发行人映射预填区域（已知省份 / 已知银行留空），未知发行人留待详情页提取
+    // 注意：下框（成交行情）可能没有"发行人简称"列，此时 fallback 用债券简称匹配映射表
     for (const r of filtered) {
       const bCode = getLowerVal(r, '债券代码');
       const issuer = getLowerVal(r, '发行人简称');
       const bondName = getLowerVal(r, '债券简称');
-      const region = inferRegion(issuer);
+      let region = inferRegion(issuer);
+      let method = '映射';
+      if (!region && bondName) {
+        // 下框无发行人简称列时，从债券简称推断（如 "26恒丰银行永续债01" 包含 "恒丰银行"）
+        for (const [key, reg] of Object.entries(ISSUER_REGION_MAP)) {
+          if (bondName.includes(key)) { region = reg; method = '映射-债名'; break; }
+        }
+      }
       if (region) {
-        bondRegionMap.set(bCode, { region, bondName, method: '映射' });
-      } else if (isBank(issuer)) {
+        bondRegionMap.set(bCode, { region, bondName, method });
+      } else if (isBank(issuer) || (bondName && isBankByBondName(bondName))) {
         bondRegionMap.set(bCode, { region: '', bondName, method: '映射-银行' });
       }
       // 其余（region 为空且非银行）不写入 → 进入详情页提取补充
+    }
+
+    // 辅助：通过债券名称判断是否为全国性银行（用于下框无发行人简称列的场景）
+    function isBankByBondName(bondName) {
+      if (!bondName) return false;
+      return BANK_NAMES.some(b => bondName.includes(b));
     }
 
     // 计算 quote-web iframe 在页面中的偏移（用于裁剪截图坐标换算）
@@ -1318,6 +1332,7 @@ async function main() {
       async function extractFrom(frame) {
         return await frame.evaluate((PROV_LIST) => {
           const result = { province:'', city:'', issuerFull:'', method:'' };
+          // 方案1: 精确匹配 "省XX" 单元素（如 "省山东省"）
           document.querySelectorAll('*').forEach(el => {
             if (result.province) return;
             const t = (el.textContent||'').trim();
@@ -1328,6 +1343,26 @@ async function main() {
               if (PROV_LIST.includes(p)) { result.province = p; result.method='省字段'; }
             }
           });
+          // 方案2: "省"标签与省份值是两个相邻独立元素 → 找textContent为"省"的元素，检查其兄弟/相邻元素
+          if (!result.province) {
+            const allEls = Array.from(document.querySelectorAll('*'));
+            for (let i = 0; i < allEls.length; i++) {
+              const el = allEls[i];
+              const t = (el.textContent||'').trim();
+              if (t !== '省') continue;
+              // 检查后续几个兄弟/相邻元素是否为已知省份名
+              for (let j = i + 1; j < Math.min(i + 6, allEls.length); j++) {
+                const sib = allEls[j];
+                const st = (sib.textContent||'').trim();
+                if (st === '市' || st === '性质' || st.length > 10) break; // 跳过非省份区域
+                let p = st.replace(/省$/, '');
+                if (PROV_LIST.includes(p)) { result.province = p; result.method='省邻元素'; break; }
+                if (PROV_LIST.includes(st)) { result.province = st; result.method='省邻元素'; break; }
+              }
+              if (result.province) break;
+            }
+          }
+          // 方案3: 性质字段兜底
           if (!result.province) {
             document.querySelectorAll('*').forEach(el => {
               if (result.province) return;
@@ -1400,13 +1435,16 @@ async function main() {
         }
 
         const ex = await extractFrom(targetFrame);
+        const existing = bondRegionMap.get(bCode);
+        // 详情页提取失败(province为空)时，保留已有映射值不被覆盖
+        const finalRegion = (ex.province || existing?.region || '');
         bondRegionMap.set(bCode, {
-          region: ex.province,
+          region: finalRegion,
           bondName: bName,
-          method: 'detail_' + (ex.method || 'none'),
-          city: ex.city,
-          issuerFull: ex.issuerFull,
-          extra: ex.extra || {}
+          method: finalRegion ? ('detail_' + (ex.method || 'none')) : (existing?.method || 'detail_none'),
+          city: ex.city || existing?.city,
+          issuerFull: ex.issuerFull || existing?.issuerFull,
+          extra: ex.extra || existing?.extra || {}
         });
         log(`  [${ri+1}/${needRegion.length}] ${bName} → 省:${ex.province||'(空)'} 全称:${ex.issuerFull||'(无)'} (${ex.method||'none'}) extra=${JSON.stringify(ex.extra||{})} `);
         try { await page.screenshot({ path: path.join(SCREENSHOT_DIR, `detail-${bCode.split('.').join('_')}.png`) }); } catch(e) {}
