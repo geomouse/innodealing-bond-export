@@ -1,0 +1,106 @@
+name: 二级行情成交汇总每日导出
+
+on:
+  schedule:
+    # 周一至周五 16:40 北京时间 = 08:40 UTC
+    - cron: '40 8 * * 1-5'
+  workflow_dispatch:
+
+permissions:
+  contents: write
+  actions: read
+
+jobs:
+  export:
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+    env:
+      HEADLESS: 'true'
+      CI: 'true'
+      SECONDARY_DIR: ${{ github.workspace }}/data/secondary
+    steps:
+      - name: 去重检查（今日已运行则跳过）
+        id: dedup
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          export TODAY=$(date -u +%Y-%m-%d)
+          echo "检查今日($TODAY)是否已有运行..."
+          RUNS=$(curl -s -H "Authorization: Bearer $GH_TOKEN" -H "Accept: application/vnd.github+json" \
+            "https://api.github.com/repos/$GITHUB_REPOSITORY/actions/runs?per_page=50")
+          ALREADY=$(echo "$RUNS" | TODAY="$TODAY" GITHUB_RUN_ID="$GITHUB_RUN_ID" python3 -c "
+          import json, sys, os
+          d = json.load(sys.stdin)
+          today = os.environ['TODAY']
+          me = os.environ['GITHUB_RUN_ID']
+          for r in d.get('workflow_runs', []):
+              if r['created_at'][:10] != today:
+                  continue
+              if str(r['id']) == me:
+                  continue
+              if r['event'] not in ('schedule', 'workflow_dispatch'):
+                  continue
+              if r['status'] in ('completed', 'in_progress', 'queued'):
+                  print(r['id'])
+                  break
+          ")
+          if [ -n "$ALREADY" ]; then
+            echo "今日已运行 run#$ALREADY，跳过本次导出与邮件"
+            echo "skip=true" >> "$GITHUB_OUTPUT"
+          else
+            echo "今日尚无运行，继续执行"
+            echo "skip=false" >> "$GITHUB_OUTPUT"
+          fi
+
+      - uses: actions/checkout@v4
+        if: steps.dedup.outputs.skip != 'true'
+
+      - uses: actions/setup-node@v4
+        if: steps.dedup.outputs.skip != 'true'
+        with:
+          node-version: '22'
+
+      - uses: actions/setup-python@v5
+        if: steps.dedup.outputs.skip != 'true'
+        with:
+          python-version: '3.12'
+
+      - name: 安装 Node.js 依赖
+        if: steps.dedup.outputs.skip != 'true'
+        run: npm install
+
+      - name: 安装 Chromium
+        if: steps.dedup.outputs.skip != 'true'
+        run: npx playwright install --with-deps chromium
+
+      - name: 导出二级行情数据（生成 4-Sheet Excel + 历史 json）
+        if: steps.dedup.outputs.skip != 'true'
+        env:
+          INNODEALING_USERNAME: ${{ secrets.INNODEALING_USERNAME }}
+          INNODEALING_PASSWORD: ${{ secrets.INNODEALING_PASSWORD }}
+        run: node innodealing_secondary.js
+
+      - name: 发送汇总邮件（QQ）
+        if: steps.dedup.outputs.skip != 'true'
+        env:
+          EMAIL_USER: ${{ secrets.EMAIL_USER }}
+          EMAIL_PASS: ${{ secrets.EMAIL_PASS }}
+          EMAIL_TO: ${{ secrets.EMAIL_TO }}
+        run: node send_email_secondary.js
+
+      - name: 提交历史数据到仓库（Sheet4 累积源 + 同步 xlsx）
+        if: steps.dedup.outputs.skip != 'true'
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "github-actions[bot]@users.noreply.github.com"
+          git add data/secondary
+          if git diff --cached --quiet; then
+            echo "没有新数据，跳过推送"
+          else
+            git commit -m "📈 $(date +%Y-%m-%d) 二级行情成交数据"
+            git push
+            echo "历史数据已推送"
+          fi
+
+# 2026-07-21: 新增二级行情(我的关注)成交汇总 → 4-Sheet 输出 + 历史累积(Sheet4)
+# 主触发器 GitHub schedule(北京16:40) + cron-job.org 兜底(北京16:45)；workflow 内部去重避免双邮件
