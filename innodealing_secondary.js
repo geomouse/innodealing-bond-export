@@ -34,8 +34,12 @@ function ts() { return new Date().toLocaleTimeString('zh-CN', { hour12: false })
 function log(...args) { console.log(`[${ts()}]`, ...args); }
 async function screenshot(page, name) {
   const p = path.join(SCREENSHOT_DIR, `${name}.png`);
-  await page.screenshot({ path: p, fullPage: false });
-  log(`截图: ${name}`);
+  try {
+    await page.screenshot({ path: p, fullPage: false, timeout: 15000, animations: 'disabled' });
+    log(`截图: ${name}`);
+  } catch (e) {
+    log(`截图跳过(${name}): ${e.message.split('\n')[0]}`);
+  }
 }
 async function sleep(ms) { return new Promise(r => setTimeout(r, ms)); }
 
@@ -147,8 +151,15 @@ async function main() {
       }
       await sleep(500);
       await page.click('button:has-text("登录")');
-      await page.waitForURL(url => !url.toString().includes('signin'), { timeout: 20000 });
+      // 健壮登录：网站慢时跳转可能 >20s，用轮询兜底（最长 90s），只要离开 signin 即成功
+      let logged = false;
+      for (let i = 0; i < 45; i++) {
+        await sleep(2000);
+        if (!page.url().includes('signin')) { logged = true; break; }
+      }
+      if (!logged) throw new Error('登录失败：90s 内未离开 signin 页面（可能账号/密码错误或验证码）');
       log('登录成功:', page.url());
+      await sleep(2000); // 等 dashboard 稳定
     }
     await sleep(2000);
     await screenshot(page, '02-after-login');
