@@ -178,6 +178,28 @@ async function main() {
     });
     log(`  下框表头y=${lowerMeta.headerY}`);
 
+    // 切换到"成交行情"Tab（默认可能停留在"成交明细"，那是全市场列表，不是关注集）
+    async function clickChengjiaoTab() {
+      const info = await targetFrame.evaluate(() => {
+        const els = Array.from(document.querySelectorAll('*')).filter(el => {
+          const t = (el.textContent || '').trim();
+          return t === '成交行情' && el.children.length === 0;
+        });
+        if (!els.length) return null;
+        els.sort((a, b) => a.getBoundingClientRect().y - b.getBoundingClientRect().y);
+        const el = els[0];
+        let p = el.parentElement, active = false;
+        while (p) { if (p.className && p.className.toString && /active/i.test(p.className.toString())) { active = true; break; } p = p.parentElement; }
+        try { el.click(); } catch (e) {}
+        return { active };
+      });
+      if (!info) { log('  未找到"成交行情"Tab'); return; }
+      log(`  点击"成交行情"Tab 当前active=${info.active}`);
+      await sleep(2000);
+    }
+    await clickChengjiaoTab();
+    await screenshot(page, '04b-after-chengjiao-tab');
+
     // 双击"平均成交"表头实现降序（两次单击）
     async function sortByAvgDesc() {
       const info = await targetFrame.evaluate(() => {
@@ -319,7 +341,14 @@ async function main() {
           const r = el.getBoundingClientRect();
           if (r.x < 100 || r.x > 4200) return;
           if (r.width < 8 || r.height < 5 || r.height > 50) return;
-          if (r.y > headerY + 8 && r.y < headerY + 900) {
+          const yMax = (() => {
+            let h = null;
+            document.querySelectorAll('*').forEach(el => { if (el.children.length === 0 && (el.textContent || '').trim().includes('平均成交')) { const r = el.getBoundingClientRect(); if (r.width > 0 && Math.abs(r.y - headerY) <= 6) h = el; } });
+            if (!h) return headerY + 900;
+            let p = h; while (p) { if (p.className && p.className.toString && /dmui-vt-background/.test(p.className.toString())) return p.getBoundingClientRect().bottom; p = p.parentElement; }
+            return headerY + 900;
+          })();
+          if (r.y > headerY + 8 && r.y < yMax) {
             dcells.push({ x: Math.round(r.x + r.width / 2), y: Math.round(r.y), w: Math.round(r.width), text: raw });
           }
         });
@@ -344,7 +373,14 @@ async function main() {
           const r = el.getBoundingClientRect();
           if (r.x < 100 || r.x > 4200) return;
           if (r.width < 8 || r.height < 5 || r.height > 50) return;
-          if (r.y > headerY + 8 && r.y < headerY + 900) {
+          const yMax = (() => {
+            let h = null;
+            document.querySelectorAll('*').forEach(el => { if (el.children.length === 0 && (el.textContent || '').trim().includes('平均成交')) { const r = el.getBoundingClientRect(); if (r.width > 0 && Math.abs(r.y - headerY) <= 6) h = el; } });
+            if (!h) return headerY + 900;
+            let p = h; while (p) { if (p.className && p.className.toString && /dmui-vt-background/.test(p.className.toString())) return p.getBoundingClientRect().bottom; p = p.parentElement; }
+            return headerY + 900;
+          })();
+          if (r.y > headerY + 8 && r.y < yMax) {
             dcells.push({ x: Math.round(r.x + r.width / 2), y: Math.round(r.y), w: Math.round(r.width), text: raw });
           }
         });
