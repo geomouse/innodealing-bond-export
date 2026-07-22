@@ -410,10 +410,29 @@ async function main() {
     rows.sort((a, b) => b.maxVal - a.maxVal);
     let filtered = rows.filter(r => r.maxVal >= MIN_VOLUME);
     log(`  下框总共${rows.length}行，>=${MIN_VOLUME} 筛选后 ${filtered.length}行`);
+    // [DEBUG] 关键区分：26长春轨交MTN006 是否在页面 DOM 中（抓不到 vs 实时数据缺失）
+    let domPresence = {};
+    try {
+      domPresence = await targetFrame.evaluate(() => {
+        const body = document.body ? document.body.innerText : '';
+        let lower = '';
+        document.querySelectorAll('*').forEach(el => { if (el.__lowerBox) lower = el.innerText; });
+        const cc = (body.match(/[^\n]*长春[^\n]*/g) || []).slice(0, 12);
+        const ccLower = (lower.match(/[^\n]*长春[^\n]*/g) || []).slice(0, 12);
+        return {
+          bodyHasChangchunRail: body.includes('长春轨交') || body.includes('长春轨道'),
+          lowerHasChangchunRail: lower.includes('长春轨交') || lower.includes('长春轨道'),
+          lowerHasMTN006: lower.includes('MTN006'),
+          bodyChangchunLines: cc,
+          lowerChangchunLines: ccLower
+        };
+      });
+    } catch (e) { domPresence = { error: e.message }; }
+    log('  [DEBUG] domPresence: ' + JSON.stringify(domPresence));
     // [DEBUG] 导出原始抓取行(阈值前)用于核对漏行
     try {
       const dbg = rows.map(r => ({ bondName: r.bondName, bondCode: r.bondCode, maxVal: r.maxVal, pass: r.maxVal >= MIN_VOLUME }));
-      fs.writeFileSync(path.join(HISTORY_DIR, `_capture_debug_${BJ_DATE}.json`), JSON.stringify({ bjDate: BJ_DATE, hourBJ, threshold: MIN_VOLUME, captured: dbg }, null, 1), 'utf8');
+      fs.writeFileSync(path.join(HISTORY_DIR, `_capture_debug_${BJ_DATE}.json`), JSON.stringify({ bjDate: BJ_DATE, hourBJ, threshold: MIN_VOLUME, domPresence, captured: dbg }, null, 1), 'utf8');
       log(`  [DEBUG] 原始抓取${rows.length}行已写入 _capture_debug_${BJ_DATE}.json`);
     } catch (e) { log('  [DEBUG] 写调试文件失败: ' + e.message); }
     for (const r of filtered.slice(0, 20)) {
