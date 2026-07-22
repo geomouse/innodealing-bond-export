@@ -904,13 +904,27 @@ async function main() {
       const name = getLowerVal(r, '债券简称');
       const info = bondRegionMap.get(code) || {};
       const gv = (cn) => getLowerVal(r, cn);
+      // 中债偏离(BP) 兜底：源数据缺失时，用 最新成交 - 中债估值(中债/中证斜杠前) 计算
+      const rawDev = (gv('中债偏离(BP)') || '').trim();
+      let devVal = rawDev;
+      let devSource = '源';
+      if (!/^-?\d+(\.\d+)?$/.test(devVal)) {
+        const latest = parseFloat(gv('最新成交'));
+        const zhaiRaw = gv('中债/中证') || '';
+        const zhai = parseFloat(zhaiRaw.split('/')[0]); // 取中债估值（斜杠前）
+        if (!isNaN(latest) && !isNaN(zhai) && zhai > 0) {
+          devVal = ((latest - zhai) * 100).toFixed(2);
+          devSource = '兜底(最新-中债)';
+        }
+      }
+      if (devSource !== '源') log(`  ↪ [${name}] 中债偏离源空，兜底=${devVal} (最新${gv('最新成交')} 中债${gv('中债/中证')})`);
       const row = [
         dateFormatted,                  // 成交日期
         name,                           // 债券简称
         gv('剩余期限'),                  // 剩余期限
         gv('最新成交'),                  // 最新成交
         gv('中债/中证'),                 // 中债/中证
-        gv('中债偏离(BP)'),              // 中债偏离(BP)
+        devVal,                         // 中债偏离(BP)（源空时兜底）
         info.issuerFull || '',          // 发行人（全称）
         info.region || '',              // 区域
         code,                           // 债券代码
@@ -921,6 +935,23 @@ async function main() {
       sheet2Rows.push(row);
     }
     log(`  Sheet2 完成: ${sheet2Rows.length}行`);
+
+    // 关键列自校验（主动核对，不等用户反馈）
+    {
+      let devFilled = 0, issuerFilled = 0, regionFilled = 0;
+      const devMiss = [];
+      for (const row of sheet2Rows) {
+        const dev = row[5], issuer = row[6], region = row[7];
+        if (dev !== '' && dev != null) devFilled++; else devMiss.push(row[1]);
+        if (issuer) issuerFilled++;
+        if (region) regionFilled++;
+      }
+      const n = sheet2Rows.length;
+      log(`  [自校验] 行数=${n} | 中债偏离非空=${devFilled}/${n} | 发行人非空=${issuerFilled}/${n} | 区域非空=${regionFilled}/${n}`);
+      if (devFilled < n) log(`  ⚠️ 中债偏离仍有空值: ${devMiss.join(', ')}`);
+      if (issuerFilled < n) log(`  ⚠️ 发行人有空值，需关注详情页提取`);
+      if (regionFilled < n) log(`  ⚠️ 区域有空值，需关注详情页提取`);
+    }
 
     // Sheet3: 历史累积
     log('6. 构建 Sheet3: 历史累积');
