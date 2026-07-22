@@ -33,7 +33,7 @@ async function sendEmail(excelPath, dateStr) {
   const candFiles = [];
   if (fs.existsSync(shotDir)) {
     for (const f of fs.readdirSync(shotDir)) {
-      if (/^broker_verify_.*\.json$/.test(f) || /^05-after-sort\.png$/.test(f) || /^broker_sorted_top\.png$/.test(f) || /^broker_frame_.*\.png$/.test(f)) {
+      if (/^broker_verify_.*\.json$/.test(f) || /^05-after-sort\.png$/.test(f) || /^broker_sorted_top\.png$/.test(f)) {
         candFiles.push(path.join(shotDir, f));
       }
     }

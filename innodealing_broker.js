@@ -200,6 +200,39 @@ async function main() {
     await sortByAvgDesc();
     await screenshot(page, '05-after-sort');
 
+    // [DOM 调试] 定位下框真实结构（是否 AG-Grid、滚动容器、成交行情 Tab）
+    try {
+      const domInfo = await targetFrame.evaluate(() => {
+        const out = { agGridCount: document.querySelectorAll('[class*="ag-"]').length, agRows: document.querySelectorAll('.ag-row').length };
+        out.tabs = [];
+        document.querySelectorAll('*').forEach(el => {
+          if (el.children.length === 0) {
+            const t = (el.textContent || '').trim();
+            if (t === '成交行情' || t === '经纪商报价' || t === '报价' || t === '成交明细') {
+              const r = el.getBoundingClientRect();
+              out.tabs.push({ text: t, x: Math.round(r.x), y: Math.round(r.y), cls: (el.className && el.className.toString ? el.className.toString().slice(0, 60) : '') });
+            }
+          }
+        });
+        const els = Array.from(document.querySelectorAll('*')).filter(el => {
+          const t = (el.textContent || '').trim();
+          return t.includes('平均成交') && el.children.length === 0 && el.getBoundingClientRect().width > 0;
+        });
+        els.sort((a, b) => b.getBoundingClientRect().y - a.getBoundingClientRect().y);
+        if (els[0]) {
+          const r = els[0].getBoundingClientRect();
+          const chain = []; let p = els[0];
+          for (let k = 0; k < 5 && p; k++) { chain.push({ tag: p.tagName, cls: (p.className && p.className.toString ? p.className.toString().slice(0, 70) : ''), y: Math.round(p.getBoundingClientRect().y), h: Math.round(p.getBoundingClientRect().height) }); p = p.parentElement; }
+          out.avgHeader = { x: Math.round(r.x), y: Math.round(r.y), w: Math.round(r.width), h: Math.round(r.height), chain };
+        }
+        let cont = null; document.querySelectorAll('*').forEach(el => { if (el.__lowerBox) cont = el; });
+        if (cont) { const r = cont.getBoundingClientRect(); out.scrollBox = { tag: cont.tagName, cls: (cont.className && cont.className.toString ? cont.className.toString().slice(0, 70) : ''), sh: cont.scrollHeight, ch: cont.clientHeight, y: Math.round(r.y), h: Math.round(r.height) }; }
+        return out;
+      });
+      fs.writeFileSync(path.join(HISTORY_DIR, `_dom_debug_${BJ_DATE}.json`), JSON.stringify(domInfo, null, 1), 'utf8');
+      log('  [DOM调试] 已写 _dom_debug_' + BJ_DATE + '.json: ' + JSON.stringify(domInfo).slice(0, 400));
+    } catch (e) { log('  [DOM调试] 失败: ' + e.message); }
+
     // 滚动下框：找滚动容器，按 px 步进滚动多次，失败则用鼠标滚轮兜底
     let lowerScrollContainer = null;
     async function findLowerScrollContainer() {
