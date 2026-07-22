@@ -388,6 +388,22 @@ async function main() {
 
     async function snapshotLower(headerY, cols) {
       return await targetFrame.evaluate(({ headerY, cols }) => {
+        // 定位下框真实容器（和 rawcells dump 同源，避免 document 范围过大引入干扰）
+        let hdr = null;
+        document.querySelectorAll('*').forEach(el => {
+          if (el.children.length === 0 && (el.textContent || '').trim().includes('平均成交')) {
+            const r = el.getBoundingClientRect();
+            if (r.width > 0 && Math.abs(r.y - headerY) <= 6) hdr = el;
+          }
+        });
+        let box = null, p = hdr;
+        while (p) {
+          if (p.className && p.className.toString && /dmui-vt-background/.test(p.className.toString())) { box = p; break; }
+          p = p.parentElement;
+        }
+        if (!box) return { rows: [], names: [], diag: { error: 'lower box not found' } };
+        const yMax = box.getBoundingClientRect().bottom;
+
         const dcells = [];
         function shouldSkipText(t) {
           if (!t || t.length > 60) return true;
@@ -396,27 +412,20 @@ async function main() {
           if (t.startsWith('(支持导入最多') && t.endsWith('个债券)')) return true;
           return false;
         }
-        function addCell(el, text, r) {
+        function addCell(text, r) {
           if (shouldSkipText(text)) return;
           if (r.x < 100 || r.x > 4200) return;
-          if (r.width < 8 || r.height < 5 || r.height > 120) return;
-          const yMax = (() => {
-            let h = null;
-            document.querySelectorAll('*').forEach(el2 => { if (el2.children.length === 0 && (el2.textContent || '').trim().includes('平均成交')) { const r2 = el2.getBoundingClientRect(); if (r2.width > 0 && Math.abs(r2.y - headerY) <= 6) h = el2; } });
-            if (!h) return headerY + 900;
-            let p = h; while (p) { if (p.className && p.className.toString && /dmui-vt-background/.test(p.className.toString())) return p.getBoundingClientRect().bottom; p = p.parentElement; }
-            return headerY + 900;
-          })();
+          if (r.width < 8 || r.height < 5 || r.height > 200) return;
           if (r.y > headerY + 8 && r.y < yMax) {
             dcells.push({ x: Math.round(r.x + r.width / 2), y: Math.round(r.y), w: Math.round(r.width), text });
           }
         }
-        document.querySelectorAll('*').forEach(el => {
+        box.querySelectorAll('*').forEach(el => {
           const r = el.getBoundingClientRect();
-          if (r.width < 8 || r.height < 5 || r.height > 50) return;
+          if (r.width < 8 || r.height < 5 || r.height > 200) return;
           if (r.x < 100 || r.x > 4200) return;
           if (el.children.length === 0) {
-            addCell(el, (el.textContent || '').trim(), r);
+            addCell((el.textContent || '').trim(), r);
             return;
           }
           // 非 leaf：提取直接文本节点（处理文本与子元素/图标并列导致文本不在 leaf 中的情况）
@@ -426,12 +435,11 @@ async function main() {
           }
           directText = directText.trim();
           if (directText && !shouldSkipText(directText)) {
-            // 若子 leaf 已包含完全相同文本，则跳过避免重复
             let covered = false;
             for (const child of el.querySelectorAll('*')) {
               if (child.children.length === 0 && child.textContent.trim() === directText) { covered = true; break; }
             }
-            if (!covered) addCell(el, directText, r);
+            if (!covered) addCell(directText, r);
           }
         });
 
