@@ -410,6 +410,12 @@ async function main() {
     rows.sort((a, b) => b.maxVal - a.maxVal);
     let filtered = rows.filter(r => r.maxVal >= MIN_VOLUME);
     log(`  下框总共${rows.length}行，>=${MIN_VOLUME} 筛选后 ${filtered.length}行`);
+    // [DEBUG] 导出原始抓取行(阈值前)用于核对漏行
+    try {
+      const dbg = rows.map(r => ({ bondName: r.bondName, bondCode: r.bondCode, maxVal: r.maxVal, pass: r.maxVal >= MIN_VOLUME }));
+      fs.writeFileSync(path.join(HISTORY_DIR, `_capture_debug_${BJ_DATE}.json`), JSON.stringify({ bjDate: BJ_DATE, hourBJ, threshold: MIN_VOLUME, captured: dbg }, null, 1), 'utf8');
+      log(`  [DEBUG] 原始抓取${rows.length}行已写入 _capture_debug_${BJ_DATE}.json`);
+    } catch (e) { log('  [DEBUG] 写调试文件失败: ' + e.message); }
     for (const r of filtered.slice(0, 20)) {
       log(`    [${r.maxVal}] ${r.bondName} ${r.bondCode} | ${colDefs.map((c, i) => `${c.name}=${r.cells[i] || ''}`).slice(0, 12).join('  ')}`);
     }
