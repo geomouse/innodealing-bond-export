@@ -1,0 +1,56 @@
+{
+ "agGridCount": 212,
+ "agRows": 0,
+ "tabs": [
+  {
+   "text": "成交行情",
+   "x": 406,
+   "y": 481,
+   "cls": ""
+  },
+  {
+   "text": "成交明细",
+   "x": 475,
+   "y": 481,
+   "cls": ""
+  }
+ ],
+ "avgHeader": {
+  "x": 1193,
+  "y": 507,
+  "w": 48,
+  "h": 20,
+  "chain": [
+   {
+    "tag": "DIV",
+    "cls": "overflow-hidden text-ellipsis whitespace-nowrap",
+    "y": 507,
+    "h": 20
+   },
+   {
+    "tag": "DIV",
+    "cls": "group box-border flex border-0 border-r border-solid border-[var(--dmu",
+    "y": 507,
+    "h": 20
+   },
+   {
+    "tag": "DIV",
+    "cls": "relative flex min-w-full select-none bg-[var(--dmui-vt-head-background",
+    "y": 507,
+    "h": 20
+   },
+   {
+    "tag": "DIV",
+    "cls": "overflow-hidden",
+    "y": 507,
+    "h": 20
+   },
+   {
+    "tag": "DIV",
+    "cls": "relative h-full w-full select-none bg-[var(--dmui-vt-background)] text",
+    "y": 507,
+    "h": 573
+   }
+  ]
+ }
+}
