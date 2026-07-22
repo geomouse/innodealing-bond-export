@@ -22,8 +22,8 @@ const BROWSER_CHANNEL = process.env.BROWSER_CHANNEL != null
 
 const WORKSPACE = __dirname;
 const DOWNLOAD_DIR = path.join(WORKSPACE, 'downloads');
-const SCREENSHOT_DIR = path.join(BROKER_DIR, 'screenshots');
 const BROKER_DIR = process.env.BROKER_DIR || path.join(WORKSPACE, 'data', 'broker');
+const SCREENSHOT_DIR = path.join(BROKER_DIR, 'screenshots');
 const HISTORY_DIR = path.join(BROKER_DIR, 'daily');
 [ DOWNLOAD_DIR, SCREENSHOT_DIR, BROKER_DIR, HISTORY_DIR ].forEach(d => fs.mkdirSync(d, { recursive: true }));
 
