@@ -2,11 +2,96 @@
  "bjDate": "2026-07-22",
  "hourBJ": 22,
  "threshold": 0,
- "visibleNames": 0,
- "capturedNames": 0,
+ "visibleNames": 14,
+ "capturedNames": 14,
  "estimatedTotal": null,
  "missingNames": [],
  "recoveredExtra": 0,
  "captureComplete": null,
- "captured": []
+ "captured": [
+  {
+   "bondName": "24云能投MTN018",
+   "bondCode": "102483483.IB",
+   "maxVal": 3.34,
+   "pass": true
+  },
+  {
+   "bondName": "25泸租01",
+   "bondCode": "257538.SH",
+   "maxVal": 2.5,
+   "pass": true
+  },
+  {
+   "bondName": "24利民V1",
+   "bondCode": "134124.SZ",
+   "maxVal": 2.39,
+   "pass": true
+  },
+  {
+   "bondName": "25日发01",
+   "bondCode": "258555.SH",
+   "maxVal": 2.14,
+   "pass": true
+  },
+  {
+   "bondName": "25北部湾银行二级资本债01",
+   "bondCode": "232580011.IB",
+   "maxVal": 2.11,
+   "pass": true
+  },
+  {
+   "bondName": "25株城08",
+   "bondCode": "259335.SH",
+   "maxVal": 2.05,
+   "pass": true
+  },
+  {
+   "bondName": "21安工01",
+   "bondCode": "197523.SH",
+   "maxVal": 1.95,
+   "pass": true
+  },
+  {
+   "bondName": "25津金03",
+   "bondCode": "134275.SZ",
+   "maxVal": 1.9,
+   "pass": true
+  },
+  {
+   "bondName": "21彭水债",
+   "bondCode": "152808.SH",
+   "maxVal": 1.85,
+   "pass": true
+  },
+  {
+   "bondName": "22邛旅01",
+   "bondCode": "184384.SH",
+   "maxVal": 1.85,
+   "pass": true
+  },
+  {
+   "bondName": "26农行TLAC非资本债01B(BC)",
+   "bondCode": "312610002.IB",
+   "maxVal": 1.8319,
+   "pass": true
+  },
+  {
+   "bondName": "25农行二级资本债01A(BC)",
+   "bondCode": "232580016.IB",
+   "maxVal": 1.7425,
+   "pass": true
+  },
+  {
+   "bondName": "25衡阳城投PPN005",
+   "bondCode": "032580428.IB",
+   "maxVal": 1.73,
+   "pass": true
+  },
+  {
+   "bondName": "25中信银行小微债",
+   "bondCode": "2528006.IB",
+   "maxVal": 1.5,
+   "pass": true
+  }
+ ]
 }
