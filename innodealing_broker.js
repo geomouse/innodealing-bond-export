@@ -50,13 +50,13 @@ async function main() {
   const launchOpts = {
     headless: HEADLESS,
     args: ['--no-sandbox', '--disable-setuid-sandbox'],
-    viewport: { width: 3400, height: 1080 },
+    viewport: { width: 3800, height: 1080 },
     acceptDownloads: true
   };
   if (BROWSER_CHANNEL) launchOpts.channel = BROWSER_CHANNEL;
   const context = await chromium.launchPersistentContext(userDataDir, launchOpts);
   const page = await context.newPage();
-  try { await page.setViewportSize({ width: 3400, height: 1080 }); await sleep(800); } catch (e) {}
+  try { await page.setViewportSize({ width: 3800, height: 1080 }); await sleep(800); } catch (e) {}
 
   let targetFrame = null;
 
@@ -253,7 +253,7 @@ async function main() {
           const raw = (el.textContent || '').trim();
           if (!raw || raw.length > 30) return;
           const r = el.getBoundingClientRect();
-          if (r.x < 100 || r.x > 3600) return;
+          if (r.x < 100 || r.x > 4200) return;
           if (r.width < 5 || r.height < 5 || r.height > 50) return;
           if (Math.abs(r.y - headerY) <= 8) {
             heads.push({ x: Math.round(r.x + r.width / 2), w: Math.round(r.width), raw, name: raw.replace(/[↓↑↕\s]/g, '') });
@@ -276,10 +276,11 @@ async function main() {
           if (el.children.length !== 0) return;
           const raw = (el.textContent || '').trim();
           if (!raw || raw.length > 60) return;
-          if (/^(成交行情|成交明细|经纪商行情|今日最优|最优|全部经纪商|平安|国际|中诚|上田|国利|信唐|设置)$/.test(raw)) return;
+          if (/^(成交行情|成交明细|经纪商行情|今日最优|最优|全部经纪商|平安|国际|中诚|上田|国利|信唐|设置|批量导入)$/.test(raw)) return;
           if (raw === '权' || raw === '免') return;
+          if (raw.startsWith('(支持导入最多') && raw.endsWith('个债券)')) return;
           const r = el.getBoundingClientRect();
-          if (r.x < 100 || r.x > 3600) return;
+          if (r.x < 100 || r.x > 4200) return;
           if (r.width < 8 || r.height < 5 || r.height > 50) return;
           if (r.y > headerY + 8 && r.y < headerY + 900) {
             dcells.push({ x: Math.round(r.x + r.width / 2), y: Math.round(r.y), w: Math.round(r.width), text: raw });
@@ -300,10 +301,11 @@ async function main() {
           if (el.children.length !== 0) return;
           const raw = (el.textContent || '').trim();
           if (!raw || raw.length > 60) return;
-          if (/^(成交行情|成交明细|经纪商行情|今日最优|最优|全部经纪商|平安|国际|中诚|上田|国利|信唐|设置)$/.test(raw)) return;
+          if (/^(成交行情|成交明细|经纪商行情|今日最优|最优|全部经纪商|平安|国际|中诚|上田|国利|信唐|设置|批量导入)$/.test(raw)) return;
           if (raw === '权' || raw === '免') return;
+          if (raw.startsWith('(支持导入最多') && raw.endsWith('个债券)')) return;
           const r = el.getBoundingClientRect();
-          if (r.x < 100 || r.x > 3600) return;
+          if (r.x < 100 || r.x > 4200) return;
           if (r.width < 8 || r.height < 5 || r.height > 50) return;
           if (r.y > headerY + 8 && r.y < headerY + 900) {
             dcells.push({ x: Math.round(r.x + r.width / 2), y: Math.round(r.y), w: Math.round(r.width), text: raw });
@@ -314,14 +316,16 @@ async function main() {
         const rawRows = [];
         let cur = null, curMaxY = -Infinity;
         for (const c of dcells) {
-          if (!cur || (c.y - curMaxY) > 16) { cur = []; rawRows.push(cur); }
+          if (!cur || (c.y - curMaxY) > 12) { cur = []; rawRows.push(cur); }
           cur.push(c);
           if (c.y > curMaxY) curMaxY = c.y;
         }
 
-        const colThresholds = cols.map((c, i) => {
-          if (i + 1 < cols.length) return (cols[i + 1].x - c.x) / 2 + 10;
-          return 60;
+        // 区间归属：表头中心为 seed，左扩 30px，右扩到下一列边界（兼容右对齐数值列）
+        cols.sort((a, b) => a.x - b.x);
+        const colIntervals = cols.map((c, i) => {
+          const spacing = (i + 1 < cols.length) ? (cols[i + 1].x - c.x) : 150;
+          return { left: c.x - 30, right: c.x + spacing, seed: c.x };
         });
         const nameColIdx = cols.findIndex(c => c.name.includes('债券简称'));
         const avgColIdx = cols.findIndex(c => c.name.includes('平均成交'));
@@ -333,8 +337,10 @@ async function main() {
           for (const c of row) {
             let best = -1, bestD = Infinity;
             for (let i = 0; i < cols.length; i++) {
-              const d = Math.abs(c.x - cols[i].x);
-              if (d < bestD && d < colThresholds[i]) { bestD = d; best = i; }
+              if (c.x >= colIntervals[i].left && c.x < colIntervals[i].right) {
+                const d = Math.abs(c.x - cols[i].x);
+                if (d < bestD) { bestD = d; best = i; }
+              }
             }
             if (best >= 0) {
               const existing = vals[best];
@@ -665,7 +671,7 @@ async function main() {
     } else { ws1.addRow(['暂无数据']); }
 
     // Sheet2: 当天汇总（固定表头，发行人/区域来自详情页）
-    const SHEET2_HEADERS = ['成交日期','债券简称','债券代码','发行人','区域','剩余期限','最新成交','开盘','最高','最低','平均成交','前收','涨跌(bp)','成交笔数','GVN笔数','TKN笔数','票面利率(%)','债券余额(亿)','到期日','YY评分','久期','更新时间','中债偏离(BP)'];
+    const SHEET2_HEADERS = ['成交日期','债券简称','剩余期限','最新成交','中债/中证','中债偏离(BP)','发行人','区域','债券代码','中债隐含评级','主/债'];
     const ws2 = wb.addWorksheet('成交行情汇总');
     ws2.addRow(SHEET2_HEADERS);
 
@@ -679,29 +685,17 @@ async function main() {
       const info = bondRegionMap.get(code) || {};
       const gv = (cn) => getLowerVal(r, cn);
       const row = [
-        dateFormatted,
-        name,
-        code,
-        info.issuerFull || '',         // 发行人（全称）
-        info.region || '',             // 区域
-        gv('剩余期限'),
-        gv('最新成交'),
-        gv('开盘'),
-        gv('最高'),
-        gv('最低'),
-        gv('平均成交'),
-        gv('前收'),
-        gv('涨跌'),
-        gv('成交笔数'),
-        gv('GVN笔数'),
-        gv('TKN笔数'),
-        gv('票面利率(%)'),
-        gv('债券余额(亿)'),
-        gv('到期日'),
-        gv('YY评分'),
-        gv('久期'),
-        gv('更新时间'),
-        gv('中债偏离(BP)'),
+        dateFormatted,                  // 成交日期
+        name,                           // 债券简称
+        gv('剩余期限'),                  // 剩余期限
+        gv('最新成交'),                  // 最新成交
+        gv('中债/中证'),                 // 中债/中证
+        gv('中债偏离(BP)'),              // 中债偏离(BP)
+        info.issuerFull || '',          // 发行人（全称）
+        info.region || '',              // 区域
+        code,                           // 债券代码
+        gv('中债隐含评级'),              // 中债隐含评级
+        gv('主/债'),                     // 主/债
       ];
       ws2.addRow(row);
       sheet2Rows.push(row);
@@ -754,9 +748,32 @@ async function main() {
 
     const outName = `broker_quote_${BJ_DATE}.xlsx`;
     const outPath = path.join(BROKER_DIR, outName);
-    await wb.xlsx.writeFile(outPath);
-    log(`✅ 已保存: ${outPath}`);
-    log(`   3 Sheet: 下框${filtered.length} + 当天汇总${sheet2Rows.length} + 历史累积${sheet3Count}(${sheet3Days}天)`);
+    const tmpPath = outPath + '.tmp';
+    // 先写入临时文件，再 rename 替换，避免目标文件被占用时直接写失败
+    await wb.xlsx.writeFile(tmpPath);
+    let writeOk = false, lastErr = null;
+    for (let wri = 0; wri < 5; wri++) {
+      try {
+        if (fs.existsSync(outPath)) fs.unlinkSync(outPath);
+        fs.renameSync(tmpPath, outPath);
+        writeOk = true; break;
+      } catch (e) {
+        lastErr = e;
+        log(`  Excel 写入/替换失败(${wri+1}/5): ${e.message.split('\n')[0]}`);
+        await sleep(3000);
+      }
+    }
+    if (!writeOk) {
+      // 目标文件仍被占用（例如用户正在 Excel 中查看），改存到带时间戳的文件
+      const altName = `broker_quote_${BJ_DATE}_${new Date().toISOString().slice(11,19).replace(/:/g,'')}.xlsx`;
+      const altPath = path.join(BROKER_DIR, altName);
+      fs.renameSync(tmpPath, altPath);
+      log(`  ⚠️ 标准文件名被占用，已保存到: ${altPath}`);
+      log(`   3 Sheet: 下框${filtered.length} + 当天汇总${sheet2Rows.length} + 历史累积${sheet3Count}(${sheet3Days}天)`);
+    } else {
+      log(`✅ 已保存: ${outPath}`);
+      log(`   3 Sheet: 下框${filtered.length} + 当天汇总${sheet2Rows.length} + 历史累积${sheet3Count}(${sheet3Days}天)`);
+    }
 
     await screenshot(page, '07-final');
 

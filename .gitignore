@@ -14,3 +14,4 @@ frame_audit.txt
 close_tabs.js
 inspect_xlsx.js
 package-lock.json
+~$*.xlsx
