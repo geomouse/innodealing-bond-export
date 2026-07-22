@@ -420,11 +420,12 @@ async function main() {
           if (c.y > curMaxY) curMaxY = c.y;
         }
 
-        // 区间归属：表头中心为 seed，左扩 30px，右扩到下一列边界（兼容右对齐数值列）
+        // 区间归属：表头中心为 seed，区间取前后两列 seed 的中点（兼容左对齐短文本列 + 右对齐数值列）
         cols.sort((a, b) => a.x - b.x);
         const colIntervals = cols.map((c, i) => {
-          const spacing = (i + 1 < cols.length) ? (cols[i + 1].x - c.x) : 150;
-          return { left: c.x - 30, right: c.x + spacing, seed: c.x };
+          const prevSpacing = i > 0 ? (c.x - cols[i - 1].x) : (c.x - 100);
+          const nextSpacing = (i + 1 < cols.length) ? (cols[i + 1].x - c.x) : 150;
+          return { left: c.x - prevSpacing / 2, right: c.x + nextSpacing / 2, seed: c.x };
         });
         const nameColIdx = cols.findIndex(c => c.name.includes('债券简称'));
         const avgColIdx = cols.findIndex(c => c.name.includes('平均成交'));
@@ -461,6 +462,14 @@ async function main() {
             const av = parseFloat(vals[avgColIdx]);
             if (!isNaN(av)) maxVal = av;
           }
+          // 兜底：平均成交列未解析到数值时，用同一行中“最新成交/开盘/最高/最低”的最大值
+          if (maxVal === 0) {
+            const candidateIdxs = [avgColIdx - 4, avgColIdx - 3, avgColIdx - 2, avgColIdx - 1].filter(i => i >= 0 && i < cols.length);
+            for (const idx of candidateIdxs) {
+              const v = parseFloat(vals[idx]);
+              if (!isNaN(v) && v > maxVal) maxVal = v;
+            }
+          }
           if (bondName && !/^\d+$/.test(bondName) && bondName !== '休' && bondName.length >= 2) {
             outRows.push({ y: row[0].y, vals, maxVal, bondName, bondCode });
           }
@@ -473,6 +482,12 @@ async function main() {
     const colDetect = await detectLowerColumns(lowerMeta.headerY);
     const fixedCols = colDetect.cols;
     log(`  下框固定列定义(${fixedCols.length}列): ${fixedCols.map(c => c.name).join(' | ')}`);
+    try {
+      const domPath = path.join(HISTORY_DIR, `_dom_debug_${BJ_DATE}.json`);
+      const domInfo = JSON.parse(fs.readFileSync(domPath, 'utf8'));
+      domInfo.fixedCols = fixedCols.map(c => ({ name: c.name, x: c.x }));
+      fs.writeFileSync(domPath, JSON.stringify(domInfo, null, 1), 'utf8');
+    } catch (e) { log('  [DOM调试] 追加 fixedCols 失败: ' + e.message); }
 
     // 滚动 + 快照循环（自核对：累计每帧可见债券名；滚到底自动停，进度停滞才退出）
     const allRows = new Map();
@@ -487,6 +502,7 @@ async function main() {
         if (!allRows.has(key)) { allRows.set(key, r); added++; }
         if (r.bondName) domNameSeen.add(r.bondName);
       }
+      if (iter === 1) log(`  [下框快照1 行明细] ${snap.rows.map(r => `${r.bondName}:${r.maxVal}`).join(' | ')}`);
       log(`  [下框快照${iter}] 本帧${snap.rows.length}行，新增${added}，累计${allRows.size}，可见名${domNameSeen.size}`);
       await screenshot(page, 'broker_frame_' + String(iter).padStart(2, '0'));
       const si = await getLowerScrollInfo();
