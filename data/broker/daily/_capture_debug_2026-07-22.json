@@ -2,8 +2,8 @@
  "bjDate": "2026-07-22",
  "hourBJ": 19,
  "threshold": 2.8,
- "visibleNames": 19,
- "capturedNames": 19,
+ "visibleNames": 18,
+ "capturedNames": 18,
  "estimatedTotal": null,
  "missingNames": [],
  "recoveredExtra": 0,
@@ -115,12 +115,6 @@
    "bondName": "25吉林银行二级资本债02",
    "bondCode": "232580014.IB",
    "maxVal": 2.54,
-   "pass": false
-  },
-  {
-   "bondName": "25泸租01",
-   "bondCode": "257538.SH",
-   "maxVal": 2.5,
    "pass": false
   }
  ]
