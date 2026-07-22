@@ -229,6 +229,7 @@ async function main() {
         let hdr = null;
         document.querySelectorAll('*').forEach(el => { if (el.children.length === 0 && (el.textContent || '').trim().includes('平均成交')) { const r = el.getBoundingClientRect(); if (r.width > 0 && Math.abs(r.y - headerY) <= 6) hdr = el; } });
         let box = null, p = hdr; while (p) { if (p.className && p.className.toString && /dmui-vt-background/.test(p.className.toString())) { box = p; break; } p = p.parentElement; }
+        if (!box) { let hp = hdr; while (hp) { if (hp.scrollHeight > hp.clientHeight + 60 && hp.clientHeight > 60) { box = hp; break; } hp = hp.parentElement; } }
         const out = { headerY, boxFound: !!box };
         if (box) {
           const br = box.getBoundingClientRect();
@@ -299,12 +300,18 @@ async function main() {
           }
         });
         if (!headerEl) return { found: false };
+        // 收集所有“可滚动”祖先，选最深（scrollHeight 最小）的那个作为真实滚动容器（dm-table 的真实滚动体往往是内层 body）
+        let candidates = [];
         let el = headerEl.parentElement;
         while (el && el.parentElement) {
-          if (el.scrollHeight > el.clientHeight + 60 && el.clientHeight > 60) { el.__lowerBox = true; return { found: true, top: Math.round(el.getBoundingClientRect().top), sh: el.scrollHeight, ch: el.clientHeight }; }
+          if (el.scrollHeight > el.clientHeight + 60 && el.clientHeight > 60) candidates.push(el);
           el = el.parentElement;
         }
-        return { found: false };
+        if (!candidates.length) return { found: false };
+        candidates.sort((a, b) => a.scrollHeight - b.scrollHeight);
+        const cont = candidates[0];
+        cont.__lowerBox = true;
+        return { found: true, top: Math.round(cont.getBoundingClientRect().top), sh: cont.scrollHeight, ch: cont.clientHeight };
       }, lowerMeta.headerY);
     }
     const scInfo = await findLowerScrollContainer();
@@ -325,7 +332,9 @@ async function main() {
         let cont = null;
         document.querySelectorAll('*').forEach(el => { if (el.__lowerBox) cont = el; });
         if (!cont) return null;
+        const br = cont.getBoundingClientRect();
         return { top: cont.scrollTop, sh: cont.scrollHeight, ch: cont.clientHeight,
+                 centerX: Math.round(br.x + br.width / 2), centerY: Math.round(br.y + br.height / 2),
                  rowApprox: cont.scrollHeight > 0 && cont.children.length ? Math.round(cont.scrollHeight / Math.max(cont.children.length,1)) : 0 };
       });
     }
@@ -397,13 +406,19 @@ async function main() {
             if (r.width > 0 && Math.abs(r.y - headerY) <= 6) hdr = el;
           }
         });
-        let box = null, p = hdr;
-        while (p) {
-          if (p.className && p.className.toString && /dmui-vt-background/.test(p.className.toString())) { box = p; break; }
-          p = p.parentElement;
+        // 容器定位：优先用已标记的滚动容器(__lowerBox，由 findLowerScrollContainer 设置)，
+        // 其次从平均成交表头向上找滚动容器；都没有则退化到全文档（兼容二级行情 dm-table 无 dmui-vt-background 的情况）
+        let box = null;
+        document.querySelectorAll('*').forEach(el => { if (el.__lowerBox) box = el; });
+        if (!box) {
+          let hp = hdr;
+          while (hp) {
+            if (hp.scrollHeight > hp.clientHeight + 60 && hp.clientHeight > 60) { box = hp; box.__lowerBox = true; break; }
+            hp = hp.parentElement;
+          }
         }
-        if (!box) return { rows: [], names: [], diag: { error: 'lower box not found' } };
-        const yMax = box.getBoundingClientRect().bottom;
+        const scope = box || document;
+        const yMax = box ? box.getBoundingClientRect().bottom : (headerY + 1300);
 
         const dcells = [];
         function shouldSkipText(t) {
@@ -421,7 +436,7 @@ async function main() {
             dcells.push({ x: Math.round(r.x + r.width / 2), y: Math.round(r.y), w: Math.round(r.width), text });
           }
         }
-        box.querySelectorAll('*').forEach(el => {
+        scope.querySelectorAll('*').forEach(el => {
           const r = el.getBoundingClientRect();
           if (r.width < 8 || r.height < 5 || r.height > 200) return;
           if (r.x < 100 || r.x > 4200) return;
@@ -552,10 +567,24 @@ async function main() {
       const si = await getLowerScrollInfo();
       if (si) {
         if (si.sh - si.ch - si.top <= 2) { bottomReached = true; log('  已到达下框底部'); }
-        if (si.top === lastTop) sameCount++; else { sameCount = 0; lastTop = si.top; }
-        if (sameCount >= 4) { log('  滚动不再前进，提前停止'); break; }
       }
-      if (!bottomReached) { await scrollLowerDown(400); await sleep(500); }
+      // 停的判定基于“连续无新增行”而非 scrollTop（dm-table 滚动容器可能不暴露原生 scrollTop，靠新增行数判停更鲁棒）
+      if (added === 0) sameCount++; else sameCount = 0;
+      if (sameCount >= 6) { log('  连续6帧无新增行，停止'); break; }
+      if (!bottomReached) {
+        const moved = await scrollLowerDown(400);
+        if (!moved && si && si.sh > si.ch + 60) {
+          // dm-table 等可能不吃原生 scrollTop：退化为鼠标滚轮（参照旧二级脚本做法）
+          const fo = await page.evaluate(() => {
+            const iframes = Array.from(document.querySelectorAll('iframe'));
+            for (const f of iframes) if (f.src && f.src.includes('quote-web')) { const r = f.getBoundingClientRect(); return { x: r.x, y: r.y }; }
+            return { x: 0, y: 0 };
+          }).catch(() => ({ x: 0, y: 0 }));
+          await page.mouse.move(fo.x + (si.centerX || 1200), fo.y + (si.centerY || 600));
+          await page.mouse.wheel(0, 400);
+        }
+        await sleep(500);
+      }
     }
 
     // 滚动回顶部，方便后续双击进详情页（虚拟滚动后目标债券可能不在 DOM 中）
