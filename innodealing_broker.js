@@ -222,6 +222,32 @@ async function main() {
     await sortByAvgDesc();
     await screenshot(page, '05-after-sort');
 
+    // [RAW 调试] 排序后 dump 下框顶部区域所有 leaf cell（定位特定债为何未归行）
+    try {
+      const raw = await targetFrame.evaluate((headerY) => {
+        let hdr = null;
+        document.querySelectorAll('*').forEach(el => { if (el.children.length === 0 && (el.textContent || '').trim().includes('平均成交')) { const r = el.getBoundingClientRect(); if (r.width > 0 && Math.abs(r.y - headerY) <= 6) hdr = el; } });
+        let box = null, p = hdr; while (p) { if (p.className && p.className.toString && /dmui-vt-background/.test(p.className.toString())) { box = p; break; } p = p.parentElement; }
+        const out = { headerY, boxFound: !!box };
+        if (box) {
+          const br = box.getBoundingClientRect();
+          out.boxRect = { y: Math.round(br.y), h: Math.round(br.h || br.height) };
+          out.cells = [];
+          box.querySelectorAll('*').forEach(el => {
+            if (el.children.length === 0) {
+              const t = (el.textContent || '').trim();
+              const r = el.getBoundingClientRect();
+              if (t && r.y > headerY && r.y < headerY + 280) out.cells.push({ x: Math.round(r.x), y: Math.round(r.y), t: t.slice(0, 40) });
+            }
+          });
+          out.cells.sort((a, b) => a.y - b.y || a.x - b.x);
+        }
+        return out;
+      }, lowerMeta.headerY);
+      fs.writeFileSync(path.join(HISTORY_DIR, `_rawcells_debug_${BJ_DATE}.json`), JSON.stringify(raw, null, 1), 'utf8');
+      log('  [RAW调试] 已写 _rawcells_debug_' + BJ_DATE + '.json, top cells=' + (raw.cells ? raw.cells.length : 0));
+    } catch (e) { log('  [RAW调试] 失败: ' + e.message); }
+
     // [DOM 调试] 定位下框真实结构（是否 AG-Grid、滚动容器、成交行情 Tab）
     try {
       const domInfo = await targetFrame.evaluate(() => {
