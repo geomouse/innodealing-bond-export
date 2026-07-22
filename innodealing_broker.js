@@ -366,7 +366,7 @@ async function main() {
           if (raw.startsWith('(支持导入最多') && raw.endsWith('个债券)')) return;
           const r = el.getBoundingClientRect();
           if (r.x < 100 || r.x > 4200) return;
-          if (r.width < 8 || r.height < 5 || r.height > 50) return;
+          if (r.width < 8 || r.height < 5 || r.height > 120) return;
           const yMax = (() => {
             let h = null;
             document.querySelectorAll('*').forEach(el => { if (el.children.length === 0 && (el.textContent || '').trim().includes('平均成交')) { const r = el.getBoundingClientRect(); if (r.width > 0 && Math.abs(r.y - headerY) <= 6) h = el; } });
@@ -399,7 +399,7 @@ async function main() {
         function addCell(el, text, r) {
           if (shouldSkipText(text)) return;
           if (r.x < 100 || r.x > 4200) return;
-          if (r.width < 8 || r.height < 5 || r.height > 50) return;
+          if (r.width < 8 || r.height < 5 || r.height > 120) return;
           const yMax = (() => {
             let h = null;
             document.querySelectorAll('*').forEach(el2 => { if (el2.children.length === 0 && (el2.textContent || '').trim().includes('平均成交')) { const r2 = el2.getBoundingClientRect(); if (r2.width > 0 && Math.abs(r2.y - headerY) <= 6) h = el2; } });
@@ -498,7 +498,15 @@ async function main() {
             outRows.push({ y: row[0].y, vals, maxVal, bondName, bondCode });
           }
         }
-        return { rows: outRows, names: outRows.map(r => r.bondName) };
+        const diag = { taifeng: [] };
+        document.querySelectorAll('*').forEach(el => {
+          const t = (el.textContent || '').trim();
+          if (t.includes('泰丰')) {
+            const r = el.getBoundingClientRect();
+            diag.taifeng.push({ t: t.slice(0,40), x: Math.round(r.x), y: Math.round(r.y), w: Math.round(r.width), h: Math.round(r.height), leaf: el.children.length === 0 });
+          }
+        });
+        return { rows: outRows, names: outRows.map(r => r.bondName), diag };
       }, { headerY, cols });
     }
 
@@ -526,7 +534,10 @@ async function main() {
         if (!allRows.has(key)) { allRows.set(key, r); added++; }
         if (r.bondName) domNameSeen.add(r.bondName);
       }
-      if (iter === 1) log(`  [下框快照1 行明细] ${snap.rows.map(r => `${r.bondName}:${r.maxVal}`).join(' | ')}`);
+      if (iter === 1) {
+        log(`  [下框快照1 行明细] ${snap.rows.map(r => `${r.bondName}:${r.maxVal}`).join(' | ')}`);
+        if (snap.diag && snap.diag.taifeng) log(`  [下框快照1 泰丰诊断] ${JSON.stringify(snap.diag.taifeng)}`);
+      }
       log(`  [下框快照${iter}] 本帧${snap.rows.length}行，新增${added}，累计${allRows.size}，可见名${domNameSeen.size}`);
       await screenshot(page, 'broker_frame_' + String(iter).padStart(2, '0'));
       const si = await getLowerScrollInfo();
