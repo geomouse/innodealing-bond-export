@@ -300,25 +300,50 @@ async function main() {
           }
         });
         if (!headerEl) return { found: false };
-        // 收集所有“可滚动”祖先，选最深（scrollHeight 最小）的那个作为真实滚动容器（dm-table 的真实滚动体往往是内层 body）
-        let candidates = [];
+        // 沿父链找第一个“可滚动”容器（最外层，旧二级脚本验证可用）；dm-table 真实滚动体多为内层 body（表头兄弟节点），无法从表头向上到达，故靠下方滚轮兜底
         let el = headerEl.parentElement;
         while (el && el.parentElement) {
-          if (el.scrollHeight > el.clientHeight + 60 && el.clientHeight > 60) candidates.push(el);
+          if (el.scrollHeight > el.clientHeight + 60 && el.clientHeight > 60) { el.__lowerBox = true; return { found: true, top: Math.round(el.getBoundingClientRect().top), sh: el.scrollHeight, ch: el.clientHeight }; }
           el = el.parentElement;
         }
-        if (!candidates.length) return { found: false };
-        candidates.sort((a, b) => a.scrollHeight - b.scrollHeight);
-        const cont = candidates[0];
-        cont.__lowerBox = true;
-        return { found: true, top: Math.round(cont.getBoundingClientRect().top), sh: cont.scrollHeight, ch: cont.clientHeight };
+        return { found: false };
       }, lowerMeta.headerY);
     }
     const scInfo = await findLowerScrollContainer();
     log(`  下框滚动容器: ${scInfo.found ? `top=${scInfo.top} sh=${scInfo.sh} ch=${scInfo.ch}` : '未找到'}`);
 
+    // 稳定捕获下框滚动元数据（只抓一次）：用于鼠标滚轮兜底的坐标定位。
+    // dm-table 的真实滚动体常为表头兄弟节点，原生 scrollTop 不可达，故主滚动一律走鼠标滚轮。
+    const lowerBoxMeta = await targetFrame.evaluate(() => {
+      let cont = null;
+      document.querySelectorAll('*').forEach(el => { if (el.__lowerBox) cont = el; });
+      if (!cont) {
+        const cand = [];
+        document.querySelectorAll('*').forEach(el => { if (el.scrollHeight > el.clientHeight + 60 && el.clientHeight > 60) cand.push(el); });
+        cand.sort((a, b) => (b.scrollHeight - b.clientHeight) - (a.scrollHeight - a.clientHeight));
+        cont = cand[0] || null;
+      }
+      if (!cont) return null;
+      const br = cont.getBoundingClientRect();
+      return { sh: cont.scrollHeight, ch: cont.clientHeight, cx: Math.round(br.x + br.width / 2), cy: Math.round(br.y + br.height / 2) };
+    });
+    log(`  下框滚动元数据: ${lowerBoxMeta ? `sh=${lowerBoxMeta.sh} ch=${lowerBoxMeta.ch} cx=${lowerBoxMeta.cx} cy=${lowerBoxMeta.cy}` : '未找到(纯滚轮兜底)'}`);
+
+    // 鼠标滚轮兜底：把光标移到下框中心，滚轮滚动。对 dm-table 虚拟滚动最稳，不依赖原生 scrollTop 容器定位。
+    async function scrollLowerOnce(px) {
+      const fo = await page.evaluate(() => {
+        const iframes = Array.from(document.querySelectorAll('iframe'));
+        for (const f of iframes) if (f.src && f.src.includes('quote-web')) { const r = f.getBoundingClientRect(); return { x: r.x, y: r.y }; }
+        return { x: 0, y: 0 };
+      }).catch(() => ({ x: 0, y: 0 }));
+      const cx = (lowerBoxMeta && lowerBoxMeta.cx) || 1200;
+      const cy = (lowerBoxMeta && lowerBoxMeta.cy) || 700;
+      await page.mouse.move(fo.x + cx, fo.y + cy);
+      await page.mouse.wheel(0, px);
+    }
+
     async function scrollLowerDown(px) {
-      // 仅用原生 scrollTop 推进虚拟滚动（不再叠加鼠标滚轮，避免滚错容器）
+      // 原生 scrollTop 推进虚拟滚动；返回值表示是否真的移动了
       return await targetFrame.evaluate((px) => {
         let cont = null;
         document.querySelectorAll('*').forEach(el => { if (el.__lowerBox) cont = el; });
@@ -545,11 +570,11 @@ async function main() {
       fs.writeFileSync(domPath, JSON.stringify(domInfo, null, 1), 'utf8');
     } catch (e) { log('  [DOM调试] 追加 fixedCols 失败: ' + e.message); }
 
-    // 滚动 + 快照循环（自核对：累计每帧可见债券名；滚到底自动停，进度停滞才退出）
+    // 滚动 + 快照循环（自核对：累计每帧可见债券名；靠“连续无新增行”判停，不依赖原生 scrollTop）
     const allRows = new Map();
     const domNameSeen = new Set();
-    let iter = 0, sameCount = 0, lastTop = -1, bottomReached = false;
-    while (iter < 150 && !bottomReached) {
+    let iter = 0, sameCount = 0;
+    while (iter < 150) {
       iter++;
       const snap = await snapshotLower(lowerMeta.headerY, fixedCols);
       let added = 0;
@@ -565,30 +590,17 @@ async function main() {
       log(`  [下框快照${iter}] 本帧${snap.rows.length}行，新增${added}，累计${allRows.size}，可见名${domNameSeen.size}`);
       await screenshot(page, 'broker_frame_' + String(iter).padStart(2, '0'));
       const si = await getLowerScrollInfo();
-      if (si) {
-        if (si.sh - si.ch - si.top <= 2) { bottomReached = true; log('  已到达下框底部'); }
-      }
-      // 停的判定基于“连续无新增行”而非 scrollTop（dm-table 滚动容器可能不暴露原生 scrollTop，靠新增行数判停更鲁棒）
+      if (si && si.sh - si.ch - si.top <= 2) log(`  [下框] 原生容器已到底(仅供参考，停止以新增行为准)`);
+      // 停的判定基于“连续无新增行”而非 scrollTop（dm-table 滚动容器不暴露可靠 scrollTop，靠新增行数判停最鲁棒）
       if (added === 0) sameCount++; else sameCount = 0;
       if (sameCount >= 6) { log('  连续6帧无新增行，停止'); break; }
-      if (!bottomReached) {
-        const moved = await scrollLowerDown(400);
-        if (!moved && si && si.sh > si.ch + 60) {
-          // dm-table 等可能不吃原生 scrollTop：退化为鼠标滚轮（参照旧二级脚本做法）
-          const fo = await page.evaluate(() => {
-            const iframes = Array.from(document.querySelectorAll('iframe'));
-            for (const f of iframes) if (f.src && f.src.includes('quote-web')) { const r = f.getBoundingClientRect(); return { x: r.x, y: r.y }; }
-            return { x: 0, y: 0 };
-          }).catch(() => ({ x: 0, y: 0 }));
-          await page.mouse.move(fo.x + (si.centerX || 1200), fo.y + (si.centerY || 600));
-          await page.mouse.wheel(0, 400);
-        }
-        await sleep(500);
-      }
+      // 主滚动一律走鼠标滚轮（dm-table 虚拟滚动体原生 scrollTop 不可达，滚轮最稳）
+      await scrollLowerOnce(400);
+      await sleep(500);
     }
 
     // 滚动回顶部，方便后续双击进详情页（虚拟滚动后目标债券可能不在 DOM 中）
-    await scrollLowerDown(-100000);
+    await scrollLowerOnce(-100000);
     await sleep(1200);
     await screenshot(page, '06-back-to-top');
 
@@ -610,7 +622,7 @@ async function main() {
     let recovered = 0;
     if (estTotal && capturedNames.size < estTotal) {
       log(`  [自核对] 捕获数(${capturedNames.size}) < 估算总数(${estTotal})，执行补抓扫描...`);
-      await scrollLowerDown(-100000); await sleep(800);
+      await scrollLowerOnce(-100000); await sleep(800);
       let it2 = 0, same2 = 0, last2 = -1;
       while (it2 < 150) {
         it2++;
@@ -624,10 +636,10 @@ async function main() {
         if (!si) break;
         if (si.sh - si.ch - si.top <= 2) break;
         if (si.top === last2) { same2++; if (same2 >= 4) break; } else { same2 = 0; last2 = si.top; }
-        await scrollLowerDown(400); await sleep(400);
+        await scrollLowerOnce(400); await sleep(400);
       }
       log(`  [自核对] 补抓新增${recovered}条，累计${allRows.size}`);
-      await scrollLowerDown(-100000); await sleep(1000);
+      await scrollLowerOnce(-100000); await sleep(1000);
     }
     // 保存核对报告（供邮件附件/人眼复核）
     try {
