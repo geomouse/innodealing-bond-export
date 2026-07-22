@@ -27,6 +27,21 @@ async function sendEmail(excelPath, dateStr) {
 
   const subject = `[经纪商行情成交汇总] ${dateStr} | 3-Sheet(下框源数据/当天汇总/历史累积)`;
 
+  // 附带：排序后截图 + 自核对报告，便于人眼复核
+  const extraAttach = [];
+  const shotDir = path.join(brokerDir, 'screenshots');
+  const candFiles = [];
+  if (fs.existsSync(shotDir)) {
+    for (const f of fs.readdirSync(shotDir)) {
+      if (/^broker_verify_.*\.json$/.test(f) || /^05-after-sort\.png$/.test(f) || /^broker_sorted_top\.png$/.test(f) || /^broker_frame_.*\.png$/.test(f)) {
+        candFiles.push(path.join(shotDir, f));
+      }
+    }
+  }
+  for (const f of candFiles) {
+    try { extraAttach.push({ filename: path.basename(f), path: f }); } catch (e) {}
+  }
+
   await transporter.sendMail({
     from: `"经纪商行情汇总" <${emailUser}>`,
     to: emailTo,
@@ -41,13 +56,14 @@ async function sendEmail(excelPath, dateStr) {
         <li>Sheet3 历史累积汇总：每日 Sheet2 逐日累积</li>
       </ul>
       <p><strong>数据来源：</strong>债立方 web.innodealing.com 经纪商行情（仅含平均成交 ≥2.8 的债券，上午放宽至 ≥2.4）</p>
+      <p><strong>自核对：</strong>脚本排序后已对全表截图并与提取结果逐行比对，核对报告见附件 <code>broker_verify_${dateStr}.json</code>，排序后表格截图见 <code>05-after-sort.png</code>，可直接人眼复核是否遗漏。</p>
       <hr>
       <p><small>由 GitHub Actions 自动生成 | ${new Date().toISOString()}</small></p>
     `,
     attachments: [{
       filename: `经纪商行情成交汇总_${dateStr}.xlsx`,
       path: excelPath,
-    }],
+    }, ...extraAttach],
   });
 
   console.log(`[邮件] 发送成功: ${emailTo}`);

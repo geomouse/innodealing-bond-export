@@ -22,7 +22,7 @@ const BROWSER_CHANNEL = process.env.BROWSER_CHANNEL != null
 
 const WORKSPACE = __dirname;
 const DOWNLOAD_DIR = path.join(WORKSPACE, 'downloads');
-const SCREENSHOT_DIR = path.join(WORKSPACE, 'screenshots');
+const SCREENSHOT_DIR = path.join(BROKER_DIR, 'screenshots');
 const BROKER_DIR = process.env.BROKER_DIR || path.join(WORKSPACE, 'data', 'broker');
 const HISTORY_DIR = path.join(BROKER_DIR, 'daily');
 [ DOWNLOAD_DIR, SCREENSHOT_DIR, BROKER_DIR, HISTORY_DIR ].forEach(d => fs.mkdirSync(d, { recursive: true }));
@@ -229,19 +229,23 @@ async function main() {
     log(`  下框滚动容器: ${scInfo.found ? `top=${scInfo.top} sh=${scInfo.sh} ch=${scInfo.ch}` : '未找到'}`);
 
     async function scrollLowerDown(px) {
-      // 优先原生 scrollTop
-      let moved = await targetFrame.evaluate((px) => {
+      // 仅用原生 scrollTop 推进虚拟滚动（不再叠加鼠标滚轮，避免滚错容器）
+      return await targetFrame.evaluate((px) => {
         let cont = null;
         document.querySelectorAll('*').forEach(el => { if (el.__lowerBox) cont = el; });
         if (!cont) return false;
         const old = cont.scrollTop; cont.scrollTop += px;
         return cont.scrollTop !== old;
       }, px);
-      // 兜底/补充：鼠标滚轮在表格中央滚动
-      const my = Math.round(lowerMeta.headerY + 300);
-      await page.mouse.move(1200, my);
-      await page.mouse.wheel(0, px);
-      return true;
+    }
+    async function getLowerScrollInfo() {
+      return await targetFrame.evaluate(() => {
+        let cont = null;
+        document.querySelectorAll('*').forEach(el => { if (el.__lowerBox) cont = el; });
+        if (!cont) return null;
+        return { top: cont.scrollTop, sh: cont.scrollHeight, ch: cont.clientHeight,
+                 rowApprox: cont.scrollHeight > 0 && cont.children.length ? Math.round(cont.scrollHeight / Math.max(cont.children.length,1)) : 0 };
+      });
     }
 
     // 单次快照：使用固定的列定义，只收集数据 cell
@@ -366,7 +370,7 @@ async function main() {
             outRows.push({ y: row[0].y, vals, maxVal, bondName, bondCode });
           }
         }
-        return { rows: outRows };
+        return { rows: outRows, names: outRows.map(r => r.bondName) };
       }, { headerY, cols });
     }
 
@@ -375,27 +379,83 @@ async function main() {
     const fixedCols = colDetect.cols;
     log(`  下框固定列定义(${fixedCols.length}列): ${fixedCols.map(c => c.name).join(' | ')}`);
 
-    // 滚动 + 快照循环
+    // 滚动 + 快照循环（自核对：累计每帧可见债券名；滚到底自动停，进度停滞才退出）
     const allRows = new Map();
-    let stall = 0, iter = 0;
-    while (stall < 5 && iter < 80) {
+    const domNameSeen = new Set();
+    let iter = 0, sameCount = 0, lastTop = -1, bottomReached = false;
+    while (iter < 150 && !bottomReached) {
       iter++;
       const snap = await snapshotLower(lowerMeta.headerY, fixedCols);
       let added = 0;
       for (const r of snap.rows) {
         const key = r.bondCode || r.bondName;
         if (!allRows.has(key)) { allRows.set(key, r); added++; }
+        if (r.bondName) domNameSeen.add(r.bondName);
       }
-      log(`  [下框快照${iter}] 本帧${snap.rows.length}行，新增${added}，累计${allRows.size}`);
-      if (added === 0) stall++; else stall = 0;
-      await scrollLowerDown(500);
-      await sleep(500);
+      log(`  [下框快照${iter}] 本帧${snap.rows.length}行，新增${added}，累计${allRows.size}，可见名${domNameSeen.size}`);
+      await screenshot(page, 'broker_frame_' + String(iter).padStart(2, '0'));
+      const si = await getLowerScrollInfo();
+      if (si) {
+        if (si.sh - si.ch - si.top <= 2) { bottomReached = true; log('  已到达下框底部'); }
+        if (si.top === lastTop) sameCount++; else { sameCount = 0; lastTop = si.top; }
+        if (sameCount >= 4) { log('  滚动不再前进，提前停止'); break; }
+      }
+      if (!bottomReached) { await scrollLowerDown(400); await sleep(500); }
     }
 
     // 滚动回顶部，方便后续双击进详情页（虚拟滚动后目标债券可能不在 DOM 中）
     await scrollLowerDown(-100000);
     await sleep(1200);
     await screenshot(page, '06-back-to-top');
+
+    // ===== 自核对（模拟人眼）：每帧可见债券名 vs 捕获集合；不足则补抓 =====
+    const capturedNames = new Set(Array.from(allRows.values()).map(r => r.bondName).filter(Boolean));
+    const missingNames = [...domNameSeen].filter(n => !capturedNames.has(n));
+    const estTotal = await targetFrame.evaluate(() => {
+      let found = 0;
+      document.querySelectorAll('*').forEach(el => {
+        if (el.children.length) return;
+        const t = (el.textContent || '').trim();
+        const m = t.match(/共\s*(\d+)\s*条/) || t.match(/(\d+)\s*条/);
+        if (m) { const v = parseInt(m[1], 10); if (v > found && v < 5000) found = v; }
+      });
+      return found;
+    });
+    log(`  [自核对] 可见债券名${domNameSeen.size} / 捕获${capturedNames.size} / 页面估算总条数${estTotal || '未知'}`);
+    if (missingNames.length) log(`  [自核对][警告] 可见但未捕获的债券: ${missingNames.join(' | ')}`);
+    let recovered = 0;
+    if (estTotal && capturedNames.size < estTotal) {
+      log(`  [自核对] 捕获数(${capturedNames.size}) < 估算总数(${estTotal})，执行补抓扫描...`);
+      await scrollLowerDown(-100000); await sleep(800);
+      let it2 = 0, same2 = 0, last2 = -1;
+      while (it2 < 150) {
+        it2++;
+        const snap = await snapshotLower(lowerMeta.headerY, fixedCols);
+        for (const r of snap.rows) {
+          const key = r.bondCode || r.bondName;
+          if (!allRows.has(key)) { allRows.set(key, r); recovered++; }
+          if (r.bondName) domNameSeen.add(r.bondName);
+        }
+        const si = await getLowerScrollInfo();
+        if (!si) break;
+        if (si.sh - si.ch - si.top <= 2) break;
+        if (si.top === last2) { same2++; if (same2 >= 4) break; } else { same2 = 0; last2 = si.top; }
+        await scrollLowerDown(400); await sleep(400);
+      }
+      log(`  [自核对] 补抓新增${recovered}条，累计${allRows.size}`);
+      await scrollLowerDown(-100000); await sleep(1000);
+    }
+    // 保存核对报告（供邮件附件/人眼复核）
+    try {
+      const verifyReport = {
+        bjDate: BJ_DATE, hourBJ, threshold: MIN_VOLUME,
+        visibleNames: domNameSeen.size, capturedNames: capturedNames.size,
+        estimatedTotal: estTotal || null, missingNames, recoveredExtra: recovered,
+        captureComplete: estTotal ? (capturedNames.size >= estTotal) : null
+      };
+      fs.writeFileSync(path.join(SCREENSHOT_DIR, `broker_verify_${BJ_DATE}.json`), JSON.stringify(verifyReport, null, 2), 'utf8');
+      log(`  [自核对] 报告已写 broker_verify_${BJ_DATE}.json`);
+    } catch (e) { log('  [自核对] 写报告失败: ' + e.message); }
 
     const colDefs = fixedCols;
 
@@ -413,7 +473,7 @@ async function main() {
     // [DEBUG] 导出原始抓取行(阈值前)用于核对漏行（诊断用，体积小）
     try {
       const dbg = rows.map(r => ({ bondName: r.bondName, bondCode: r.bondCode, maxVal: r.maxVal, pass: r.maxVal >= MIN_VOLUME }));
-      fs.writeFileSync(path.join(HISTORY_DIR, `_capture_debug_${BJ_DATE}.json`), JSON.stringify({ bjDate: BJ_DATE, hourBJ, threshold: MIN_VOLUME, captured: dbg }, null, 1), 'utf8');
+      fs.writeFileSync(path.join(HISTORY_DIR, `_capture_debug_${BJ_DATE}.json`), JSON.stringify({ bjDate: BJ_DATE, hourBJ, threshold: MIN_VOLUME, visibleNames: domNameSeen.size, capturedNames: capturedNames.size, estimatedTotal: estTotal || null, missingNames, recoveredExtra: recovered, captureComplete: estTotal ? (capturedNames.size >= estTotal) : null, captured: dbg }, null, 1), 'utf8');
       log(`  [DEBUG] 原始抓取${rows.length}行已写入 _capture_debug_${BJ_DATE}.json`);
     } catch (e) { log('  [DEBUG] 写调试文件失败: ' + e.message); }
     for (const r of filtered.slice(0, 20)) {
