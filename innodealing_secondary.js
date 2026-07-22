@@ -820,17 +820,193 @@ async function main() {
 
     // 过滤无名占位列（列N）：加宽视口后右侧出现的无表头列（如 信唐/CHG 经纪商报价块，其表头在 y≈636 与主表头 y≈627 错位未被捕获）→ 统一剔除，避免 Sheet1 出现"列N"
     const keepMask = extract.cols.map(n => !/^列\d+$/.test(n));
-    const colDefs = extract.cols.filter((n, i) => keepMask[i]).map(name => ({ name }));
+    const keptIdx = extract.cols.map((n, i) => i).filter(i => keepMask[i]);
+    const colDefs = keptIdx.map(i => ({ name: extract.cols[i] }));
+    const colX = keptIdx.map(i => extract.colX[i]);
     const nameIdx = colDefs.findIndex(c => c.name.includes('债券简称'));
     const latestColIdx = colDefs.findIndex(c => c.name.includes('最新成交'));
     const avgColIdx = colDefs.findIndex(c => c.name.includes('平均成交'));
 
-    // 组装 allRowsMap（cells 对齐 colDefs 顺序）
-    const allRowsMap = new Map();
-    for (const row of extract.rows) {
-      const bondName = nameIdx >= 0 ? (row.vals[nameIdx] || '').trim() : '';
-      if (!bondName) continue; // 无债券简称 = 表头/空行
-      const cells = row.vals.filter((v, i) => keepMask[i]);
+    // 定位下面框滚动容器（纵向滚动收集所有行，避免虚拟滚动漏行 —— 与上框同源）
+    const lowerBoxMeta = await targetFrame.evaluate(() => {
+      let hy = 0;
+      document.querySelectorAll('*').forEach(el => {
+        if (el.children.length === 0 && (el.textContent || '').trim().includes('最新成交')) {
+          const r = el.getBoundingClientRect();
+          if (r.width > 0 && r.y > hy) hy = r.y;
+        }
+      });
+      let headerEl = null;
+      document.querySelectorAll('*').forEach(el => {
+        if (el.children.length === 0 && (el.textContent || '').trim().includes('最新成交')) {
+          const r = el.getBoundingClientRect();
+          if (r.width > 0 && Math.abs(r.y - hy) <= 2) headerEl = el;
+        }
+      });
+      let container = null;
+      if (headerEl) {
+        let el = headerEl.parentElement;
+        while (el && el.parentElement) {
+          if (el.scrollHeight > el.clientHeight + 60 && el.clientHeight > 60) { container = el; break; }
+          el = el.parentElement;
+        }
+      }
+      if (container) container.__lowerBox = true;
+      const rect = container ? container.getBoundingClientRect() : null;
+      return {
+        headerY: hy,
+        scrollTop: container ? container.scrollTop : 0,
+        scrollHeight: container ? container.scrollHeight : 0,
+        clientHeight: container ? container.clientHeight : 0,
+        contTop: rect ? Math.round(rect.top) : hy,
+        contBottom: rect ? Math.round(rect.bottom) : hy + 800
+      };
+    });
+    log(`  下面框滚动容器: scrollTop=${lowerBoxMeta.scrollTop} scrollHeight=${lowerBoxMeta.scrollHeight} clientHeight=${lowerBoxMeta.clientHeight}`);
+
+    // 快照函数：收集当前视口内 下面框 数据行（列定义复用上面的 colDefs/colX，interval 归属防右对齐串列；只扫 dmui-vt-background 容器，避免页面级大元素干扰）
+    async function snapshotLowerRows() {
+      return await targetFrame.evaluate(({ headerY, cols, nameIdx }) => {
+        const colSpacing = (i) => (i + 1 < cols.length) ? (cols[i + 1].x - cols[i].x) : 150;
+        const assignCol = (x) => {
+          let best = -1, bestD = Infinity;
+          for (let i = 0; i < cols.length; i++) {
+            const sp = colSpacing(i);
+            if (x >= cols[i].x - 30 && x < cols[i].x + sp) {
+              const d = Math.abs(x - cols[i].x);
+              if (d < bestD) { bestD = d; best = i; }
+            }
+          }
+          return best;
+        };
+        // 定位下面框容器（dmui-vt-background）
+        let p = null;
+        document.querySelectorAll('*').forEach(el => {
+          if (el.children.length === 0 && (el.textContent || '').trim().includes('最新成交')) {
+            const r = el.getBoundingClientRect();
+            if (r.width > 0 && Math.abs(r.y - headerY) <= 2) p = el;
+          }
+        });
+        let box = null;
+        while (p) { if (p.className && p.className.toString && /dmui-vt-background/.test(p.className.toString())) { box = p; break; } p = p.parentElement; }
+        const scope = box || document;
+        const dcells = [];
+        scope.querySelectorAll('*').forEach(el => {
+          if (el.children.length !== 0) return;
+          const raw = (el.textContent || '').trim();
+          if (!raw || raw.length > 60) return;
+          if (/^(成交行情|我的关注|关注列表|利率债|一级发行|信用债|二级|市场观点|行情|关注|发行|市场)$/.test(raw)) return;
+          if (raw === '权' || raw === '免') return;
+          const r = el.getBoundingClientRect();
+          if (r.width < 8 || r.height < 5 || r.height > 50) return;
+          if (r.y <= headerY + 6) return;
+          if (r.y > headerY + 1100) return;
+          dcells.push({ x: Math.round(r.x), y: Math.round(r.y), text: raw });
+        });
+        const yKeys = [];
+        for (const c of dcells) if (!yKeys.find(k => Math.abs(k - c.y) <= 8)) yKeys.push(c.y);
+        yKeys.sort((a, b) => a - b);
+        const out = [];
+        for (const by of yKeys) {
+          const rowCells = dcells.filter(c => Math.abs(c.y - by) <= 8).sort((a, b) => a.x - b.x);
+          const colCells = {};
+          for (const c of rowCells) {
+            const ci = assignCol(c.x);
+            if (ci >= 0) { (colCells[ci] || (colCells[ci] = [])).push(c.text); }
+          }
+          const vals = new Array(cols.length).fill('');
+          for (const ci in colCells) {
+            const cands = colCells[ci];
+            if (Number(ci) === nameIdx) {
+              const good = cands.filter(t => { t = (t || '').trim(); return t && t !== '休' && !/^\d+$/.test(t) && !/^\d+[YD]/.test(t) && t.length >= 2 && !/^[A-Za-z0-9]+$/.test(t); });
+              const pick = (good.length ? good : cands).sort((a, b) => (b || '').length - (a || '').length)[0];
+              if (pick) vals[ci] = pick;
+            } else {
+              vals[ci] = cands[0];
+            }
+          }
+          out.push(vals);
+        }
+        return out;
+      }, { headerY: lowerBoxMeta.headerY, cols: colX.map((x, i) => ({ x, name: colDefs[i].name })), nameIdx });
+    }
+
+    // 主循环：纵向滚动收集下面框所有行（按 债券代码 优先、债券简称 兜底的稳定 key 去重，确保不遗漏）
+    const lowerMap = new Map();
+    const domNameSeen = new Set();
+    const isAbn = (s) => { s = (s || '').trim(); return !s || s === '休' || /^\d+$/.test(s) || /^\d+[YD]/.test(s) || s.length < 2; };
+    const lowerKeyOf = (vals) => {
+      const c = (vals['债券代码'] || '').trim();
+      const n = (vals['债券简称'] || '').trim();
+      if (c && c !== '休' && c.length >= 2) return 'CODE:' + c;
+      if (n && n !== '休' && !/^\d+[YD]/.test(n) && n.length >= 2) return 'NAME:' + n;
+      return null;
+    };
+    let stall = 0, iter = 0;
+    while (stall < 4 && iter < 120) {
+      iter++;
+      const snap = await snapshotLowerRows();
+      let added = 0;
+      for (const vals of snap) {
+        const lv = {};
+        colDefs.forEach((c, i) => { lv[c.name] = vals[i] || ''; });
+        const key = lowerKeyOf(lv);
+        const nm = (lv['债券简称'] || '').trim();
+        if (nm && !isAbn(nm)) domNameSeen.add(nm);
+        if (!key) continue;
+        if (!lowerMap.has(key)) { lowerMap.set(key, lv); added++; }
+        else {
+          const prev = lowerMap.get(key);
+          let improved = false;
+          for (const k of Object.keys(lv)) {
+            const v = lv[k], p = prev[k];
+            if ((p === undefined || p === '' || p === '--' || p === '·') && v && v !== '--' && v !== '·') { prev[k] = v; improved = true; }
+          }
+          if (isAbn((prev['债券简称'] || '').trim()) && !isAbn((lv['债券简称'] || '').trim())) { prev['债券简称'] = lv['债券简称']; improved = true; }
+          if (improved) added++;
+        }
+      }
+      log(`  [下面框快照${iter}] 本帧 ${snap.length} 行, 新增 ${added}, 累计 ${lowerMap.size}`);
+      if (added === 0) stall++; else stall = 0;
+      const moved = await targetFrame.evaluate(() => {
+        let cont = null;
+        document.querySelectorAll('*').forEach(el => { if (el.__lowerBox) cont = el; });
+        if (!cont) return false;
+        const old = cont.scrollTop; cont.scrollTop += 700;
+        return cont.scrollTop !== old;
+      });
+      if (!moved && lowerBoxMeta.scrollHeight > lowerBoxMeta.clientHeight + 60) {
+        const cy = Math.round((lowerBoxMeta.contTop + lowerBoxMeta.contBottom) / 2);
+        await page.mouse.move(1200, cy);
+        await page.mouse.wheel(0, 700);
+      } else if (!moved) {
+        stall = 4; // 无滚动容器且无可滚动内容，提前结束
+      }
+      await sleep(500);
+    }
+    // 滚动回顶部，避免后续双击进详情页时目标债券不在 DOM
+    await targetFrame.evaluate(() => { let cont = null; document.querySelectorAll('*').forEach(el => { if (el.__lowerBox) cont = el; }); if (cont) cont.scrollTop = 0; });
+    await sleep(300);
+
+    // 自核对：DOM 实际可见债券集合 vs 抓取集合，输出 lower_capture_debug
+    const lowerCapturedNames = new Set([...lowerMap.values()].map(v => (v['债券简称'] || '').trim()).filter(Boolean));
+    const missingFromCapture = [...domNameSeen].filter(n => !lowerCapturedNames.has(n));
+    log(`  下面框自核对: DOM可见 ${domNameSeen.size} / 抓取 ${lowerMap.size} / 漏抓 ${missingFromCapture.length}`);
+    try {
+      const dbg = {
+        bjDate: BJ_DATE,
+        threshold: MIN_VOLUME,
+        visibleNames: domNameSeen.size,
+        capturedNames: lowerMap.size,
+        missingNames: missingFromCapture,
+        captured: [...lowerMap.values()].map(v => ({ bondName: (v['债券简称'] || '').trim(), bondCode: (v['债券代码'] || '').trim(), latest: (v['最新成交'] || '').trim() }))
+      };
+      fs.writeFileSync(path.join(HISTORY_DIR, 'lower_capture_debug.json'), JSON.stringify(dbg, null, 1), 'utf8');
+    } catch (e) { log(`  下面框自核对写出失败: ${e.message}`); }
+
+    // 组装 rows（cells 对齐 colDefs 顺序）
+    const rows = [...lowerMap.values()].map(v => {
+      const cells = colDefs.map(c => v[c.name] || '');
       let maxVal = 0;
       if (latestColIdx >= 0 && cells[latestColIdx]) {
         const rv = cells[latestColIdx].trim();
@@ -841,11 +1017,8 @@ async function main() {
           if (!isNaN(av) && av > 0) { maxVal = av; cells[latestColIdx] = cells[avgColIdx]; }
         }
       }
-      allRowsMap.set(bondName, { cells, maxVal, bondName, y: row.y });
-    }
-
-    // 转为数组
-    const rows = Array.from(allRowsMap.values());
+      return { cells, maxVal, bondName: (v['债券简称'] || '').trim(), y: 0 };
+    });
     rows.sort((a, b) => b.maxVal - a.maxVal); // 按最新成交降序
     log(`  总共提取到 ${rows.length} 行（去重后）`);
     // 调试：逐行输出完整 13 列（标注列名），重点看 最新成交 及后列
