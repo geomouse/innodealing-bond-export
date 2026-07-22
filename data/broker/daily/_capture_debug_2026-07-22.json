@@ -1,9 +1,9 @@
 {
  "bjDate": "2026-07-22",
- "hourBJ": 20,
+ "hourBJ": 21,
  "threshold": 2.8,
- "visibleNames": 18,
- "capturedNames": 18,
+ "visibleNames": 20,
+ "capturedNames": 20,
  "estimatedTotal": null,
  "missingNames": [],
  "recoveredExtra": 0,
@@ -36,6 +36,12 @@
   {
    "bondName": "26长春轨交MTN006",
    "bondCode": "102681950.IB",
+   "maxVal": 3.02,
+   "pass": true
+  },
+  {
+   "bondName": "24泰丰02",
+   "bondCode": "254402.SH",
    "maxVal": 3.02,
    "pass": true
   },
@@ -112,9 +118,15 @@
    "pass": false
   },
   {
+   "bondName": "24盘开01",
+   "bondCode": "254762.SH",
+   "maxVal": 2.54,
+   "pass": false
+  },
+  {
    "bondName": "25吉林银行二级资本债02",
    "bondCode": "232580014.IB",
-   "maxVal": 2.54,
+   "maxVal": 2.52,
    "pass": false
   }
  ]
