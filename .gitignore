@@ -1,2 +1,16 @@
 node_modules/
 *.log
+.chrome-*/
+browser_data*/
+screenshots/
+recon_*
+recon_broker*.js
+recon_verify_account.js
+v*_*.png
+verify_*.png
+_debug_out/
+debug_*.json
+frame_audit.txt
+close_tabs.js
+inspect_xlsx.js
+package-lock.json

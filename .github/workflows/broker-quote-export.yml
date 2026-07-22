@@ -1,0 +1,122 @@
+name: 经纪商行情成交汇总每日导出
+
+on:
+  schedule:
+    # 周一至周五 16:50 北京时间 = 08:50 UTC（稍晚于二级行情，避免并发登录冲突）
+    - cron: '50 8 * * 1-5'
+  workflow_dispatch:
+    inputs:
+      force:
+        description: '强制运行（跳过今日去重检查）'
+        type: boolean
+        default: false
+
+permissions:
+  contents: write
+  actions: read
+
+jobs:
+  export:
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+    env:
+      HEADLESS: 'true'
+      CI: 'true'
+      BROKER_DIR: ${{ github.workspace }}/data/broker
+    steps:
+      - name: 去重检查（今日已运行则跳过）
+        id: dedup
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          if [ "${{ github.event.inputs.force }}" = "true" ]; then
+            echo "强制运行(force=true)，跳过去重检查"
+            echo "skip=false" >> "$GITHUB_OUTPUT"
+            exit 0
+          fi
+          export TODAY=$(date -u +%Y-%m-%d)
+          echo "检查今日($TODAY)是否已有运行..."
+          RUNS=$(curl -s -H "Authorization: Bearer $GH_TOKEN" -H "Accept: application/vnd.github+json" \
+            "https://api.github.com/repos/$GITHUB_REPOSITORY/actions/workflows/broker-quote-export.yml/runs?per_page=50")
+          ALREADY=$(echo "$RUNS" | TODAY="$TODAY" GITHUB_RUN_ID="$GITHUB_RUN_ID" python3 -c "
+          import json, sys, os
+          d = json.load(sys.stdin)
+          today = os.environ['TODAY']
+          me = os.environ['GITHUB_RUN_ID']
+          for r in d.get('workflow_runs', []):
+              if r['created_at'][:10] != today:
+                  continue
+              if str(r['id']) == me:
+                  continue
+              if r['event'] not in ('schedule', 'workflow_dispatch'):
+                  continue
+              if r['status'] in ('completed', 'in_progress', 'queued'):
+                  print(r['id'])
+                  break
+          ")
+          if [ -n "$ALREADY" ]; then
+            echo "今日已运行 run#$ALREADY，跳过本次导出与邮件"
+            echo "skip=true" >> "$GITHUB_OUTPUT"
+          else
+            echo "今日尚无运行，继续执行"
+            echo "skip=false" >> "$GITHUB_OUTPUT"
+          fi
+
+      - uses: actions/checkout@v4
+        if: steps.dedup.outputs.skip != 'true'
+
+      - uses: actions/setup-node@v4
+        if: steps.dedup.outputs.skip != 'true'
+        with:
+          node-version: '22'
+
+      - name: 安装 Node.js 依赖
+        if: steps.dedup.outputs.skip != 'true'
+        run: npm install
+
+      - name: 安装 Chromium
+        if: steps.dedup.outputs.skip != 'true'
+        run: npx playwright install --with-deps chromium
+
+      - name: 导出经纪商行情数据（生成 3-Sheet Excel + 历史 json）
+        if: steps.dedup.outputs.skip != 'true'
+        env:
+          INNODEALING_USERNAME: ${{ secrets.INNODEALING_USERNAME }}
+          INNODEALING_PASSWORD: ${{ secrets.INNODEALING_PASSWORD }}
+        run: node innodealing_broker.js
+
+      - name: 发送汇总邮件（QQ）
+        if: steps.dedup.outputs.skip != 'true'
+        env:
+          EMAIL_USER: ${{ secrets.EMAIL_USER }}
+          EMAIL_PASS: ${{ secrets.EMAIL_PASS }}
+          EMAIL_TO: ${{ secrets.EMAIL_TO }}
+        run: node send_email_broker.js
+
+      - name: 提交历史数据到仓库（Sheet3 累积源 + 同步 xlsx）
+        if: steps.dedup.outputs.skip != 'true'
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "github-actions[bot]@users.noreply.github.com"
+          git add data/broker
+          if git diff --cached --quiet; then
+            echo "没有新数据，跳过推送"
+          else
+            git commit -m "📈 $(date +%Y-%m-%d) 经纪商行情成交数据"
+            git push
+            echo "历史数据已推送"
+          fi
+
+      - name: 上传诊断截图与数据
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: broker-diag-${{ github.run_id }}
+          path: |
+            screenshots/
+            data/broker/
+          if-no-files-found: ignore
+          retention-days: 7
+
+# 2026-07-22: 新增经纪商行情(成交行情下框)成交汇总 → 3-Sheet 输出 + 历史累积(Sheet3)
+# 主触发器 GitHub schedule(北京16:50)；workflow 内部去重避免重复邮件
