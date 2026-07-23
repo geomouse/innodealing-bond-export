@@ -1,8 +1,13 @@
 {
  "date": "2026-07-23",
  "total": 14,
- "new_today": 0,
- "new_names": [],
+ "new_today": 4,
+ "new_names": [
+  "26恒丰银行绿债01A",
+  "26恒丰银行绿债01B",
+  "26成都开投PPN001",
+  "26长开G1"
+ ],
  "missing_rate_count": 4,
  "contradiction": false
 }
