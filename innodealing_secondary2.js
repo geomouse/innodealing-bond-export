@@ -329,15 +329,35 @@ async function main() {
     });
     log(`  下框滚动元数据: ${lowerBoxMeta ? `sh=${lowerBoxMeta.sh} ch=${lowerBoxMeta.ch} cx=${lowerBoxMeta.cx} cy=${lowerBoxMeta.cy}` : '未找到(纯滚轮兜底)'}`);
 
-    // 鼠标滚轮兜底：把光标移到下框中心，滚轮滚动。对 dm-table 虚拟滚动最稳，不依赖原生 scrollTop 容器定位。
+    // 滚轮落点锚：以下框表头水平中心 + 表头下方 250px 为准（确定落在下框滚动体内）。
+    // 不能用 __lowerBox 容器的中心（dm-table 该容器常是包含上下框的大容器，中心点不在下框体内）。
+    const wheelAnchor = await targetFrame.evaluate((headerY) => {
+      let hdr = null;
+      document.querySelectorAll('*').forEach(el => {
+        if (el.children.length === 0 && (el.textContent || '').trim().includes('平均成交')) {
+          const r = el.getBoundingClientRect();
+          if (r.width > 0 && Math.abs(r.y - headerY) <= 40) hdr = el;
+        }
+      });
+      if (hdr) {
+        const r = hdr.getBoundingClientRect();
+        return { x: Math.round(r.x + r.width / 2), y: Math.round(r.y + 250) };
+      }
+      let cont = null; document.querySelectorAll('*').forEach(el => { if (el.__lowerBox) cont = el; });
+      if (cont) { const br = cont.getBoundingClientRect(); return { x: Math.round(br.x + br.width / 2), y: Math.round(br.y + br.height / 2) }; }
+      return { x: 1200, y: 700 };
+    }, lowerMeta.headerY);
+    log(`  滚轮锚点(下框表头下方): x=${wheelAnchor.x} y=${wheelAnchor.y}`);
+
+    // 鼠标滚轮兜底：把光标移到下框体内，滚轮滚动。对 dm-table 虚拟滚动最稳，不依赖原生 scrollTop 容器定位。
     async function scrollLowerOnce(px) {
       const fo = await page.evaluate(() => {
         const iframes = Array.from(document.querySelectorAll('iframe'));
         for (const f of iframes) if (f.src && f.src.includes('quote-web')) { const r = f.getBoundingClientRect(); return { x: r.x, y: r.y }; }
         return { x: 0, y: 0 };
       }).catch(() => ({ x: 0, y: 0 }));
-      const cx = (lowerBoxMeta && lowerBoxMeta.cx) || 1200;
-      const cy = (lowerBoxMeta && lowerBoxMeta.cy) || 700;
+      const cx = (wheelAnchor && wheelAnchor.x) || 1200;
+      const cy = (wheelAnchor && wheelAnchor.y) || 700;
       await page.mouse.move(fo.x + cx, fo.y + cy);
       await page.mouse.wheel(0, px);
     }
@@ -595,7 +615,7 @@ async function main() {
       if (added === 0) sameCount++; else sameCount = 0;
       if (sameCount >= 6) { log('  连续6帧无新增行，停止'); break; }
       // 主滚动一律走鼠标滚轮（dm-table 虚拟滚动体原生 scrollTop 不可达，滚轮最稳）
-      await scrollLowerOnce(400);
+      await scrollLowerOnce(320);
       await sleep(500);
     }
 
@@ -620,7 +640,7 @@ async function main() {
     log(`  [自核对] 可见债券名${domNameSeen.size} / 捕获${capturedNames.size} / 页面估算总条数${estTotal || '未知'}`);
     if (missingNames.length) log(`  [自核对][警告] 可见但未捕获的债券: ${missingNames.join(' | ')}`);
     let recovered = 0;
-    if (estTotal && capturedNames.size < estTotal) {
+    if ((estTotal && capturedNames.size < estTotal) || domNameSeen.size > capturedNames.size) {
       log(`  [自核对] 捕获数(${capturedNames.size}) < 估算总数(${estTotal})，执行补抓扫描...`);
       await scrollLowerOnce(-100000); await sleep(800);
       let it2 = 0, same2 = 0, last2 = -1;
@@ -636,7 +656,7 @@ async function main() {
         if (!si) break;
         if (si.sh - si.ch - si.top <= 2) break;
         if (si.top === last2) { same2++; if (same2 >= 4) break; } else { same2 = 0; last2 = si.top; }
-        await scrollLowerOnce(400); await sleep(400);
+        await scrollLowerOnce(320); await sleep(400);
       }
       log(`  [自核对] 补抓新增${recovered}条，累计${allRows.size}`);
       await scrollLowerOnce(-100000); await sleep(1000);
