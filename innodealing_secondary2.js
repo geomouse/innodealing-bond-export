@@ -1107,12 +1107,19 @@ async function main() {
     }
 
     const dayFiles = fs.readdirSync(HISTORY_DIR).filter(f => /^\d{4}-\d{2}-\d{2}\.json$/.test(f)).sort();
+    const H3_LATEST_IDX = SHEET2_HEADERS.indexOf('最新成交');
     for (const f of dayFiles) {
       try {
         const j = JSON.parse(fs.readFileSync(path.join(HISTORY_DIR, f), 'utf8'));
         const rows = Array.isArray(j.rows) ? j.rows : [];
-        for (const row of rows) { ws3.addRow(row); sheet3Count++; }
-        if (rows.length) sheet3Days++;
+        let keptThisDay = 0;
+        for (const row of rows) {
+          // 历史累积只保留 最新成交 >= 2.0% 的债；最新成交为空/NaN（如休市兜底债）保留，不误删
+          const lv = parseFloat(row[H3_LATEST_IDX]);
+          if (!isNaN(lv) && lv < MIN_LATEST_PRICE) continue;
+          ws3.addRow(row); sheet3Count++; keptThisDay++;
+        }
+        if (keptThisDay) sheet3Days++;
       } catch(e) { log(`  跳过损坏历史文件 ${f}: ${e.message}`); }
     }
     log(`  Sheet3 完成: ${sheet3Count}行，覆盖${sheet3Days}个交易日`);
