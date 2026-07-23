@@ -1,14 +1,26 @@
 {
  "bjDate": "2026-07-23",
- "hourBJ": 10,
+ "hourBJ": 15,
  "threshold": 0,
- "visibleNames": 20,
- "capturedNames": 20,
+ "visibleNames": 64,
+ "capturedNames": 64,
  "estimatedTotal": null,
  "missingNames": [],
  "recoveredExtra": 0,
  "captureComplete": null,
  "captured": [
+  {
+   "bondName": "24云能投MTN015",
+   "bondCode": "102482996.IB",
+   "maxVal": 2.85,
+   "pass": true
+  },
+  {
+   "bondName": "24云能投GN001",
+   "bondCode": "132480055.IB",
+   "maxVal": 2.25,
+   "pass": true
+  },
   {
    "bondName": "26达州01",
    "bondCode": "282655.SH",
@@ -16,9 +28,63 @@
    "pass": true
   },
   {
+   "bondName": "25农行二级资本债04B(BC)",
+   "bondCode": "232580047.IB",
+   "maxVal": 2.13,
+   "pass": true
+  },
+  {
+   "bondName": "25农行二级资本债03B(BC)",
+   "bondCode": "232580036.IB",
+   "maxVal": 2.1288,
+   "pass": true
+  },
+  {
+   "bondName": "25农行二级资本债01B(BC)",
+   "bondCode": "232580017.IB",
+   "maxVal": 2.115,
+   "pass": true
+  },
+  {
+   "bondName": "25长开G2",
+   "bondCode": "242490.SH",
+   "maxVal": 2.06,
+   "pass": true
+  },
+  {
+   "bondName": "24涪陵国资MTN004B",
+   "bondCode": "102400790.IB",
+   "maxVal": 2.05,
+   "pass": true
+  },
+  {
+   "bondName": "24农行二级资本债02B",
+   "bondCode": "232480012.IB",
+   "maxVal": 2.045,
+   "pass": true
+  },
+  {
+   "bondName": "26恒丰银行永续债01",
+   "bondCode": "242680006.IB",
+   "maxVal": 2.04,
+   "pass": true
+  },
+  {
+   "bondName": "25农行TLAC非资本债02C(BC)",
+   "bondCode": "312510011.IB",
+   "maxVal": 2.0313,
+   "pass": true
+  },
+  {
+   "bondName": "24农行二级资本债01B",
+   "bondCode": "232480005.IB",
+   "maxVal": 2.031,
+   "pass": true
+  },
+  {
    "bondName": "23农行二级资本债03B",
    "bondCode": "232380074.IB",
-   "maxVal": 2,
+   "maxVal": 2.008,
    "pass": true
   },
   {
@@ -30,7 +96,31 @@
   {
    "bondName": "23农行二级资本债02B",
    "bondCode": "232380053.IB",
-   "maxVal": 1.995,
+   "maxVal": 1.9981,
+   "pass": true
+  },
+  {
+   "bondName": "23农行二级资本债01B",
+   "bondCode": "232380005.IB",
+   "maxVal": 1.97,
+   "pass": true
+  },
+  {
+   "bondName": "24云能投MTN020",
+   "bondCode": "102400938.IB",
+   "maxVal": 1.94,
+   "pass": true
+  },
+  {
+   "bondName": "24云能投MTN017",
+   "bondCode": "102483339.IB",
+   "maxVal": 1.93,
+   "pass": true
+  },
+  {
+   "bondName": "22金街04",
+   "bondCode": "149916.SZ",
+   "maxVal": 1.93,
    "pass": true
   },
   {
@@ -40,9 +130,33 @@
    "pass": true
   },
   {
+   "bondName": "26中信银行永续债01BC",
+   "bondCode": "242680001.IB",
+   "maxVal": 1.9075,
+   "pass": true
+  },
+  {
    "bondName": "24鄂联投MTN005",
    "bondCode": "102400819.IB",
    "maxVal": 1.88,
+   "pass": true
+  },
+  {
+   "bondName": "25农行二级资本债04A(BC)",
+   "bondCode": "232580046.IB",
+   "maxVal": 1.8483,
+   "pass": true
+  },
+  {
+   "bondName": "25农行永续债02BC",
+   "bondCode": "242580045.IB",
+   "maxVal": 1.84,
+   "pass": true
+  },
+  {
+   "bondName": "25农行二级资本债03A(BC)",
+   "bondCode": "232580035.IB",
+   "maxVal": 1.83,
    "pass": true
   },
   {
@@ -58,15 +172,129 @@
    "pass": true
   },
   {
+   "bondName": "25农行二级资本债01A(BC)",
+   "bondCode": "232580016.IB",
+   "maxVal": 1.745,
+   "pass": true
+  },
+  {
+   "bondName": "24长寿开投MTN003A",
+   "bondCode": "102400926.IB",
+   "maxVal": 1.71,
+   "pass": true
+  },
+  {
+   "bondName": "24农行永续债03BC",
+   "bondCode": "242480082.IB",
+   "maxVal": 1.7075,
+   "pass": true
+  },
+  {
+   "bondName": "23长寿开投PPN007",
+   "bondCode": "032381240.IB",
+   "maxVal": 1.68,
+   "pass": true
+  },
+  {
+   "bondName": "24万州经开MTN005",
+   "bondCode": "102400741.IB",
+   "maxVal": 1.68,
+   "pass": true
+  },
+  {
+   "bondName": "23浙商银行二级资本债01",
+   "bondCode": "232380021.IB",
+   "maxVal": 1.58,
+   "pass": true
+  },
+  {
+   "bondName": "23云能投MTN006B",
+   "bondCode": "102383347.IB",
+   "maxVal": 1.57,
+   "pass": true
+  },
+  {
    "bondName": "25浙商银行小微债01BC",
    "bondCode": "212580007.IB",
    "maxVal": 1.525,
    "pass": true
   },
   {
+   "bondName": "23蓉经开PPN002",
+   "bondCode": "032380971.IB",
+   "maxVal": 1.52,
+   "pass": true
+  },
+  {
+   "bondName": "22农行二级资本债02A",
+   "bondCode": "092200008.IB",
+   "maxVal": 1.51,
+   "pass": true
+  },
+  {
+   "bondName": "22农业银行二级01",
+   "bondCode": "2228041.IB",
+   "maxVal": 1.49,
+   "pass": true
+  },
+  {
+   "bondName": "22农业银行永续债01",
+   "bondCode": "2228011.IB",
+   "maxVal": 1.48,
+   "pass": true
+  },
+  {
+   "bondName": "21浙商银行永续债",
+   "bondCode": "2120107.IB",
+   "maxVal": 1.48,
+   "pass": true
+  },
+  {
+   "bondName": "26农业银行CD167",
+   "bondCode": "112603167.IB",
+   "maxVal": 1.48,
+   "pass": true
+  },
+  {
+   "bondName": "26农业银行CD133",
+   "bondCode": "112603133.IB",
+   "maxVal": 1.475,
+   "pass": true
+  },
+  {
    "bondName": "26农业银行CD174",
    "bondCode": "112603174.IB",
    "maxVal": 1.475,
+   "pass": true
+  },
+  {
+   "bondName": "26中信银行CD143",
+   "bondCode": "112608143.IB",
+   "maxVal": 1.4725,
+   "pass": true
+  },
+  {
+   "bondName": "24浙商银行小微债03",
+   "bondCode": "212480011.IB",
+   "maxVal": 1.47,
+   "pass": true
+  },
+  {
+   "bondName": "26中信银行CD056",
+   "bondCode": "112608056.IB",
+   "maxVal": 1.46,
+   "pass": true
+  },
+  {
+   "bondName": "26中信银行CD152",
+   "bondCode": "112608152.IB",
+   "maxVal": 1.46,
+   "pass": true
+  },
+  {
+   "bondName": "26浙商银行CD004",
+   "bondCode": "112613004.IB",
+   "maxVal": 1.46,
    "pass": true
   },
   {
@@ -79,6 +307,18 @@
    "bondName": "26中信银行CD064",
    "bondCode": "112608064.IB",
    "maxVal": 1.45,
+   "pass": true
+  },
+  {
+   "bondName": "25农业银行CD442",
+   "bondCode": "112503442.IB",
+   "maxVal": 1.4375,
+   "pass": true
+  },
+  {
+   "bondName": "26农业银行CD108",
+   "bondCode": "112603108.IB",
+   "maxVal": 1.435,
    "pass": true
   },
   {
@@ -100,20 +340,26 @@
    "pass": true
   },
   {
+   "bondName": "26农业银行CD134",
+   "bondCode": "112603134.IB",
+   "maxVal": 1.43,
+   "pass": true
+  },
+  {
    "bondName": "26农业银行CD048",
    "bondCode": "112603048.IB",
    "maxVal": 1.415,
    "pass": true
   },
   {
-   "bondName": "26中信银行CD160",
-   "bondCode": "112608160.IB",
-   "maxVal": 1.41,
+   "bondName": "26农业银行CD093",
+   "bondCode": "112603093.IB",
+   "maxVal": 1.411,
    "pass": true
   },
   {
-   "bondName": "26农业银行CD093",
-   "bondCode": "112603093.IB",
+   "bondName": "26农业银行CD114",
+   "bondCode": "112603114.IB",
    "maxVal": 1.41,
    "pass": true
   },
@@ -124,9 +370,27 @@
    "pass": true
   },
   {
+   "bondName": "26中信银行CD161",
+   "bondCode": "112608161.IB",
+   "maxVal": 1.41,
+   "pass": true
+  },
+  {
+   "bondName": "26中信银行CD160",
+   "bondCode": "112608160.IB",
+   "maxVal": 1.41,
+   "pass": true
+  },
+  {
    "bondName": "26中信银行CD166",
    "bondCode": "112608166.IB",
    "maxVal": 1.4,
+   "pass": true
+  },
+  {
+   "bondName": "25华发集团MTN004",
+   "bondCode": "102580856.IB",
+   "maxVal": 0,
    "pass": true
   }
  ]
