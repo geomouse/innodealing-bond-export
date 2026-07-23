@@ -1,7 +1,7 @@
 // 债立方 · 二级行情（我的关注 · 成交行情下框）每日提取
 // 路由：quote-web/#/bond/my-focus
 // 输出：3 Sheet Excel（Sheet1=下框源数据；Sheet2=当天汇总；Sheet3=历史累积）+ 每日 json
-// 说明：克隆自经纪商行情脚本（已验证），只取下面框、用经纪商表头模板、中债（行/到）映射到中债/中证、抓全量不按阈值筛选
+// 说明：克隆自经纪商行情脚本（已验证），只取下面框、用经纪商表头模板、中债（行/到）映射到中债/中证、只保留最新成交>=2.0%
 const { chromium } = require('playwright');
 const path = require('path');
 const fs = require('fs');
@@ -12,9 +12,9 @@ const PASSWORD = process.env.INNODEALING_PASSWORD || '123456';
 const LOGIN_URL = 'https://web.innodealing.com/auth-service/signin';
 const TARGET_URL = 'https://web.innodealing.com/quote-web/#/bond/my-focus';
 
-// 阈值：二级行情抓全量（不按成交量筛选），MIN_VOLUME 仅用于核对报告标注
+// 阈值：二级行情只保留最新成交 >= 2.0% 的债券（休市行 fallback 到平均成交）
 const hourBJ = new Date(Date.now() + 8 * 3600 * 1000).getUTCHours();
-const MIN_VOLUME = 0;
+const MIN_LATEST_PRICE = 2.0;
 
 const HEADLESS = process.env.HEADLESS === 'true' || process.env.CI === 'true';
 const BROWSER_CHANNEL = process.env.BROWSER_CHANNEL != null
@@ -45,7 +45,7 @@ async function screenshot(page, name) {
 
 async function main() {
   log('=== 启动浏览器 ===');
-  log(`阈值(北京时间): ${hourBJ}点 → 提取 >= ${MIN_VOLUME}`);
+  log(`阈值(北京时间): ${hourBJ}点 → 最新成交 >= ${MIN_LATEST_PRICE}`);
   const userDataDir = path.join(WORKSPACE, '.chrome-data-broker-' + Date.now());
   fs.mkdirSync(userDataDir, { recursive: true });
   const launchOpts = {
@@ -736,9 +736,22 @@ async function main() {
     }));
     // 按平均成交降序
     rows.sort((a, b) => b.maxVal - a.maxVal);
-    // 二级行情：抓取下框全部债券（不按成交量阈值筛选，匹配关注列表完整截图）
-    let filtered = rows.filter(r => r.bondName && r.bondCode);
-    log(`  下框有效债券共${rows.length}行，全量保留 ${filtered.length}行（不按阈值筛选）`);
+    // 二级行情：只保留 最新成交 >= 2.0% 的债券；休市行若最新成交为空/休1 则 fallback 到平均成交
+    function getEffectivePrice(r) {
+      const latestIdx = colDefs.findIndex(c => c.name.includes('最新成交'));
+      const avgIdx = colDefs.findIndex(c => c.name.includes('平均成交'));
+      if (latestIdx >= 0) {
+        const v = parseFloat(r.cells[latestIdx]);
+        if (!isNaN(v)) return v;
+      }
+      if (avgIdx >= 0) {
+        const v = parseFloat(r.cells[avgIdx]);
+        if (!isNaN(v)) return v;
+      }
+      return 0;
+    }
+    let filtered = rows.filter(r => r.bondName && r.bondCode && getEffectivePrice(r) >= MIN_LATEST_PRICE);
+    log(`  下框有效债券共${rows.length}行，按最新成交>=${MIN_LATEST_PRICE}保留 ${filtered.length}行`);
     // [DEBUG] 导出原始抓取行(阈值前)用于核对漏行（诊断用，体积小）
     try {
       const dbg = rows.map(r => ({ bondName: r.bondName, bondCode: r.bondCode, maxVal: r.maxVal, pass: !!(r.bondName && r.bondCode) }));
