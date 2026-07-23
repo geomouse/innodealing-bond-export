@@ -1,0 +1,133 @@
+{
+ "bjDate": "2026-07-24",
+ "hourBJ": 0,
+ "threshold": 2.4,
+ "visibleNames": 20,
+ "capturedNames": 20,
+ "estimatedTotal": null,
+ "missingNames": [],
+ "recoveredExtra": 0,
+ "captureComplete": null,
+ "captured": [
+  {
+   "bondName": "25矿盛02",
+   "bondCode": "259609.SH",
+   "maxVal": 4.05,
+   "pass": true
+  },
+  {
+   "bondName": "21遵桥12",
+   "bondCode": "197755.SH",
+   "maxVal": 3.5,
+   "pass": true
+  },
+  {
+   "bondName": "20黔开债",
+   "bondCode": "152702.SH",
+   "maxVal": 3.07,
+   "pass": true
+  },
+  {
+   "bondName": "24新蒲02",
+   "bondCode": "254894.SH",
+   "maxVal": 2.88,
+   "pass": true
+  },
+  {
+   "bondName": "24云能投MTN015",
+   "bondCode": "102482996.IB",
+   "maxVal": 2.8467,
+   "pass": true
+  },
+  {
+   "bondName": "26津渤海MTN004",
+   "bondCode": "102681196.IB",
+   "maxVal": 2.82,
+   "pass": true
+  },
+  {
+   "bondName": "26济南高新MTN003B",
+   "bondCode": "102601967.IB",
+   "maxVal": 2.75,
+   "pass": true
+  },
+  {
+   "bondName": "26渝供销PPN001(乡村振兴)",
+   "bondCode": "032680400.IB",
+   "maxVal": 2.6833,
+   "pass": true
+  },
+  {
+   "bondName": "24桂物01",
+   "bondCode": "254958.SH",
+   "maxVal": 2.66,
+   "pass": true
+  },
+  {
+   "bondName": "25铸都01",
+   "bondCode": "257489.SH",
+   "maxVal": 2.62,
+   "pass": true
+  },
+  {
+   "bondName": "22华发实业MTN003(并购)",
+   "bondCode": "102200256.IB",
+   "maxVal": 2.62,
+   "pass": true
+  },
+  {
+   "bondName": "26水发集团MTN004",
+   "bondCode": "102682285.IB",
+   "maxVal": 2.6,
+   "pass": true
+  },
+  {
+   "bondName": "20西咸04",
+   "bondCode": "152474.SH",
+   "maxVal": 2.56,
+   "pass": true
+  },
+  {
+   "bondName": "24齐商银行永续债01",
+   "bondCode": "242400010.IB",
+   "maxVal": 2.56,
+   "pass": true
+  },
+  {
+   "bondName": "26章丘集MTN003B",
+   "bondCode": "102681365.IB",
+   "maxVal": 2.52,
+   "pass": true
+  },
+  {
+   "bondName": "25吉林银行二级资本债01",
+   "bondCode": "232580004.IB",
+   "maxVal": 2.51,
+   "pass": true
+  },
+  {
+   "bondName": "24青上02",
+   "bondCode": "253583.SH",
+   "maxVal": 2.5,
+   "pass": true
+  },
+  {
+   "bondName": "24扬子国资MTN001",
+   "bondCode": "102483552.IB",
+   "maxVal": 2.5,
+   "pass": true
+  },
+  {
+   "bondName": "25泸租01",
+   "bondCode": "257538.SH",
+   "maxVal": 2.5,
+   "pass": true
+  },
+  {
+   "bondName": "22邯郸银行永续债01",
+   "bondCode": "242280001.IB",
+   "maxVal": 2.48,
+   "pass": true
+  }
+ ]
+}
