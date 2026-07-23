@@ -125,7 +125,7 @@ async function main() {
     await screenshot(page, '02-after-login');
 
     // ===== 2. 导航到经纪商行情 =====
-    log('2. 导航到经纪商行情');
+    log('2. 导航到二级行情（我的关注）');
     await page.goto('https://web.innodealing.com/quote-web/', { waitUntil: 'domcontentloaded', timeout: 30000 });
     await sleep(5000);
 
@@ -147,8 +147,43 @@ async function main() {
     await closeAllModals(5);
     await screenshot(page, '04-after-close-modal');
 
-    // ===== 3. 下框提取 =====
-    log('3. 提取下框（成交行情）');
+    // 勾选主体组 all-A（与旧脚本一致）：这是下框成交行情数据出现的必要条件
+    log('3. 勾选主体组 all-A');
+    const ENTITY_FILTER = 'all-A';
+    const groupSelectResult = await targetFrame.evaluate((filterName) => {
+      const candidates = [];
+      document.querySelectorAll('label, div, span').forEach(el => {
+        const text = (el.textContent || '').trim();
+        if (text === filterName) {
+          const rect = el.getBoundingClientRect();
+          if (rect.width > 0 && rect.height > 0 && rect.x < 250) candidates.push({ tag: el.tagName, cls: String(el.className || '').slice(0, 80), text, x: Math.round(rect.x), y: Math.round(rect.y), w: Math.round(rect.width), h: Math.round(rect.height) });
+        }
+      });
+      const result = { candidates, clicked: null };
+      for (const c of candidates) {
+        const textNode = Array.from(document.querySelectorAll('*')).find(el => (el.textContent || '').trim() === filterName && el.getBoundingClientRect().x < 250);
+        if (textNode) {
+          let parent = textNode.parentElement;
+          for (let i = 0; i < 6 && parent; i++) {
+            const cb = parent.querySelector('input[type="checkbox"]');
+            if (cb) { cb.click(); result.clicked = { via: 'parent-checkbox', pos: c }; return result; }
+            parent = parent.parentElement;
+          }
+          const prev = textNode.previousElementSibling;
+          if (prev && prev.matches && prev.matches('input[type="checkbox"]')) { prev.click(); result.clicked = { via: 'sibling-checkbox', pos: c }; return result; }
+          textNode.click(); result.clicked = { via: 'self', pos: c }; return result;
+        }
+      }
+      return result;
+    }, ENTITY_FILTER);
+    log(`  找到 ${groupSelectResult.candidates?.length || 0} 个 "${ENTITY_FILTER}" 候选`);
+    if (groupSelectResult.clicked) log(`  已点击 ${ENTITY_FILTER} via: ${groupSelectResult.clicked.via}`);
+    else log(`  ❌ 未找到 "${ENTITY_FILTER}" 元素`);
+    await sleep(3000);
+    await closeAllModals(3);
+
+    // ===== 4. 下框提取 =====
+    log('4. 提取下框（成交行情）');
 
     // 先找到"成交行情"tab并点击（确保它在激活状态）
     await targetFrame.evaluate(() => {
@@ -705,7 +740,7 @@ async function main() {
 
     // ===== 4. 详情页提取区域 + 发行人全称 =====
     await sleep(1500);
-    log('4. 详情页提取发行人全称与区域');
+    log('5. 详情页提取发行人全称与区域');
     const bondRegionMap = new Map();
 
     const lIdx = {};
@@ -942,7 +977,7 @@ async function main() {
     }
 
     // ===== 5. 生成 Excel =====
-    log('5. 生成 Excel');
+    log('6. 生成 Excel');
     function cleanCell(text) {
       if (!text) return text;
       const s = String(text).trim();
@@ -1025,7 +1060,7 @@ async function main() {
     }
 
     // Sheet3: 历史累积
-    log('6. 构建 Sheet3: 历史累积');
+    log('7. 构建 Sheet3: 历史累积');
     const ws3 = wb.addWorksheet('历史累积汇总');
     ws3.addRow(SHEET2_HEADERS);
     let sheet3Count = 0, sheet3Days = 0;
