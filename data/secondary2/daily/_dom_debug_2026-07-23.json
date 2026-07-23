@@ -1,5 +1,5 @@
 {
- "agGridCount": 112,
+ "agGridCount": 114,
  "agRows": 0,
  "tabs": [
   {
@@ -12,12 +12,6 @@
    "text": "成交明细",
    "x": 326,
    "y": 602,
-   "cls": ""
-  },
-  {
-   "text": "报价",
-   "x": 3476,
-   "y": 291,
    "cls": ""
   }
  ],
@@ -55,7 +49,7 @@
     "tag": "DIV",
     "cls": "dm-table-table-container",
     "y": 627,
-    "h": 20
+    "h": 496
    }
   ]
  },
