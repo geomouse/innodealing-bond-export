@@ -736,22 +736,21 @@ async function main() {
     }));
     // 按平均成交降序
     rows.sort((a, b) => b.maxVal - a.maxVal);
-    // 二级行情：只保留 最新成交 >= 2.0% 的债券；休市行若最新成交为空/休1 则 fallback 到平均成交
+    // 二级行情：只保留成交价 >= 2.0% 的债券；取 最新成交/平均成交/最高/开盘/最低 中的最大值判读，避免最新成交短时波动导致漏抓截图中已出现的高价债
     function getEffectivePrice(r) {
-      const latestIdx = colDefs.findIndex(c => c.name.includes('最新成交'));
-      const avgIdx = colDefs.findIndex(c => c.name.includes('平均成交'));
-      if (latestIdx >= 0) {
-        const v = parseFloat(r.cells[latestIdx]);
-        if (!isNaN(v)) return v;
+      const priceColNames = ['最新成交', '平均成交', '最高', '开盘', '最低'];
+      let maxPrice = 0;
+      for (const name of priceColNames) {
+        const idx = colDefs.findIndex(c => c.name.includes(name));
+        if (idx >= 0) {
+          const v = parseFloat(r.cells[idx]);
+          if (!isNaN(v) && v > maxPrice) maxPrice = v;
+        }
       }
-      if (avgIdx >= 0) {
-        const v = parseFloat(r.cells[avgIdx]);
-        if (!isNaN(v)) return v;
-      }
-      return 0;
+      return maxPrice;
     }
     let filtered = rows.filter(r => r.bondName && r.bondCode && getEffectivePrice(r) >= MIN_LATEST_PRICE);
-    log(`  下框有效债券共${rows.length}行，按最新成交>=${MIN_LATEST_PRICE}保留 ${filtered.length}行`);
+    log(`  下框有效债券共${rows.length}行，按成交价最大值>=${MIN_LATEST_PRICE}保留 ${filtered.length}行`);
     // [DEBUG] 导出原始抓取行(阈值前)用于核对漏行（诊断用，体积小）
     try {
       const dbg = rows.map(r => ({ bondName: r.bondName, bondCode: r.bondCode, maxVal: r.maxVal, pass: !!(r.bondName && r.bondCode) }));
