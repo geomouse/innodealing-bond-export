@@ -147,8 +147,24 @@ async function main() {
     await closeAllModals(5);
     await screenshot(page, '04-after-close-modal');
 
+    // 先点左侧"主体" tab，展开主体组筛选面板（all-A 才会出现）
+    log('3. 点击左侧"主体" tab');
+    const subjectClick = await targetFrame.evaluate(() => {
+      for (const el of document.querySelectorAll('*')) {
+        if (el.children.length === 0 && (el.textContent || '').trim() === '主体') {
+          const rect = el.getBoundingClientRect();
+          if (rect.width > 0 && rect.height > 0) { el.click(); return { x: Math.round(rect.x), y: Math.round(rect.y), w: Math.round(rect.width), h: Math.round(rect.height) }; }
+        }
+      }
+      return null;
+    });
+    if (subjectClick) log(`  已点击"主体" tab at (${subjectClick.x},${subjectClick.y})`); else log('  未找到"主体" tab');
+    await sleep(1500);
+    await closeAllModals(3);
+    await screenshot(page, '04b-subject-tab');
+
     // 勾选主体组 all-A（与旧脚本一致）：这是下框成交行情数据出现的必要条件
-    log('3. 勾选主体组 all-A');
+    log('3b. 勾选主体组 all-A');
     const ENTITY_FILTER = 'all-A';
     const groupSelectResult = await targetFrame.evaluate((filterName) => {
       const candidates = [];
@@ -156,12 +172,12 @@ async function main() {
         const text = (el.textContent || '').trim();
         if (text === filterName) {
           const rect = el.getBoundingClientRect();
-          if (rect.width > 0 && rect.height > 0 && rect.x < 250) candidates.push({ tag: el.tagName, cls: String(el.className || '').slice(0, 80), text, x: Math.round(rect.x), y: Math.round(rect.y), w: Math.round(rect.width), h: Math.round(rect.height) });
+          if (rect.width > 0 && rect.height > 0 && rect.x < 350) candidates.push({ tag: el.tagName, cls: String(el.className || '').slice(0, 80), text, x: Math.round(rect.x), y: Math.round(rect.y), w: Math.round(rect.width), h: Math.round(rect.height) });
         }
       });
       const result = { candidates, clicked: null };
       for (const c of candidates) {
-        const textNode = Array.from(document.querySelectorAll('*')).find(el => (el.textContent || '').trim() === filterName && el.getBoundingClientRect().x < 250);
+        const textNode = Array.from(document.querySelectorAll('*')).find(el => (el.textContent || '').trim() === filterName && el.getBoundingClientRect().x < 350);
         if (textNode) {
           let parent = textNode.parentElement;
           for (let i = 0; i < 6 && parent; i++) {
@@ -181,6 +197,7 @@ async function main() {
     else log(`  ❌ 未找到 "${ENTITY_FILTER}" 元素`);
     await sleep(3000);
     await closeAllModals(3);
+    await screenshot(page, '04c-a-checked');
 
     // ===== 4. 下框提取 =====
     log('4. 提取下框（成交行情）');
