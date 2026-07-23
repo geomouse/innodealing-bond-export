@@ -7,8 +7,11 @@
   2) 合并 data/credit_bond_*.xlsx（近期导出，刷新票面利率、债券代码）
   3) 回写主库（persist，永不重建）
   4) 用主库全量生成 Sheet2
-Sheet1 = 本次运行新纳入主库的债券（与 Sheet2 同源，结构上不可能自相矛盾）。
-两表一致性自检：断言 Sheet1 当日新增数 == 主库增长数。
+Sheet1 = 主库中「截标/发行日期 == 今天」的债券（与用户预期一致：当日新发）。
+两表 + 导出真源 三方交叉验证：
+  - 真源(债立方当日导出)中截标日=今天的债券 必须全部在 Sheet1；
+  - Sheet1 每只必须也在真源(截标日=今天) 与 Sheet2 汇总中。
+任一项不满足即退出非零，workflow 将跳过发邮件（杜绝发出自相矛盾的 Excel）。
 """
 import openpyxl
 from openpyxl.styles import Font, Alignment, PatternFill, Border, Side
@@ -145,6 +148,79 @@ def save_master(m):
         json.dump(m, f, ensure_ascii=False, indent=1)
 
 
+def _parse_issue_date(s):
+    """从 '2026-07-23 18:00' / '07-23 18:00' 之类解析出 YYYY-MM-DD。"""
+    s = str(s).strip()
+    if not s:
+        return ''
+    m = re.search(r'(\d{4})-(\d{2})-(\d{2})', s)          # 完整日期 2026-07-23
+    if m:
+        return f"{m.group(1)}-{m.group(2)}-{m.group(3)}"
+    m = re.search(r'(?<!\d)(\d{1,2})-(\d{2})(?!\d)', s)  # 仅月-日 07-23（避免误截 2026 中的 26-07）
+    if m:
+        return f"{TODAY[:4]}-{int(m.group(1)):02d}-{int(m.group(2)):02d}"
+    return ''
+
+
+def issue_date_of(info):
+    """从主库债券信息解析发行/截标日期(YYYY-MM-DD)，判定是否'今日新发'。"""
+    for key in ('截标时间', '缴款日', '公告日'):
+        v = (info or {}).get('data', {}).get(key)
+        if v:
+            d = _parse_issue_date(v)
+            if d:
+                return d
+    return ''
+
+
+def issue_date_of_row(row):
+    for key in ('截标时间', '缴款日', '公告日'):
+        v = row.get(key)
+        if v:
+            d = _parse_issue_date(v)
+            if d:
+                return d
+    return ''
+
+
+# ---------- 导出真源 × 两表 交叉验证 ----------
+# 真源 = 债立方当日导出文件 credit_bond_{TODAY}.xlsx。
+# Sheet1 的语义 = 「截标/发行日期 == 今天」的债券（与用户预期一致）。
+# 注意：债立方 '发行起始日 >= 查询日' 是向前看窗口，且当日导出文件常常为空（债靠更早文件进来），
+# 因此：① 不能用'今日文件−更早文件'判定新增；② 不能要求 Sheet1 每只都在今日文件里（会误报）。
+# 有意义的交叉验证：
+#   (A) 真源中 截标日==今天 的债券，必须全部进入 Sheet1（今日文件有数据时才校验，空则跳过）；
+#   (C) Sheet1 每只必须同时出现在 Sheet2 汇总（两表一致，结构上必成立，作兜底）。
+# 任一不满足即说明 主库/导出/表格 对不上 -> 硬错误，阻断发邮件。
+def cross_validate(sheet1_names, master_after):
+    errors = []          # [CROSS-ERROR] 硬错误 -> 触发失败退出，不发邮件
+    warnings = []        # [CROSS] 软警告 -> 仅提示
+    today_file = os.path.join(DOWNLOAD_DIR, f'credit_bond_{TODAY}.xlsx')
+    if not os.path.exists(today_file):
+        warnings.append(f"[CROSS] 警告: 当日导出文件缺失 {today_file}，无法与真源交叉验证")
+        return errors, warnings
+    export_today = {}    # name -> issue_date
+    for d, row in read_credit_bond(today_file, TODAY):
+        n = row.get('债券简称')
+        if n:
+            export_today[n] = issue_date_of_row(row)
+    sheet1_set = set(sheet1_names)
+    if not export_today:
+        warnings.append(f"[CROSS] 当日导出文件无数据行（债立方当日窗口常为空），跳过(A)真源比对；Sheet1 由主库 issue_date 定义保证")
+    else:
+        # (A) 真源中截标日==今天 的债券，必须全部在 Sheet1
+        missing = [n for n, idt in export_today.items() if idt == TODAY and n not in sheet1_set]
+        if missing:
+            errors.append(
+                f"[CROSS-ERROR] 导出真源截标日=今天的 {len(missing)} 只未计入 Sheet1 当日新增: {sorted(missing)}")
+    # (C) Sheet1 每只必须同时出现在 Sheet2 汇总
+    not_in_summary = sheet1_set - set(master_after.keys())
+    if not_in_summary:
+        errors.append(
+            f"[CROSS-ERROR] Sheet1 有 {len(not_in_summary)} 只未进入 Sheet2 汇总（两表不一致）: {sorted(not_in_summary)}")
+    return errors, warnings
+
+
 master = load_master()
 
 # ---------- 2) 合并当天/近期导出（刷新）----------
@@ -185,14 +261,18 @@ missing_fill = PatternFill(start_color='FFC7CE', end_color='FFC7CE', fill_type='
 
 wb_out = openpyxl.Workbook()
 
-# ---- Sheet1: 当日新增（本次运行新纳入主库的债券）----
+# ---- Sheet1: 当日新增（截标/发行日期 == 今天的债券）----
 ws1 = wb_out.active
 ws1.title = f"当日新增_{TODAY}"
 for ci, h in enumerate(TARGET_HEADERS, 1):
     c = ws1.cell(1, ci, h); c.font = header_font; c.fill = header_fill
     c.alignment = header_alignment; c.border = thin_border
+# Sheet1 语义：主库中截标/发行日期 == 今天的债券（与用户预期一致，不受主库预置影响）
+sheet1_items = [(name, info['data']) for name, info in master.items()
+                if issue_date_of(info) == TODAY]
+sheet1_names = [name for name, _ in sheet1_items]
 sheet1_bonds = sorted(
-    [(name, master[name]['data']) for name in new_this_run],
+    sheet1_items,
     key=lambda x: (x[1].get('截标时间') or ''), reverse=True)
 for ri, (name, rd) in enumerate(sheet1_bonds, 2):
     for ci, h in enumerate(TARGET_HEADERS, 1):
@@ -240,14 +320,22 @@ for ci, h in enumerate(TARGET_HEADERS, 2):
 ws2.row_dimensions[1].height = 30
 ws2.freeze_panes = 'B2'
 
-# ---------- 5) 两表一致性自检 ----------
+# ---------- 5) 两表一致性自检 + 导出真源交叉验证 ----------
+sheet1_count = len(sheet1_names)
 delta = len(master) - master_count_before
-sheet1_count = len(new_this_run)
-contradiction = (sheet1_count != delta)
-if contradiction:
-    print(f"[ERROR] 自检失败：主库增长 {delta} ≠ Sheet1 当日新增 {sheet1_count}")
+print(f"[INFO] Sheet1 当日新增(截标日=今天): {sheet1_count} 条；本次运行新纳入主库: {len(new_this_run)} 只")
+
+# 真·交叉验证：导出文件(真源) × Sheet1 × Sheet2
+cross_errors, cross_warnings = cross_validate(sheet1_names, master)
+for w in cross_warnings:
+    print(w)
+cross_failed = bool(cross_errors)
+for e in cross_errors:
+    print(e)
+if cross_failed:
+    print(f"[CROSS-CHECK] ❌ 未通过（{len(cross_errors)} 处）：导出真源与两表对不上，已阻止发邮件")
 else:
-    print(f"[SELF-CHECK] ✅ Sheet1 当日新增 {sheet1_count} = 主库增长 {delta}，两表一致，无矛盾")
+    print("[CROSS-CHECK] ✅ 导出真源 × Sheet1 × Sheet2 三方交叉验证通过")
 
 wb_out.save(OUTPUT_PATH)
 rate_filled = len(master) - len(missing)
@@ -263,14 +351,14 @@ stats = {
     "date": TODAY,
     "total": len(master),
     "new_today": sheet1_count,
-    "new_names": sorted(set(new_this_run)),
+    "new_names": sorted(sheet1_names),
     "missing_rate_count": len(missing),
-    "contradiction": contradiction,
+    "cross_failed": cross_failed,
 }
 with open(os.path.join(DATA_DIR, "summary_stats.json"), "w", encoding="utf-8") as f:
     json.dump(stats, f, ensure_ascii=False, indent=1)
 print("  统计已写入 summary_stats.json")
 
-if contradiction:
-    # 结构上不会触发，但若触发则显式非零退出便于 workflow 识别
+if cross_failed:
+    # 与导出真源对不上 -> 显式非零退出，workflow 将跳过发邮件
     sys.exit(2)

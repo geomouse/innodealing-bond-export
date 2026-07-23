@@ -34,6 +34,8 @@ jobs:
                   continue
               if str(r['id']) == me:
                   continue
+              if r['name'] != '信用债发行每日导出':
+                  continue
               if r['event'] not in ('schedule', 'workflow_dispatch'):
                   continue
               if r['status'] in ('completed', 'in_progress', 'queued'):
