@@ -28,6 +28,8 @@ jobs:
         id: dedup
         env:
           GH_TOKEN: ${{ github.token }}
+          PRESET_HOUR: '16'
+          PRESET_MIN: '50'
         run: |
           if [ "${{ github.event.inputs.force }}" = "true" ]; then
             echo "强制运行(force=true)，跳过去重检查"
@@ -38,19 +40,27 @@ jobs:
           echo "检查今日($TODAY)是否已有运行..."
           RUNS=$(curl -s -H "Authorization: Bearer $GH_TOKEN" -H "Accept: application/vnd.github+json" \
             "https://api.github.com/repos/$GITHUB_REPOSITORY/actions/workflows/broker-quote-export.yml/runs?per_page=50")
-          ALREADY=$(echo "$RUNS" | TODAY="$TODAY" GITHUB_RUN_ID="$GITHUB_RUN_ID" python3 -c "
+          ALREADY=$(echo "$RUNS" | TODAY="$TODAY" GITHUB_RUN_ID="$GITHUB_RUN_ID" PRESET_HOUR="$PRESET_HOUR" PRESET_MIN="$PRESET_MIN" python3 -c "
           import json, sys, os
+          from datetime import datetime, timezone, timedelta
           d = json.load(sys.stdin)
           today = os.environ['TODAY']
           me = os.environ['GITHUB_RUN_ID']
+          ph = int(os.environ['PRESET_HOUR']); pm = int(os.environ['PRESET_MIN'])
+          bj = timezone(timedelta(hours=8))
+          now = datetime.now(bj)
+          preset = now.replace(hour=ph, minute=pm, second=0, microsecond=0)
           for r in d.get('workflow_runs', []):
-              if r['created_at'][:10] != today:
-                  continue
               if str(r['id']) == me:
                   continue
               if r['event'] not in ('schedule', 'workflow_dispatch'):
                   continue
-              if r['status'] in ('completed', 'in_progress', 'queued'):
+              if r['status'] not in ('completed', 'in_progress', 'queued'):
+                  continue
+              cdt = datetime.fromisoformat(r['created_at'].replace('Z','+00:00')).astimezone(bj)
+              if cdt.date().isoformat() != today:
+                  continue
+              if cdt >= preset:
                   print(r['id'])
                   break
           ")
@@ -120,3 +130,4 @@ jobs:
 
 # 2026-07-22: 新增经纪商行情(成交行情下框)成交汇总 → 3-Sheet 输出 + 历史累积(Sheet3)
 # 主触发器 GitHub schedule(北京16:50)；workflow 内部去重避免重复邮件
+# 2026-07-24: dedup 升级为「今天预设时间(16:50)之后跑过没」避免凌晨误跑吞掉兜底

@@ -2,8 +2,8 @@ name: 二级行情成交汇总每日导出
 
 on:
   schedule:
-    # 周一至周五 16:40 北京时间 = 08:40 UTC
-    - cron: '40 8 * * 1-5'
+    # 周一至周五 17:10 北京时间 = 09:10 UTC（晚于新二级16:40 / 经纪商16:50，避免并发登录与推送冲突）
+    - cron: '10 9 * * 1-5'
   workflow_dispatch:
     inputs:
       force:
@@ -28,6 +28,8 @@ jobs:
         id: dedup
         env:
           GH_TOKEN: ${{ github.token }}
+          PRESET_HOUR: '17'
+          PRESET_MIN: '10'
         run: |
           if [ "${{ github.event.inputs.force }}" = "true" ]; then
             echo "强制运行(force=true)，跳过去重检查"
@@ -38,19 +40,27 @@ jobs:
           echo "检查今日($TODAY)是否已有运行..."
           RUNS=$(curl -s -H "Authorization: Bearer $GH_TOKEN" -H "Accept: application/vnd.github+json" \
             "https://api.github.com/repos/$GITHUB_REPOSITORY/actions/workflows/secondary-quote-export.yml/runs?per_page=50")
-          ALREADY=$(echo "$RUNS" | TODAY="$TODAY" GITHUB_RUN_ID="$GITHUB_RUN_ID" python3 -c "
+          ALREADY=$(echo "$RUNS" | TODAY="$TODAY" GITHUB_RUN_ID="$GITHUB_RUN_ID" PRESET_HOUR="$PRESET_HOUR" PRESET_MIN="$PRESET_MIN" python3 -c "
           import json, sys, os
+          from datetime import datetime, timezone, timedelta
           d = json.load(sys.stdin)
           today = os.environ['TODAY']
           me = os.environ['GITHUB_RUN_ID']
+          ph = int(os.environ['PRESET_HOUR']); pm = int(os.environ['PRESET_MIN'])
+          bj = timezone(timedelta(hours=8))
+          now = datetime.now(bj)
+          preset = now.replace(hour=ph, minute=pm, second=0, microsecond=0)
           for r in d.get('workflow_runs', []):
-              if r['created_at'][:10] != today:
-                  continue
               if str(r['id']) == me:
                   continue
               if r['event'] not in ('schedule', 'workflow_dispatch'):
                   continue
-              if r['status'] in ('completed', 'in_progress', 'queued'):
+              if r['status'] not in ('completed', 'in_progress', 'queued'):
+                  continue
+              cdt = datetime.fromisoformat(r['created_at'].replace('Z','+00:00')).astimezone(bj)
+              if cdt.date().isoformat() != today:
+                  continue
+              if cdt >= preset:
                   print(r['id'])
                   break
           ")
@@ -125,5 +135,6 @@ jobs:
           retention-days: 7
 
 # 2026-07-21: 新增二级行情(我的关注)成交汇总 → 4-Sheet 输出 + 历史累积(Sheet4)
-# 主触发器 GitHub schedule(北京16:40) + cron-job.org 兜底(北京16:45)；workflow 内部去重避免双邮件
+# 主触发器 GitHub schedule(北京17:10) + cron-job.org 兜底(北京17:15)；workflow 内部去重避免双邮件
 # 2026-07-20: 修复去重误判——只查本 workflow 自己的 runs，避免与一级发行 workflow 互相误跳过
+# 2026-07-24: cron 改 17:10 北京；dedup 升级为「今天预设时间(17:10)之后跑过没」避免凌晨误跑吞掉兜底

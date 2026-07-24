@@ -19,26 +19,36 @@ jobs:
         id: dedup
         env:
           GH_TOKEN: ${{ github.token }}
+          PRESET_HOUR: '8'
+          PRESET_MIN: '0'
         run: |
           export TODAY=$(TZ=Asia/Shanghai date +%Y-%m-%d)
           echo "检查今日($TODAY)是否已有运行..."
           RUNS=$(curl -s -H "Authorization: Bearer $GH_TOKEN" -H "Accept: application/vnd.github+json" \
             "https://api.github.com/repos/$GITHUB_REPOSITORY/actions/runs?per_page=50")
-          ALREADY=$(echo "$RUNS" | TODAY="$TODAY" GITHUB_RUN_ID="$GITHUB_RUN_ID" python3 -c "
+          ALREADY=$(echo "$RUNS" | TODAY="$TODAY" GITHUB_RUN_ID="$GITHUB_RUN_ID" PRESET_HOUR="$PRESET_HOUR" PRESET_MIN="$PRESET_MIN" python3 -c "
           import json, sys, os
+          from datetime import datetime, timezone, timedelta
           d = json.load(sys.stdin)
           today = os.environ['TODAY']
           me = os.environ['GITHUB_RUN_ID']
+          ph = int(os.environ['PRESET_HOUR']); pm = int(os.environ['PRESET_MIN'])
+          bj = timezone(timedelta(hours=8))
+          now = datetime.now(bj)
+          preset = now.replace(hour=ph, minute=pm, second=0, microsecond=0)
           for r in d.get('workflow_runs', []):
-              if r['created_at'][:10] != today:
+              if r['name'] != '信用债发行每日导出':
                   continue
               if str(r['id']) == me:
                   continue
-              if r['name'] != '信用债发行每日导出':
-                  continue
               if r['event'] not in ('schedule', 'workflow_dispatch'):
                   continue
-              if r['status'] in ('completed', 'in_progress', 'queued'):
+              if r['status'] not in ('completed', 'in_progress', 'queued'):
+                  continue
+              cdt = datetime.fromisoformat(r['created_at'].replace('Z','+00:00')).astimezone(bj)
+              if cdt.date().isoformat() != today:
+                  continue
+              if cdt >= preset:
                   print(r['id'])
                   break
           ")
@@ -115,3 +125,4 @@ jobs:
 
 # reactivated 2026-07-20: repository set to public to fix queued runners and disabled schedule
 # 2026-07-21: 增加「今日去重」——GitHub 自带 schedule 跑过当天后，cron(workflow_dispatch) 触发的这次自动跳过，避免重复导出/邮件
+# 2026-07-24: dedup 升级为「今天预设时间(08:00)之后跑过没」避免凌晨误跑吞掉兜底
