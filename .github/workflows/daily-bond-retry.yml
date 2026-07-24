@@ -1,0 +1,163 @@
+name: 信用债发行每日导出-补录重试
+
+on:
+  schedule:
+    # 周一至周五 08:50 北京时间 = 00:50 UTC
+    - cron: '50 0 * * 1-5'
+  workflow_dispatch:
+
+permissions:
+  contents: write
+  actions: read
+
+jobs:
+  retry:
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    steps:
+      - name: 去重检查（本 workflow 今日已运行则跳过）
+        id: dedup
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          export TODAY=$(date -u +%Y-%m-%d)
+          echo "检查今日($TODAY)补录重试是否已有运行..."
+          RUNS=$(curl -s -H "Authorization: Bearer $GH_TOKEN" -H "Accept: application/vnd.github+json" \
+            "https://api.github.com/repos/$GITHUB_REPOSITORY/actions/runs?per_page=50")
+          ALREADY=$(echo "$RUNS" | TODAY="$TODAY" GITHUB_RUN_ID="$GITHUB_RUN_ID" python3 -c "
+          import json, sys, os
+          d = json.load(sys.stdin)
+          today = os.environ['TODAY']
+          me = os.environ['GITHUB_RUN_ID']
+          for r in d.get('workflow_runs', []):
+              if r['created_at'][:10] != today:
+                  continue
+              if str(r['id']) == me:
+                  continue
+              if r['name'] != '信用债发行每日导出-补录重试':
+                  continue
+              if r['event'] not in ('schedule', 'workflow_dispatch'):
+                  continue
+              if r['status'] in ('completed', 'in_progress', 'queued'):
+                  print(r['id'])
+                  break
+          ")
+          if [ -n "$ALREADY" ]; then
+            echo "今日补录重试已运行 run#$ALREADY，跳过本次"
+            echo "skip=true" >> "$GITHUB_OUTPUT"
+          else
+            echo "skip=false" >> "$GITHUB_OUTPUT"
+          fi
+
+      - uses: actions/checkout@v4
+        if: steps.dedup.outputs.skip != 'true'
+
+      - name: 缺口检查（08:00 的 Sheet2 是否仍有 债券代码/票面利率 未补全）
+        id: gapcheck
+        if: steps.dedup.outputs.skip != 'true'
+        run: |
+          pip install --quiet openpyxl
+          python3 - <<'PY'
+          import openpyxl, os
+          from datetime import datetime, timedelta, timezone
+          bj = datetime.now(timezone.utc) + timedelta(hours=8)
+          today = bj.strftime('%Y-%m-%d')
+          path = f"data/信用债发行汇总_{today}.xlsx"
+          if not os.path.exists(path):
+              print(f"[GAP] 未找到 {path}（08:00 尚未产出？），跳过补录")
+              open('/tmp/gap.txt', 'w').write("skip")
+          else:
+              wb = openpyxl.load_workbook(path)
+              ws = wb['汇总']
+              hdr = [c.value for c in ws[1]]
+              gi = {h: i for i, h in enumerate(hdr)}
+              ci = gi.get('债券代码')
+              ri = gi.get('票面利率(%)')
+              ni = gi.get('债券简称')
+              miss_code = 0
+              miss_rate = 0
+              total = 0
+              for r in range(2, ws.max_row + 1):
+                  nm = ws.cell(r, ni + 1).value if ni is not None else None
+                  if not nm:
+                      continue
+                  total += 1
+                  if ci is not None and ws.cell(r, ci + 1).value in (None, ''):
+                      miss_code += 1
+                  if ri is not None and ws.cell(r, ri + 1).value in (None, ''):
+                      miss_rate += 1
+              print(f"[GAP] Sheet2 共 {total} 只 | 缺债券代码 {miss_code} | 缺票面利率 {miss_rate}")
+              if miss_code == 0 and miss_rate == 0:
+                  print("[GAP] 08:00 数据已完整，无需补录重试")
+                  open('/tmp/gap.txt', 'w').write("skip")
+              else:
+                  print("[GAP] 发现缺口，触发 08:50 补录重试")
+                  open('/tmp/gap.txt', 'w').write("run")
+          PY
+          GAP=$(cat /tmp/gap.txt 2>/dev/null || echo skip)
+          echo "action=$GAP" >> "$GITHUB_OUTPUT"
+
+      - uses: actions/setup-node@v4
+        if: steps.gapcheck.outputs.action == 'run'
+        with:
+          node-version: '22'
+
+      - uses: actions/setup-python@v5
+        if: steps.gapcheck.outputs.action == 'run'
+        with:
+          python-version: '3.12'
+
+      - name: 安装 Node.js 依赖
+        if: steps.gapcheck.outputs.action == 'run'
+        run: npm install
+
+      - name: 安装 Chromium
+        if: steps.gapcheck.outputs.action == 'run'
+        run: npx playwright install --with-deps chromium
+
+      - name: 安装 Python 依赖
+        if: steps.gapcheck.outputs.action == 'run'
+        run: pip install openpyxl
+
+      - name: 重新导出今日数据（尝试补全）
+        if: steps.gapcheck.outputs.action == 'run'
+        env:
+          INNODEALING_USERNAME: ${{ secrets.INNODEALING_USERNAME }}
+          INNODEALING_PASSWORD: ${{ secrets.INNODEALING_PASSWORD }}
+        run: node innodealing_cloud.js
+
+      - name: 生成汇总 Excel
+        id: process
+        if: steps.gapcheck.outputs.action == 'run'
+        run: |
+          python generate_excel_cloud.py 2>&1 | tee /tmp/process.log
+          STATS=$(grep '__STATS__:' /tmp/process.log | sed 's/__STATS__://')
+          echo "stats=$STATS" >> $GITHUB_OUTPUT
+
+      - name: 提交数据到仓库
+        if: steps.gapcheck.outputs.action == 'run'
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "github-actions[bot]@users.noreply.github.com"
+          git add data/
+          if git diff --cached --quiet; then
+            echo "没有新数据，跳过推送"
+          else
+            git commit -m "📊 $(date +%Y-%m-%d) 信用债补录重试"
+            git push
+            echo "数据已推送到仓库"
+          fi
+
+      - name: 发送补录邮件
+        if: steps.gapcheck.outputs.action == 'run' && steps.process.outcome == 'success'
+        env:
+          EMAIL_USER: ${{ secrets.EMAIL_USER }}
+          EMAIL_PASS: ${{ secrets.EMAIL_PASS }}
+          EMAIL_TO: ${{ secrets.EMAIL_TO }}
+          STATS: ${{ steps.process.outputs.stats }}
+          RETRY: '1'
+        run: node send_email.js
+
+# 2026-07-24: 新增「08:50 补录重试」——08:00 若 Sheet2 仍有 债券代码/票面利率 缺口，
+# 则重跑导出+生成+发邮件，尝试补全（票面利率/代码常截标后 1~3 日才填入）。
+# 无缺口则自动跳过，不重复发邮件。去重仅限本 workflow。

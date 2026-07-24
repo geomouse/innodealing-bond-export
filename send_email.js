@@ -26,7 +26,10 @@ async function sendEmail(excelPath, dateStr, stats) {
   const [todayCount, totalCount, rateFilled, rateTotal] = stats;
   const ratePct = rateTotal > 0 ? (rateFilled / rateTotal * 100).toFixed(0) : '0';
 
-  const subject = `[信用债发行汇总] ${dateStr} | 今日${todayCount}条 | 累计${totalCount}只`;
+  let subject = `[信用债发行汇总] ${dateStr} | 今日${todayCount}条 | 累计${totalCount}只`;
+  if (process.env.RETRY === '1') {
+    subject = `[补录重试] ${subject}`;
+  }
 
   await transporter.sendMail({
     from: `"信用债汇总" <${emailUser}>`,
