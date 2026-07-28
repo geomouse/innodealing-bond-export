@@ -1,10 +1,8 @@
 {
- "date": "2026-07-27",
+ "date": "2026-07-28",
  "total": 15,
- "new_today": 1,
- "new_names": [
-  "26鸿飞02"
- ],
- "missing_rate_count": 1,
+ "new_today": 0,
+ "new_names": [],
+ "missing_rate_count": 0,
  "cross_failed": false
 }
