@@ -51,7 +51,7 @@ async function main() {
   const launchOpts = {
     headless: HEADLESS,
     args: ['--no-sandbox', '--disable-setuid-sandbox'],
-    viewport: { width: 1920, height: 1080 },
+    viewport: { width: 3400, height: 1080 },
     acceptDownloads: true
   };
   if (BROWSER_CHANNEL) launchOpts.channel = BROWSER_CHANNEL; // 本地 msedge；云端留空用自带 chromium
@@ -59,6 +59,8 @@ async function main() {
   const browser = await chromium.launchPersistentContext(userDataDir, launchOpts);
   const context = browser;  // launchPersistentContext 直接返回 context
   const page = await context.newPage();
+  // 加宽视口到 3400：上框 28 列（表头排到 x≈3054）在 1920 下必须水平滚动，会导致定位列(债券简称/代码)错位→合并丢行
+  try { await page.setViewportSize({ width: 3400, height: 1080 }); await sleep(800); } catch (e) { log(`  初始加宽视口失败: ${e.message}`); }
 
   // 关闭弹窗的辅助函数 - 在 main 内部定义，但用 const + 闭包传入 targetFrame
   let targetFrame = null;
@@ -743,7 +745,7 @@ async function main() {
         const raw = (el.textContent || '').trim();
         if (!raw || raw.length > 60) return;
         const r = el.getBoundingClientRect();
-        if (r.x < 140 || r.x > 3380) return;
+        if (r.x < 140 || r.x > 3600) return;
         if (r.width < 8 || r.height < 5 || r.height > 50) return;
         if (Math.abs(r.y - curHeaderY) <= 6) {
           const name = raw.replace(/[↓↑↕\s]/g, '');
@@ -1085,7 +1087,10 @@ async function main() {
         contBottom: rect ? Math.round(rect.bottom) : hy + 800,
         scrollTop: container ? container.scrollTop : 0,
         scrollHeight: container ? container.scrollHeight : 0,
-        clientHeight: container ? container.clientHeight : 0
+        clientHeight: container ? container.clientHeight : 0,
+        upperScrollWidth: container ? container.scrollWidth : 0,
+        upperClientWidth: container ? container.clientWidth : 0,
+        upperScrollLeft: container ? container.scrollLeft : 0
       };
     });
     if (!upperMeta) {
@@ -1096,6 +1101,7 @@ async function main() {
       log(`  上面框表头 y=${upperMeta.headerY}，原始表头 ${upperMeta.headers.length} 个: ${upperMeta.headers.map(h => h.name).join(' | ')}`);
       log(`  上面框表头 x: ${upperMeta.headers.map(h => `${h.name}(${h.x})`).join(' | ')}`);
       log(`  上面框滚动容器: scrollTop=${upperMeta.scrollTop} scrollHeight=${upperMeta.scrollHeight} clientHeight=${upperMeta.clientHeight}`);
+      log(`  上面框水平滚动: scrollLeft=${upperMeta.upperScrollLeft} scrollWidth=${upperMeta.upperScrollWidth} clientWidth=${upperMeta.upperClientWidth} ${upperMeta.upperScrollWidth > upperMeta.upperClientWidth + 30 ? '⚠️ 存在内部水平滚动条(需横向抓取)' : '✅ 无内部水平滚动(视口已容纳全部列)'}`);
 
       // 快照函数：收集当前视口内上面框数据行（用数据 cell x 聚类定义列，配表头名）
       async function snapshotUpper() {
@@ -1111,18 +1117,33 @@ async function main() {
             if (/^(成交行情|我的关注|关注列表|利率债|一级发行|信用债|二级|市场观点|行情|关注|发行|市场)$/.test(raw)) return;
             if (raw === '权' || raw === '免') return;
             const r = el.getBoundingClientRect();
-            if (r.x < 140 || r.x > 3380) return;
+            if (r.x < 140 || r.x > 3600) return;
             if (r.width < 8 || r.height < 5 || r.height > 50) return;
             const y = Math.round(r.y);
             if (y <= hy + 6) return;                       // 排除上框表头行
             if (y >= lowerHeaderY - 8) return;            // 排除下框及下方区域（用表头 y 区间分隔两框）
             dcells.push({ x: Math.round(r.x), y, w: Math.round(r.width), text: raw });
           });
-          // 按 y 分行
-          const yKeys = [];
-          for (const c of dcells) if (!yKeys.find(k => Math.abs(k - c.y) <= 8)) yKeys.push(c.y);
-          yKeys.sort((a, b) => a - b);
-          const rawRows = yKeys.map(by => dcells.filter(c => Math.abs(c.y - by) <= 8).sort((a, b) => a.x - b.x));
+          // 过滤经纪商块（仅最右侧 x>2904 区域的垃圾：信唐/CHG/时间戳/4位小数价格/大整数成交量）
+          // 避免污染 担保人/公私募 列（注意：更新时间在 x≈1850，不在此区域，不会被误删）
+          const isBrokerJunk = (c) => {
+            const t = (c.text || '').trim();
+            if (/^\d{1,2}:\d{2}:\d{2}$/.test(t)) return true;            // HH:MM:SS 时间戳
+            if (/^\d+\.\d{4}$/.test(t)) return true;                     // 4 位小数价格（经纪商块特征）
+            if (/^\d{3,}$/.test(t)) return true;                         // 大整数（经纪商成交量）
+            if (/^(CHG|信唐|国利|平安|中诚|国际|国信|华创|广发|国君|中信|招商|海通|天风|兴业|光大|东方|申万|建投|中金|浙商|华福|华安|英大|中泰|西部|银河|渤海|东莞|国海|一创|华林|红塔|瑞银|汇丰|渣打|花旗|摩根|高盛|野村|瑞穗|法兴|德银|星展|大华|联昌|华侨|东亚|恒生|南商|集友|创兴|大众)$/.test(t)) return true;
+            return false;
+          };
+          const dc = dcells.filter(c => !(c.x > 2904 && isBrokerJunk(c)));
+          // 按 y 分行：用「行内间距阈值(16px)」聚类，避免高行（带经纪商子块，y 跨度达 ~10px）被 y±8 劈成多组 → 右列整组丢失
+          dc.sort((a, b) => a.y - b.y || a.x - b.x);
+          const rawRows = [];
+          let cur = null, curMaxY = -Infinity;
+          for (const c of dc) {
+            if (!cur || (c.y - curMaxY) > 16) { cur = []; rawRows.push(cur); }
+            cur.push(c);
+            if (c.y > curMaxY) curMaxY = c.y;
+          }
           // 列定义：直接以上框表头为基准（保证全部表头列都在，不受虚拟滚动稀疏/单帧行数少影响）
           heads.sort((a, b) => a.x - b.x);
           const colSpacing = (i) => (i + 1 < heads.length) ? (heads[i + 1].x - heads[i].x) : 150;
@@ -1201,6 +1222,17 @@ async function main() {
         if (n && n !== '休' && n.length >= 2 && !/^\d+[YD]/.test(n)) return 'NAME:' + n;
         return null;
       };
+
+      // 抓取前把上框水平滚动复位为 0，确保 债券简称/债券代码 定位列对齐表头（避免水平滚动导致整行 key 错位被丢弃）
+      try {
+        const resetRes = await targetFrame.evaluate(() => {
+          let cont = null;
+          document.querySelectorAll('*').forEach(el => { if (el.__upperBox) cont = el; });
+          if (cont) { cont.scrollLeft = 0; return { sl: Math.round(cont.scrollLeft) }; }
+          return { sl: -1 };
+        });
+        log(`  上框水平滚动已复位为 0 (scrollLeft=${resetRes.sl})`);
+      } catch (e) { log(`  上框水平滚动复位失败: ${e.message}`); }
 
       // 主循环：纵向滚动收集所有行（按 债券代码 优先、债券简称 兜底的稳定 key 去重，确保不遗漏）
       const upperMap = new Map();
@@ -1381,7 +1413,7 @@ async function main() {
             const raw = (el.textContent||'').trim();
             if (!raw || raw.length > 60) return;
             const r = el.getBoundingClientRect();
-            if (r.x < 140 || r.x > 3380) return;
+            if (r.x < 140 || r.x > 3600) return;
             if (r.width < 8 || r.height < 5 || r.height > 50) return;
             if (/^(成交行情|我的关注|关注列表|利率债|一级发行|信用债|二级|市场观点|行情|关注|发行|市场)$/.test(raw)) return;
             if (raw === '权' || raw === '免') return;
@@ -1644,6 +1676,17 @@ async function main() {
         }, { code, name: bName }).catch(() => false);
       };
 
+      // 动态定位当前真正显示详情页的 frame：详情页可能同 frame hash 导航，也可能新开内部 tab
+      // 旧版固定用列表 frame(targetFrame) 做内容校验/提取，详情页开新 frame 时全部落空 → 区域空+发行人回退简称
+      async function activeDetailFrame() {
+        const byUrl = page.frames().find(fr => /bond\/detail|\/detail\//.test(fr.url()));
+        if (byUrl) return byUrl;
+        for (const fr of page.frames()) {
+          try { if (await fr.evaluate(() => /性质|主体评级|债项评级/.test(document.body?.textContent || ''))) return fr; } catch(e){}
+        }
+        return targetFrame;
+      }
+
       // 首只：在列表页dispatch双击债券名称 → 进详情页（带重试）；校验目标债券真正加载
       async function dblclickIntoDetail(frame, name, bCode, prevSig) {
         const fired = await frame.evaluate((nm) => {
@@ -1662,11 +1705,12 @@ async function main() {
           return true;
         }, name).catch(() => false);
         if (!fired) return false;
-        // 等到：签名变化 + 是详情页 + 详情内容就绪 + 目标债券确实出现
+        // 等到：签名变化 + 是详情页 + 详情内容就绪 + 目标债券确实出现（用详情页 frame 校验）
         for (let i=0; i<20; i++) {
           await sleep(500);
           if (getNavSig() !== prevSig && isDetailUrl()) {
-            if (await isDetailContent(frame) && await isTargetBond(frame, bCode, name)) {
+            const df = await activeDetailFrame();
+            if (await isDetailContent(df) && await isTargetBond(df, bCode, name)) {
               await sleep(800); // 额外渲染缓冲
               return true;
             }
@@ -1680,7 +1724,8 @@ async function main() {
       async function searchSwitch(frame, bCode, bName, prevSig) {
         const code = String(bCode||'').split('.')[0];
         if (!code) return false;
-        const box = await frame.evaluate(() => {
+        const af = await activeDetailFrame();
+        const box = await af.evaluate(() => {
           const input = document.querySelector('input.ant-select-search__field') ||
             Array.from(document.querySelectorAll('input')).find(el => String(el.className||'').includes('ant-select-search'));
           if (!input) return null;
@@ -1689,7 +1734,7 @@ async function main() {
         }).catch(()=>null);
         if (!box) return false;
         try {
-          await frame.click('input.ant-select-search__field', { timeout: 3000 });
+          await af.click('input.ant-select-search__field', { timeout: 3000 });
         } catch(e) {
           await page.mouse.click(iframeOffset.x + box.x, iframeOffset.y + box.y);
         }
@@ -1838,12 +1883,12 @@ async function main() {
           onDetail = true;
         }
 
-        let ex = await extractFrom(targetFrame);
+        let ex = await extractFrom(await activeDetailFrame());
         // 串行防护1：提取到的全称与上一只完全相同 → 疑似缓存，重取一次
         if (ex.issuerFull && ex.issuerFull === prevIssuerFull) {
           log(`  [${ri+1}] ${bName} 全称与上一只相同(${ex.issuerFull})，疑似缓存，重取...`);
           await sleep(1500);
-          ex = await extractFrom(targetFrame);
+          ex = await extractFrom(await activeDetailFrame());
         }
         // 串行防护2：全称或省份为空（详情页信息栏未渲染/读到空缓存）→ 重试最多2次，避免回退到简称
         let retry = 0;
@@ -1851,7 +1896,7 @@ async function main() {
           retry++;
           log(`  [${ri+1}] ${bName} 全称/省份为空，重取(${retry})...`);
           await sleep(1500);
-          ex = await extractFrom(targetFrame);
+          ex = await extractFrom(await activeDetailFrame());
         }
         const existing = bondRegionMap.get(bCode);
         // 详情页提取失败(province为空)时，保留已有映射值不被覆盖
@@ -1879,9 +1924,9 @@ async function main() {
           if (!ok) { await sleep(1200); ok = await searchSwitch(targetFrame, bCode, v.bondName, getNavSig()); }
           if (!ok) { log(`  ⚠️ 回填导航失败: ${v.bondName}`); continue; }
           await sleep(800);
-          let ex = await extractFrom(targetFrame);
+          let ex = await extractFrom(await activeDetailFrame());
           let rt = 0;
-          while ((!ex.issuerFull || !ex.province) && rt < 2) { rt++; await sleep(1500); ex = await extractFrom(targetFrame); }
+          while ((!ex.issuerFull || !ex.province) && rt < 2) { rt++; await sleep(1500); ex = await extractFrom(await activeDetailFrame()); }
           const merged = { ...v };
           if (ex.province) merged.region = ex.province;
           if (ex.issuerFull) merged.issuerFull = ex.issuerFull;
@@ -1943,7 +1988,7 @@ async function main() {
     // ===== Sheet3 = 成交行情汇总（按用户模板 17 列） =====
     log('9. 构建 Sheet3: 成交行情汇总');
     const SHEET3_HEADERS = ['成交日期', '债券简称', '剩余期限', '最新成交', '中债(行/到)', '中债偏离(BP)',
-      '发行人简称', '区域', '债券代码', '中债隐含评级', '中债净价', '主/债',
+      '发行人', '区域', '债券代码', '中债隐含评级', '中债净价', '主/债',
       '票面利率(%)', '债券余额(亿)', '到期日', 'YY评分', '久期'];
 
     // 上框列名→index 映射（用于从 upperRows 取值）
@@ -2080,6 +2125,27 @@ async function main() {
     const outPath = path.join(SECONDARY_DIR, outName);
     await wb.xlsx.writeFile(outPath);
     log(`✅ 已保存: ${outPath}${skipEmptyWrite ? ' (空数据保留历史daily json)' : ''}`);
+
+    // ===== 强制自我校验：详情页提取完整性 =====
+    // 区域(H列)唯一来源是详情页，空=提取失败；发行人(G列)必须非空。任一为空即拒绝发邮件。
+    {
+      let issuerEmpty = 0, regionEmpty = 0;
+      for (const row of sheet3Rows) {
+        const issuer = row[6]; // G 发行人（列名已改为"发行人"，位置不变）
+        const region = row[7]; // H 区域
+        if (!issuer || String(issuer).trim() === '') issuerEmpty++;
+        if (!region || String(region).trim() === '') regionEmpty++;
+      }
+      const tot = sheet3Rows.length;
+      log(`\n[SELF-CHECK] 当天Sheet3行数=${tot} 发行人空=${issuerEmpty} 区域空=${regionEmpty}`);
+      if (tot > 0 && (regionEmpty > 0 || issuerEmpty > 0)) {
+        log(`[SELF-CHECK-FAIL] 区域/发行人存在空值，详情页提取不完整，拒绝发送邮件`);
+        console.log(`__CHECK__:FAIL:${tot}:${issuerEmpty}:${regionEmpty}`);
+        process.exit(2); // 非零退出 → workflow 不发邮件，仅上传诊断 artifact
+      }
+      console.log(`__CHECK__:PASS:${tot}:${issuerEmpty}:${regionEmpty}`);
+      log(`[SELF-CHECK-PASS] 所有行发行人/区域均已填充，允许发送邮件`);
+    }
     log(`   共 4 Sheet: 下框${filtered.length} + 上框${filtered.length} + 当天汇总${sheet3Count} + 历史累积${sheet4Count}(${sheet4Days}个交易日)（均≥${MIN_VOLUME}）`);
 
 
