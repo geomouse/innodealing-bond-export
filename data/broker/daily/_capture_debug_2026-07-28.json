@@ -1,7 +1,7 @@
 {
  "bjDate": "2026-07-28",
- "hourBJ": 0,
- "threshold": 2.4,
+ "hourBJ": 16,
+ "threshold": 2.8,
  "visibleNames": 20,
  "capturedNames": 20,
  "estimatedTotal": null,
@@ -10,124 +10,124 @@
  "captureComplete": null,
  "captured": [
   {
-   "bondName": "25东阳光CP001",
-   "bondCode": "042580549.IB",
-   "maxVal": 5.46,
+   "bondName": "华发RH1A",
+   "bondCode": "180289.SH",
+   "maxVal": 3.7828,
    "pass": true
   },
   {
-   "bondName": "24首开MTN006",
-   "bondCode": "102484124.IB",
-   "maxVal": 3.45,
+   "bondName": "25希望01",
+   "bondCode": "242432.SH",
+   "maxVal": 3.7,
    "pass": true
   },
   {
    "bondName": "23邢台银行永续债01",
    "bondCode": "242380032.IB",
-   "maxVal": 3.35,
+   "maxVal": 3.32,
    "pass": true
   },
   {
-   "bondName": "26首股01",
-   "bondCode": "281606.SH",
-   "maxVal": 3.35,
+   "bondName": "25绿城地产MTN003",
+   "bondCode": "102501340.IB",
+   "maxVal": 3.12,
    "pass": true
   },
   {
-   "bondName": "24首开MTN005A",
-   "bondCode": "102400873.IB",
-   "maxVal": 3.3,
+   "bondName": "25安阳钢铁MTN002(科创债)",
+   "bondCode": "102582671.IB",
+   "maxVal": 3.06,
    "pass": true
   },
   {
-   "bondName": "22首股04",
-   "bondCode": "137728.SH",
-   "maxVal": 3.3,
+   "bondName": "25创鸿04",
+   "bondCode": "259380.SH",
+   "maxVal": 2.82,
    "pass": true
   },
   {
-   "bondName": "26中交房产MTN002",
-   "bondCode": "102681269.IB",
-   "maxVal": 3.02,
+   "bondName": "24皖供销PPN001",
+   "bondCode": "032480445.IB",
+   "maxVal": 2.81,
    "pass": true
   },
   {
-   "bondName": "26津资06",
-   "bondCode": "282465.SH",
-   "maxVal": 2.9567,
-   "pass": true
+   "bondName": "24渝建01",
+   "bondCode": "254104.SH",
+   "maxVal": 2.7,
+   "pass": false
   },
   {
-   "bondName": "24遵投02",
-   "bondCode": "256665.SH",
-   "maxVal": 2.9,
-   "pass": true
+   "bondName": "26漳九K2",
+   "bondCode": "283007.SH",
+   "maxVal": 2.67,
+   "pass": false
   },
   {
-   "bondName": "26济南高新MTN003B",
-   "bondCode": "102601967.IB",
-   "maxVal": 2.75,
-   "pass": true
+   "bondName": "25山财租赁MTN001",
+   "bondCode": "102580380.IB",
+   "maxVal": 2.65,
+   "pass": false
   },
   {
-   "bondName": "25镇江产投MTN002",
-   "bondCode": "102580810.IB",
-   "maxVal": 2.73,
-   "pass": true
+   "bondName": "26邹城资产MTN001",
+   "bondCode": "102602128.IB",
+   "maxVal": 2.64,
+   "pass": false
   },
   {
-   "bondName": "26豫峡02",
-   "bondCode": "283269.SH",
-   "maxVal": 2.72,
-   "pass": true
+   "bondName": "22黔投03",
+   "bondCode": "114114.SH",
+   "maxVal": 2.64,
+   "pass": false
   },
   {
-   "bondName": "24昆明轨道MTN006",
-   "bondCode": "102483702.IB",
-   "maxVal": 2.6,
-   "pass": true
+   "bondName": "GC绿发优",
+   "bondCode": "183126.SH",
+   "maxVal": 2.63,
+   "pass": false
   },
   {
-   "bondName": "26绿城01",
-   "bondCode": "245301.SH",
-   "maxVal": 2.59,
-   "pass": true
+   "bondName": "24绿城房产MTN005",
+   "bondCode": "102484298.IB",
+   "maxVal": 2.62,
+   "pass": false
   },
   {
-   "bondName": "24桂债07",
-   "bondCode": "255899.SH",
-   "maxVal": 2.58,
-   "pass": true
+   "bondName": "26大丰02",
+   "bondCode": "283137.SH",
+   "maxVal": 2.61,
+   "pass": false
+  },
+  {
+   "bondName": "26南山K1",
+   "bondCode": "244516.SH",
+   "maxVal": 2.55,
+   "pass": false
+  },
+  {
+   "bondName": "24冀中峰峰MTN004(两新)",
+   "bondCode": "102483286.IB",
+   "maxVal": 2.54,
+   "pass": false
   },
   {
    "bondName": "25吉林银行二级资本债01",
    "bondCode": "232580004.IB",
-   "maxVal": 2.515,
-   "pass": true
+   "maxVal": 2.5191,
+   "pass": false
   },
   {
-   "bondName": "26塞斯潘PPN001BC",
-   "bondCode": "032680125.IB",
-   "maxVal": 2.48,
-   "pass": true
+   "bondName": "25国博文旅PPN002(资产担保)",
+   "bondCode": "032580198.IB",
+   "maxVal": 2.5,
+   "pass": false
   },
   {
-   "bondName": "25鲁商MTN001",
-   "bondCode": "102580284.IB",
-   "maxVal": 2.46,
-   "pass": true
-  },
-  {
-   "bondName": "25芜湖投控MTN003B",
-   "bondCode": "102582807.IB",
-   "maxVal": 2.46,
-   "pass": true
-  },
-  {
-   "bondName": "25津渤海MTN004",
-   "bondCode": "102584971.IB",
-   "maxVal": 2.44,
-   "pass": true
+   "bondName": "25新中泰集MTN001B(科创债)",
+   "bondCode": "102582748.IB",
+   "maxVal": 2.5,
+   "pass": false
   }
  ]
 }
