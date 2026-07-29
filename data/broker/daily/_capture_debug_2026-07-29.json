@@ -1,0 +1,133 @@
+{
+ "bjDate": "2026-07-29",
+ "hourBJ": 16,
+ "threshold": 2.8,
+ "visibleNames": 20,
+ "capturedNames": 20,
+ "estimatedTotal": null,
+ "missingNames": [],
+ "recoveredExtra": 0,
+ "captureComplete": null,
+ "captured": [
+  {
+   "bondName": "26丰源远航PPN001(科创债)",
+   "bondCode": "032680071.IB",
+   "maxVal": 3.85,
+   "pass": true
+  },
+  {
+   "bondName": "25希望01",
+   "bondCode": "242432.SH",
+   "maxVal": 3.7,
+   "pass": true
+  },
+  {
+   "bondName": "23邢台银行永续债01",
+   "bondCode": "242380032.IB",
+   "maxVal": 3.33,
+   "pass": true
+  },
+  {
+   "bondName": "25青上02",
+   "bondCode": "259901.SH",
+   "maxVal": 3.15,
+   "pass": true
+  },
+  {
+   "bondName": "25上合控股PPN001",
+   "bondCode": "032580071.IB",
+   "maxVal": 2.8,
+   "pass": true
+  },
+  {
+   "bondName": "26建集Y4",
+   "bondCode": "245681.SH",
+   "maxVal": 2.58,
+   "pass": false
+  },
+  {
+   "bondName": "26涪陵04",
+   "bondCode": "520314.SZ",
+   "maxVal": 2.56,
+   "pass": false
+  },
+  {
+   "bondName": "26安吉05",
+   "bondCode": "245472.SH",
+   "maxVal": 2.55,
+   "pass": false
+  },
+  {
+   "bondName": "25新中泰集MTN002(科创债)",
+   "bondCode": "102583582.IB",
+   "maxVal": 2.545,
+   "pass": false
+  },
+  {
+   "bondName": "25吉林银行二级资本债01",
+   "bondCode": "232580004.IB",
+   "maxVal": 2.53,
+   "pass": false
+  },
+  {
+   "bondName": "26塞斯潘PPN001BC",
+   "bondCode": "032680125.IB",
+   "maxVal": 2.47,
+   "pass": false
+  },
+  {
+   "bondName": "26保利08",
+   "bondCode": "245694.SH",
+   "maxVal": 2.45,
+   "pass": false
+  },
+  {
+   "bondName": "25保利发展MTN004B",
+   "bondCode": "102584979.IB",
+   "maxVal": 2.45,
+   "pass": false
+  },
+  {
+   "bondName": "24新城控股MTN002",
+   "bondCode": "102401074.IB",
+   "maxVal": 2.42,
+   "pass": false
+  },
+  {
+   "bondName": "25厦信Y2",
+   "bondCode": "134210.SZ",
+   "maxVal": 2.42,
+   "pass": false
+  },
+  {
+   "bondName": "24金水02",
+   "bondCode": "255671.SH",
+   "maxVal": 2.42,
+   "pass": false
+  },
+  {
+   "bondName": "24美的置业MTN004A",
+   "bondCode": "102483939.IB",
+   "maxVal": 2.41,
+   "pass": false
+  },
+  {
+   "bondName": "24中化06",
+   "bondCode": "240982.SH",
+   "maxVal": 2.4,
+   "pass": false
+  },
+  {
+   "bondName": "26江铜股份MTN001B(并购)",
+   "bondCode": "102682787.IB",
+   "maxVal": 2.4,
+   "pass": false
+  },
+  {
+   "bondName": "24保置04",
+   "bondCode": "241323.SH",
+   "maxVal": 2.395,
+   "pass": false
+  }
+ ]
+}
