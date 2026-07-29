@@ -1,8 +1,11 @@
 {
- "date": "2026-07-28",
- "total": 15,
- "new_today": 0,
- "new_names": [],
- "missing_rate_count": 0,
+ "date": "2026-07-29",
+ "total": 25,
+ "new_today": 2,
+ "new_names": [
+  "26湖南银行债01",
+  "26舟城F2"
+ ],
+ "missing_rate_count": 6,
  "cross_failed": false
 }
