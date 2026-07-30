@@ -1,0 +1,133 @@
+{
+ "bjDate": "2026-07-30",
+ "hourBJ": 16,
+ "threshold": 2.8,
+ "visibleNames": 20,
+ "capturedNames": 20,
+ "estimatedTotal": null,
+ "missingNames": [],
+ "recoveredExtra": 0,
+ "captureComplete": null,
+ "captured": [
+  {
+   "bondName": "26太重MTN007(科创债)",
+   "bondCode": "102682576.IB",
+   "maxVal": 3.2,
+   "pass": true
+  },
+  {
+   "bondName": "26长春轨交MTN006",
+   "bondCode": "102681950.IB",
+   "maxVal": 3.04,
+   "pass": true
+  },
+  {
+   "bondName": "24蓝创02",
+   "bondCode": "254655.SH",
+   "maxVal": 2.8,
+   "pass": true
+  },
+  {
+   "bondName": "25上合控股PPN001",
+   "bondCode": "032580071.IB",
+   "maxVal": 2.8,
+   "pass": true
+  },
+  {
+   "bondName": "25华发01",
+   "bondCode": "242255.SH",
+   "maxVal": 2.77,
+   "pass": false
+  },
+  {
+   "bondName": "26豫峡02",
+   "bondCode": "283269.SH",
+   "maxVal": 2.68,
+   "pass": false
+  },
+  {
+   "bondName": "24深铁07",
+   "bondCode": "148664.SZ",
+   "maxVal": 2.65,
+   "pass": false
+  },
+  {
+   "bondName": "26青城10",
+   "bondCode": "282440.SH",
+   "maxVal": 2.64,
+   "pass": false
+  },
+  {
+   "bondName": "24青岛上合MTN001",
+   "bondCode": "102401098.IB",
+   "maxVal": 2.58,
+   "pass": false
+  },
+  {
+   "bondName": "24中冶MTN007",
+   "bondCode": "102483477.IB",
+   "maxVal": 2.56,
+   "pass": false
+  },
+  {
+   "bondName": "26北新路桥MTN002",
+   "bondCode": "102682407.IB",
+   "maxVal": 2.55,
+   "pass": false
+  },
+  {
+   "bondName": "25咸金01",
+   "bondCode": "258057.SH",
+   "maxVal": 2.53,
+   "pass": false
+  },
+  {
+   "bondName": "26首创城发MTN003",
+   "bondCode": "102602076.IB",
+   "maxVal": 2.51,
+   "pass": false
+  },
+  {
+   "bondName": "华能YK29",
+   "bondCode": "245344.SH",
+   "maxVal": 2.49,
+   "pass": false
+  },
+  {
+   "bondName": "26塞斯潘PPN001BC",
+   "bondCode": "032680125.IB",
+   "maxVal": 2.48,
+   "pass": false
+  },
+  {
+   "bondName": "25江铜MTN001(科创债)",
+   "bondCode": "102582069.IB",
+   "maxVal": 2.46,
+   "pass": false
+  },
+  {
+   "bondName": "25保利发展MTN004B",
+   "bondCode": "102584979.IB",
+   "maxVal": 2.45,
+   "pass": false
+  },
+  {
+   "bondName": "26保利06",
+   "bondCode": "245444.SH",
+   "maxVal": 2.45,
+   "pass": false
+  },
+  {
+   "bondName": "26桂林银行永续债01",
+   "bondCode": "242680019.IB",
+   "maxVal": 2.44,
+   "pass": false
+  },
+  {
+   "bondName": "铁建YK40",
+   "bondCode": "245501.SH",
+   "maxVal": 2.42,
+   "pass": false
+  }
+ ]
+}
