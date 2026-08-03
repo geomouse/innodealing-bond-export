@@ -226,44 +226,53 @@ async function main() {
     await sleep(1000);
     console.log('  [OK] 已加载信用债发行页面');
 
-    // ===== STEP 3: 选择主体组 all-A =====
+    // ===== STEP 3: 选择主体组 all-A（带校验，失败即终止，避免混入非关注组）=====
     console.log('[3/4] 选择主体组 all-A...');
-    const foundAllA = await targetFrame.evaluate(() => {
+    const hasAllASelected = () => targetFrame.evaluate(() => {
       const selectors = document.querySelectorAll('.dmuiv4-select');
       for (const sel of selectors) {
-        if (sel.textContent.includes('all-A')) return 'already_selected';
+        if (sel.textContent.includes('all-A')) return true;
       }
-      return 'need_select';
+      return false;
     });
 
-    if (foundAllA === 'already_selected') {
-      console.log('  [OK] 已选择主体组 all-A (已存在)');
-    } else {
-      const box = await targetFrame.evaluate(() => {
-        const sel = Array.from(document.querySelectorAll('.dmuiv4-select'))
-          .find(s => s.textContent.includes('请选择主体组'));
-        if (!sel) return null;
-        const rect = sel.getBoundingClientRect();
-        return { x: rect.x, y: rect.y, width: rect.width, height: rect.height };
-      });
-      if (box) {
-        await page.mouse.click(box.x + box.width - 12, box.y + box.height / 2);
-        await sleep(1000);
-        await targetFrame.evaluate(() => {
-          const items = document.querySelectorAll('.dmuiv4-select-item-option-content');
-          for (const item of items) {
-            if (item.textContent.trim() === 'all-A') { item.click(); return true; }
-          }
-          return false;
+    let ok = await hasAllASelected();
+    if (!ok) {
+      for (let attempt = 1; attempt <= 3 && !ok; attempt++) {
+        const box = await targetFrame.evaluate(() => {
+          const sel = Array.from(document.querySelectorAll('.dmuiv4-select'))
+            .find(s => s.textContent.includes('请选择主体组') || s.textContent.includes('all-A'));
+          if (!sel) return null;
+          const rect = sel.getBoundingClientRect();
+          return { x: rect.x, y: rect.y, width: rect.width, height: rect.height };
         });
-        await sleep(500);
-        console.log('  [OK] 已选择主体组 all-A');
-      } else {
-        console.log('  [WARN] 未找到主体组下拉框');
+        if (box) {
+          await page.mouse.click(box.x + box.width - 12, box.y + box.height / 2);
+          await sleep(1200);
+          const clicked = await targetFrame.evaluate(() => {
+            const items = document.querySelectorAll('.dmuiv4-select-item-option-content');
+            for (const item of items) {
+              if (item.textContent.trim() === 'all-A') { item.click(); return true; }
+            }
+            return false;
+          });
+          await sleep(800);
+          ok = await hasAllASelected();
+          console.log(`  [attempt ${attempt}] 点击all-A=${clicked} 校验已选中=${ok}`);
+          if (!ok) { await page.keyboard.press('Escape'); await sleep(500); }
+        } else {
+          console.log(`  [WARN] 未找到主体组下拉框 (attempt ${attempt})`);
+          await sleep(500);
+        }
       }
     }
+    if (!ok) {
+      console.log('  [FATAL] 主体组 all-A 选择校验失败，终止导出以避免混入非关注组债券');
+      process.exit(1);
+    }
+    console.log('  [OK] 已确认主体组 all-A 选中');
     await page.keyboard.press('Escape');
-    await sleep(3000);
+    await sleep(2000);
 
     // ===== STEP 4: 逐日导出 =====
     console.log(`[4/4] 逐日导出 ${businessDays.length} 个交易日...`);

@@ -42,7 +42,8 @@ MASTER_PATH = os.path.join(DATA_DIR, 'bonds_master.json')
 
 # ---- 北京时间（云端 runner 默认 UTC，必须 +8h 校正）----
 _beijing = datetime.now(timezone.utc) + timedelta(hours=8)
-TODAY = _beijing.strftime('%Y-%m-%d')
+# 支持 TODAY_OVERRIDE 环境变量（仅本地/维护时用，用于重生成历史日期文件；常规运行不受影响）
+TODAY = os.environ.get('TODAY_OVERRIDE') or _beijing.strftime('%Y-%m-%d')
 OUTPUT_PATH = os.path.join(DATA_DIR, f"信用债发行汇总_{TODAY}.xlsx")
 
 # ---------- 读取辅助 ----------
