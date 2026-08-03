@@ -1,8 +1,8 @@
 {
- "bjDate": "2026-08-03",
+ "bjDate": "2026-08-04",
  "threshold": 2,
- "visibleNames": 17,
- "capturedNames": 17,
+ "visibleNames": 16,
+ "capturedNames": 16,
  "missingNames": [],
  "captured": [
   {
@@ -84,11 +84,6 @@
    "bondName": "24云能投MTN017",
    "bondCode": "102483339.IB",
    "latest": "1.9400"
-  },
-  {
-   "bondName": "25万州经开MTN003",
-   "bondCode": "102501599.IB",
-   "latest": "1.9200"
   }
  ]
 }
