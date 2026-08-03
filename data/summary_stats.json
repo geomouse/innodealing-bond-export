@@ -1,8 +1,10 @@
 {
- "date": "2026-07-31",
- "total": 25,
- "new_today": 0,
- "new_names": [],
- "missing_rate_count": 5,
+ "date": "2026-08-03",
+ "total": 26,
+ "new_today": 1,
+ "new_names": [
+  "26农业银行绿色债01"
+ ],
+ "missing_rate_count": 6,
  "cross_failed": false
 }
