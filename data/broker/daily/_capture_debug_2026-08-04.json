@@ -1,0 +1,133 @@
+{
+ "bjDate": "2026-08-04",
+ "hourBJ": 16,
+ "threshold": 2.8,
+ "visibleNames": 20,
+ "capturedNames": 20,
+ "estimatedTotal": null,
+ "missingNames": [],
+ "recoveredExtra": 0,
+ "captureComplete": null,
+ "captured": [
+  {
+   "bondName": "22首股04",
+   "bondCode": "137728.SH",
+   "maxVal": 3.25,
+   "pass": true
+  },
+  {
+   "bondName": "25中交房产MTN003B",
+   "bondCode": "102501447.IB",
+   "maxVal": 3.1,
+   "pass": true
+  },
+  {
+   "bondName": "25中交房产MTN005B",
+   "bondCode": "102501542.IB",
+   "maxVal": 3.09,
+   "pass": true
+  },
+  {
+   "bondName": "25青岛上合MTN002",
+   "bondCode": "102582674.IB",
+   "maxVal": 2.9,
+   "pass": true
+  },
+  {
+   "bondName": "24胶州湾PPN002B",
+   "bondCode": "032400784.IB",
+   "maxVal": 2.89,
+   "pass": true
+  },
+  {
+   "bondName": "22华发02",
+   "bondCode": "185640.SH",
+   "maxVal": 2.83,
+   "pass": true
+  },
+  {
+   "bondName": "25灞桥01",
+   "bondCode": "134557.SZ",
+   "maxVal": 2.8,
+   "pass": true
+  },
+  {
+   "bondName": "26建房01",
+   "bondCode": "524884.SZ",
+   "maxVal": 2.78,
+   "pass": false
+  },
+  {
+   "bondName": "24潍水04",
+   "bondCode": "255648.SH",
+   "maxVal": 2.75,
+   "pass": false
+  },
+  {
+   "bondName": "24津渤海K3",
+   "bondCode": "134111.SZ",
+   "maxVal": 2.65,
+   "pass": false
+  },
+  {
+   "bondName": "25湖北广电MTN002",
+   "bondCode": "102580735.IB",
+   "maxVal": 2.64,
+   "pass": false
+  },
+  {
+   "bondName": "24深铁08",
+   "bondCode": "148702.SZ",
+   "maxVal": 2.63,
+   "pass": false
+  },
+  {
+   "bondName": "24潍经01",
+   "bondCode": "254874.SH",
+   "maxVal": 2.6,
+   "pass": false
+  },
+  {
+   "bondName": "25青岛上合MTN001",
+   "bondCode": "102580220.IB",
+   "maxVal": 2.55,
+   "pass": false
+  },
+  {
+   "bondName": "25晋能电力MTN011",
+   "bondCode": "102583226.IB",
+   "maxVal": 2.54,
+   "pass": false
+  },
+  {
+   "bondName": "25胶州城投MTN005",
+   "bondCode": "102585041.IB",
+   "maxVal": 2.52,
+   "pass": false
+  },
+  {
+   "bondName": "23华发实业MTN003A",
+   "bondCode": "102382501.IB",
+   "maxVal": 2.5,
+   "pass": false
+  },
+  {
+   "bondName": "21齐河04",
+   "bondCode": "196091.SH",
+   "maxVal": 2.5,
+   "pass": false
+  },
+  {
+   "bondName": "26保利08",
+   "bondCode": "245694.SH",
+   "maxVal": 2.47,
+   "pass": false
+  },
+  {
+   "bondName": "26振石SCP002",
+   "bondCode": "012681881.IB",
+   "maxVal": 2.46,
+   "pass": false
+  }
+ ]
+}
