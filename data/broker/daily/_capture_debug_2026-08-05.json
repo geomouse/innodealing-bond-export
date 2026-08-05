@@ -1,0 +1,133 @@
+{
+ "bjDate": "2026-08-05",
+ "hourBJ": 16,
+ "threshold": 2.8,
+ "visibleNames": 20,
+ "capturedNames": 20,
+ "estimatedTotal": null,
+ "missingNames": [],
+ "recoveredExtra": 0,
+ "captureComplete": null,
+ "captured": [
+  {
+   "bondName": "25腾冲01",
+   "bondCode": "259204.SH",
+   "maxVal": 3.36,
+   "pass": true
+  },
+  {
+   "bondName": "23邢台银行永续债01",
+   "bondCode": "242380032.IB",
+   "maxVal": 3.32,
+   "pass": true
+  },
+  {
+   "bondName": "24华发实业MTN003",
+   "bondCode": "102483773.IB",
+   "maxVal": 3.3,
+   "pass": true
+  },
+  {
+   "bondName": "25百工01",
+   "bondCode": "280257.SH",
+   "maxVal": 3.185,
+   "pass": true
+  },
+  {
+   "bondName": "24胶州湾PPN002B",
+   "bondCode": "032400784.IB",
+   "maxVal": 2.88,
+   "pass": true
+  },
+  {
+   "bondName": "金源致远03B",
+   "bondCode": "500117.SZ",
+   "maxVal": 2.83,
+   "pass": true
+  },
+  {
+   "bondName": "26连云港MTN002B",
+   "bondCode": "102682246.IB",
+   "maxVal": 2.68,
+   "pass": false
+  },
+  {
+   "bondName": "25昭通V",
+   "bondCode": "258749.SH",
+   "maxVal": 2.6,
+   "pass": false
+  },
+  {
+   "bondName": "25华发集团MTN007",
+   "bondCode": "102583077.IB",
+   "maxVal": 2.58,
+   "pass": false
+  },
+  {
+   "bondName": "26大丰02",
+   "bondCode": "283137.SH",
+   "maxVal": 2.57,
+   "pass": false
+  },
+  {
+   "bondName": "25沙迦人民币债01BC",
+   "bondCode": "292580012.IB",
+   "maxVal": 2.52,
+   "pass": false
+  },
+  {
+   "bondName": "19西咸集团债02",
+   "bondCode": "1980334.IB",
+   "maxVal": 2.4,
+   "pass": false
+  },
+  {
+   "bondName": "25云建投MTN004B",
+   "bondCode": "102501319.IB",
+   "maxVal": 2.4,
+   "pass": false
+  },
+  {
+   "bondName": "铁建YK40",
+   "bondCode": "245501.SH",
+   "maxVal": 2.39,
+   "pass": false
+  },
+  {
+   "bondName": "26湘乡01",
+   "bondCode": "283134.SH",
+   "maxVal": 2.37,
+   "pass": false
+  },
+  {
+   "bondName": "26圆融04",
+   "bondCode": "524769.SZ",
+   "maxVal": 2.36,
+   "pass": false
+  },
+  {
+   "bondName": "26国安实业MTN002",
+   "bondCode": "102682810.IB",
+   "maxVal": 2.345,
+   "pass": false
+  },
+  {
+   "bondName": "25辽宁债35",
+   "bondCode": "2505936.IB",
+   "maxVal": 2.32,
+   "pass": false
+  },
+  {
+   "bondName": "25贵州债23",
+   "bondCode": "2505933.IB",
+   "maxVal": 2.32,
+   "pass": false
+  },
+  {
+   "bondName": "26贵州10",
+   "bondCode": "235922.IB",
+   "maxVal": 2.32,
+   "pass": false
+  }
+ ]
+}
