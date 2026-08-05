@@ -1,8 +1,10 @@
 {
- "date": "2026-08-04",
- "total": 17,
- "new_today": 0,
- "new_names": [],
+ "date": "2026-08-05",
+ "total": 18,
+ "new_today": 1,
+ "new_names": [
+  "26浙商银行永续债"
+ ],
  "missing_rate_count": 1,
  "cross_failed": false
 }
