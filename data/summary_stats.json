@@ -1,13 +1,10 @@
 {
- "date": "2026-08-06",
- "total": 23,
- "new_today": 4,
+ "date": "2026-08-07",
+ "total": 24,
+ "new_today": 1,
  "new_names": [
-  "26中信银行绿债01BC",
-  "26华发集团SCP006",
-  "26西安高新MTN008A",
-  "26西安高新MTN008B"
+  "26国耀融汇CP001"
  ],
- "missing_rate_count": 5,
+ "missing_rate_count": 6,
  "cross_failed": false
 }
