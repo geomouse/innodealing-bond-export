@@ -42,7 +42,7 @@ async function screenshot(page, name) {
   }
 }
 
-async function main() {
+async function runOnce() {
   log('=== 启动浏览器 ===');
   log(`阈值(北京时间): ${hourBJ}点 → 提取 >= ${MIN_VOLUME}`);
   const userDataDir = path.join(WORKSPACE, '.chrome-data-broker-' + Date.now());
@@ -1028,6 +1028,15 @@ async function main() {
 
     await screenshot(page, '07-final');
 
+    // ===== 返回本次提取结果，供外层自我核查与重试判定 =====
+    return {
+      ok: sheet2Rows.length > 0,            // 当天汇总(Sheet2)有数据才算成功
+      sheet2Count: sheet2Rows.length,
+      filteredCount: filtered.length,      // 下框源数据(Sheet1)行数
+      capturedTotal: capturedNames.size,   // 下框实际抓到的债券数(阈值前)
+      sheet3Count
+    };
+
   } catch (err) {
     log('❌ 错误:', err.message);
     log(err.stack);
@@ -1039,4 +1048,30 @@ async function main() {
   }
 }
 
+// ===== 自我核查 + 自动重试：空数据则重跑，直到拿到数据（上限 MAX_ATTEMPTS）=====
+const MAX_ATTEMPTS = 3;
+const RETRY_GAP_MS = 20000;
+async function main() {
+  let last = null;
+  for (let attempt = 1; attempt <= MAX_ATTEMPTS; attempt++) {
+    log(`=== 经纪商行情提取 第 ${attempt}/${MAX_ATTEMPTS} 次尝试 ===`);
+    let res = null;
+    try { res = await runOnce(); }
+    catch (e) { log(`❌ 第 ${attempt} 次尝试异常: ${e.message}`); }
+    if (res && res.ok) {
+      log(`✅ 第 ${attempt} 次取得数据 (Sheet2=${res.sheet2Count}行, Sheet1=${res.filteredCount}行)，停止重试`);
+      if (attempt > 1) log(`[RETRY-OK] 经 ${attempt} 次尝试后成功取得数据`);
+      process.exit(0); // 有数据 → 正常发邮件
+    }
+    // 抓到行但都被阈值过滤 → 当日确无达阈值债券，无需重试，发"无达阈值"告知邮件
+    if (res && res.capturedTotal > 0 && res.filteredCount === 0) {
+      log(`⚠️ 下框抓到 ${res.capturedTotal} 行但均 < ${MIN_VOLUME} 阈值，判定为当日无达阈值债券，不再重试`);
+      process.exit(0);
+    }
+    log(`⚠️ 第 ${attempt} 次结果为空 (capturedTotal=${res ? res.capturedTotal : '?'})，准备重试...`);
+    if (attempt < MAX_ATTEMPTS) await sleep(RETRY_GAP_MS);
+  }
+  log(`[SELF-CHECK-FAIL] 已达最大重试次数(${MAX_ATTEMPTS})仍无数据，拒绝发邮件 (process.exit 2)`);
+  process.exit(2); // 空数据 → 不发邮件，待人工排查
+}
 main().catch(e => { console.error('Fatal:', e); process.exit(1); });
