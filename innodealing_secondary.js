@@ -1751,8 +1751,9 @@ async function main() {
         for (let i=0; i<24; i++) {   // 最长约 12s
           await sleep(500);
           if (getNavSig() !== prevSig && isDetailUrl()) {
-            const contentOk = await isDetailContent(frame);
-            const targetOk = await isTargetBond(frame, code, bName);
+            const df = await activeDetailFrame();
+            const contentOk = await isDetailContent(df);
+            const targetOk = await isTargetBond(df, code, bName);
             if (contentOk && targetOk) {
               await sleep(900); // 额外渲染缓冲，确保省份/发行人字段刷新到位
               return true;
@@ -1914,25 +1915,29 @@ async function main() {
         try { await page.screenshot({ path: path.join(SCREENSHOT_DIR, `detail-${bCode.split('.').join('_')}.png`) }); } catch(e) {}
       }
 
-      // 回填：对详情页提取为空（全称或省份）的债券，重新进详情页补取，确保 Sheet3/Sheet4 发行人简称一律为详情页全称（不回退简称）
-      const missFull = [...bondRegionMap.entries()].filter(([, v]) => !v.issuerFull || !v.region);
-      if (missFull.length) {
-        log(`  回填: ${missFull.length} 只债券全称/省份为空，重新进详情页补取...`);
-        for (const [bCode, v] of missFull) {
+      // 回填：覆盖「所有 needRegion 债券中全称/省份仍空者」（含导航失败从未入 map 的），最多 3 轮重取
+      for (let pass = 0; pass < 3; pass++) {
+        const missFull = needRegion
+          .map(ur => ({ code: getLowerVal(ur, '债券代码'), name: getLowerVal(ur, '债券简称') }))
+          .filter(({ code }) => { const v = bondRegionMap.get(code) || {}; return code && (!v.issuerFull || !v.region); });
+        if (!missFull.length) { log(`  回填: 第${pass + 1}轮无缺失，完成`); break; }
+        log(`  回填轮次 ${pass + 1}: ${missFull.length} 只全称/省份为空，重新进详情页补取...`);
+        for (const { code: bCode, name: bName } of missFull) {
           const sigBefore = getNavSig();
-          let ok = await searchSwitch(targetFrame, bCode, v.bondName, sigBefore);
-          if (!ok) { await sleep(1200); ok = await searchSwitch(targetFrame, bCode, v.bondName, getNavSig()); }
-          if (!ok) { log(`  ⚠️ 回填导航失败: ${v.bondName}`); continue; }
+          let ok = await searchSwitch(targetFrame, bCode, bName, sigBefore);
+          if (!ok) { await sleep(1200); ok = await searchSwitch(targetFrame, bCode, bName, getNavSig()); }
+          if (!ok) { log(`  ⚠️ 回填导航失败: ${bName}`); continue; }
           await sleep(800);
           let ex = await extractFrom(await activeDetailFrame());
           let rt = 0;
           while ((!ex.issuerFull || !ex.province) && rt < 2) { rt++; await sleep(1500); ex = await extractFrom(await activeDetailFrame()); }
-          const merged = { ...v };
+          const merged = bondRegionMap.get(bCode) || { bondName: bName };
           if (ex.province) merged.region = ex.province;
           if (ex.issuerFull) merged.issuerFull = ex.issuerFull;
           if (ex.city) merged.city = ex.city;
+          merged.bondName = bName;
           bondRegionMap.set(bCode, merged);
-          log(`  ↺ 回填 [${v.bondName}] 省:${ex.province || '(空)'} 全称:${ex.issuerFull || '(无)'}`);
+          log(`  ↺ 回填 [${bName}] 省:${ex.province || '(空)'} 全称:${ex.issuerFull || '(无)'}`);
         }
       }
 
