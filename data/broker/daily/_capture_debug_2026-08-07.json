@@ -1,0 +1,139 @@
+{
+ "bjDate": "2026-08-07",
+ "hourBJ": 9,
+ "threshold": 2.4,
+ "visibleNames": 21,
+ "capturedNames": 21,
+ "estimatedTotal": null,
+ "missingNames": [],
+ "recoveredExtra": 0,
+ "captureComplete": null,
+ "captured": [
+  {
+   "bondName": "25绿城地产MTN003",
+   "bondCode": "102501340.IB",
+   "maxVal": 3.12,
+   "pass": true
+  },
+  {
+   "bondName": "23津渤海MTN003",
+   "bondCode": "102381571.IB",
+   "maxVal": 2.36,
+   "pass": false
+  },
+  {
+   "bondName": "26中国平煤MTN007",
+   "bondCode": "102682828.IB",
+   "maxVal": 2.24,
+   "pass": false
+  },
+  {
+   "bondName": "26附息国债02",
+   "bondCode": "260002.IB",
+   "maxVal": 2.205,
+   "pass": false
+  },
+  {
+   "bondName": "25超长特别国债06",
+   "bondCode": "2500006.IB",
+   "maxVal": 2.198,
+   "pass": false
+  },
+  {
+   "bondName": "24冀中能源MTN004B(可持续挂钩)",
+   "bondCode": "102480812.IB",
+   "maxVal": 2.19,
+   "pass": false
+  },
+  {
+   "bondName": "26超长特别国债02",
+   "bondCode": "2600002.IB",
+   "maxVal": 2.1891,
+   "pass": false
+  },
+  {
+   "bondName": "26超长特别国债04",
+   "bondCode": "2600004.IB",
+   "maxVal": 2.189,
+   "pass": false
+  },
+  {
+   "bondName": "26超长特别国债05",
+   "bondCode": "2600005.IB",
+   "maxVal": 2.159,
+   "pass": false
+  },
+  {
+   "bondName": "23附息国债23",
+   "bondCode": "230023.IB",
+   "maxVal": 2.1349,
+   "pass": false
+  },
+  {
+   "bondName": "25超长特别国债02",
+   "bondCode": "2500002.IB",
+   "maxVal": 2.1293,
+   "pass": false
+  },
+  {
+   "bondName": "25冀中能源MTN011B(科创债)",
+   "bondCode": "102584708.IB",
+   "maxVal": 2.12,
+   "pass": false
+  },
+  {
+   "bondName": "25希望六和MTN001(科创债)",
+   "bondCode": "102583523.IB",
+   "maxVal": 1.89,
+   "pass": false
+  },
+  {
+   "bondName": "26农发10",
+   "bondCode": "260410.IB",
+   "maxVal": 1.7948,
+   "pass": false
+  },
+  {
+   "bondName": "26中交城投MTN001",
+   "bondCode": "102680645.IB",
+   "maxVal": 1.79,
+   "pass": false
+  },
+  {
+   "bondName": "25国开20",
+   "bondCode": "250220.IB",
+   "maxVal": 1.7732,
+   "pass": false
+  },
+  {
+   "bondName": "26国开05",
+   "bondCode": "260205.IB",
+   "maxVal": 1.7727,
+   "pass": false
+  },
+  {
+   "bondName": "26国开10",
+   "bondCode": "260210.IB",
+   "maxVal": 1.7598,
+   "pass": false
+  },
+  {
+   "bondName": "25农发30",
+   "bondCode": "250430.IB",
+   "maxVal": 1.755,
+   "pass": false
+  },
+  {
+   "bondName": "25国开15",
+   "bondCode": "250215.IB",
+   "maxVal": 1.746,
+   "pass": false
+  },
+  {
+   "bondName": "25国开05",
+   "bondCode": "250205.IB",
+   "maxVal": 1.7279,
+   "pass": false
+  }
+ ]
+}
