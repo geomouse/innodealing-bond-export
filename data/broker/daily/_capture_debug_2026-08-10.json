@@ -1,0 +1,133 @@
+{
+ "bjDate": "2026-08-10",
+ "hourBJ": 16,
+ "threshold": 2.8,
+ "visibleNames": 20,
+ "capturedNames": 20,
+ "estimatedTotal": null,
+ "missingNames": [],
+ "recoveredExtra": 0,
+ "captureComplete": null,
+ "captured": [
+  {
+   "bondName": "24潍海01",
+   "bondCode": "254732.SH",
+   "maxVal": 3,
+   "pass": true
+  },
+  {
+   "bondName": "26绿城地产MTN001",
+   "bondCode": "102680351.IB",
+   "maxVal": 2.8927,
+   "pass": true
+  },
+  {
+   "bondName": "25绿城地产MTN001",
+   "bondCode": "102501171.IB",
+   "maxVal": 2.88,
+   "pass": true
+  },
+  {
+   "bondName": "24胶州湾PPN002B",
+   "bondCode": "032400784.IB",
+   "maxVal": 2.88,
+   "pass": true
+  },
+  {
+   "bondName": "24皖供销PPN001",
+   "bondCode": "032480445.IB",
+   "maxVal": 2.81,
+   "pass": true
+  },
+  {
+   "bondName": "25金旭K2",
+   "bondCode": "134672.SZ",
+   "maxVal": 2.77,
+   "pass": false
+  },
+  {
+   "bondName": "20黔西南",
+   "bondCode": "152497.SH",
+   "maxVal": 2.75,
+   "pass": false
+  },
+  {
+   "bondName": "23铜开01",
+   "bondCode": "253337.SH",
+   "maxVal": 2.73,
+   "pass": false
+  },
+  {
+   "bondName": "25珠华01",
+   "bondCode": "524300.SZ",
+   "maxVal": 2.71,
+   "pass": false
+  },
+  {
+   "bondName": "26济南高新MTN003B",
+   "bondCode": "102601967.IB",
+   "maxVal": 2.7,
+   "pass": false
+  },
+  {
+   "bondName": "24中交地产PPN001",
+   "bondCode": "032480826.IB",
+   "maxVal": 2.65,
+   "pass": false
+  },
+  {
+   "bondName": "21沣控债",
+   "bondCode": "197119.SH",
+   "maxVal": 2.63,
+   "pass": false
+  },
+  {
+   "bondName": "26新泊01",
+   "bondCode": "283435.SH",
+   "maxVal": 2.62,
+   "pass": false
+  },
+  {
+   "bondName": "24深铁08",
+   "bondCode": "148702.SZ",
+   "maxVal": 2.6,
+   "pass": false
+  },
+  {
+   "bondName": "24诚通控股MTN011B",
+   "bondCode": "102481557.IB",
+   "maxVal": 2.58,
+   "pass": false
+  },
+  {
+   "bondName": "25甘电投MTN001",
+   "bondCode": "102580238.IB",
+   "maxVal": 2.58,
+   "pass": false
+  },
+  {
+   "bondName": "25津渤海MTN002B",
+   "bondCode": "102581069.IB",
+   "maxVal": 2.53,
+   "pass": false
+  },
+  {
+   "bondName": "26大丰02",
+   "bondCode": "283137.SH",
+   "maxVal": 2.53,
+   "pass": false
+  },
+  {
+   "bondName": "26太新01",
+   "bondCode": "281981.SH",
+   "maxVal": 2.47,
+   "pass": false
+  },
+  {
+   "bondName": "华能YK31",
+   "bondCode": "245744.SH",
+   "maxVal": 2.4699,
+   "pass": false
+  }
+ ]
+}
