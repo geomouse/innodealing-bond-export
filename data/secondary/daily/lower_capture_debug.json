@@ -1,44 +1,74 @@
 {
- "bjDate": "2026-08-10",
+ "bjDate": "2026-08-11",
  "threshold": 2,
  "visibleNames": 17,
  "capturedNames": 17,
  "missingNames": [],
  "captured": [
   {
-   "bondName": "25珠华01",
-   "bondCode": "524300.SZ",
-   "latest": "2.7100"
+   "bondName": "26涪陵04",
+   "bondCode": "520314.SZ",
+   "latest": "2.5000"
   },
   {
-   "bondName": "25农行二级资本债04B(BC)",
-   "bondCode": "232580047.IB",
+   "bondName": "22华发集团MTN004",
+   "bondCode": "102280511.IB",
+   "latest": "2.3200"
+  },
+  {
+   "bondName": "25西安高新MTN011A",
+   "bondCode": "102582640.IB",
+   "latest": "2.3000"
+  },
+  {
+   "bondName": "25重庆三峡银行永续债01",
+   "bondCode": "242580020.IB",
    "latest": "2.0850"
+  },
+  {
+   "bondName": "26农行二级资本债01B(BC)",
+   "bondCode": "232680006.IB",
+   "latest": "2.0850"
+  },
+  {
+   "bondName": "26华发集团SCP002",
+   "bondCode": "012680492.IB",
+   "latest": "2.0800"
   },
   {
    "bondName": "25农行二级资本债03B(BC)",
    "bondCode": "232580036.IB",
-   "latest": "2.0750"
+   "latest": "2.0775"
+  },
+  {
+   "bondName": "26农行TLAC非资本债01C(BC)",
+   "bondCode": "312610003.IB",
+   "latest": "2.0700"
   },
   {
    "bondName": "25农行二级资本债02B(BC)",
    "bondCode": "232580025.IB",
-   "latest": "2.0450"
+   "latest": "2.0400"
   },
   {
    "bondName": "25农行二级资本债01B(BC)",
    "bondCode": "232580017.IB",
-   "latest": "2.0350"
+   "latest": "2.0325"
+  },
+  {
+   "bondName": "25成都开投MTN001B",
+   "bondCode": "102583789.IB",
+   "latest": "2.0300"
   },
   {
    "bondName": "25农行TLAC非资本债02C(BC)",
    "bondCode": "312510011.IB",
-   "latest": "2.0175"
+   "latest": "2.0150"
   },
   {
-   "bondName": "25农行TLAC非资本债01C(BC)",
-   "bondCode": "312510005.IB",
-   "latest": "2.0125"
+   "bondName": "23中信银行二级资本债01B",
+   "bondCode": "232380090.IB",
+   "latest": "1.9850"
   },
   {
    "bondName": "24农行二级资本债02B",
@@ -48,47 +78,17 @@
   {
    "bondName": "24农行二级资本债01B",
    "bondCode": "232480005.IB",
-   "latest": "1.9725"
+   "latest": "1.9700"
   },
   {
    "bondName": "23农行二级资本债03B",
    "bondCode": "232380074.IB",
-   "latest": "1.9600"
+   "latest": "1.9625"
   },
   {
    "bondName": "23农行二级资本债02B",
    "bondCode": "232380053.IB",
    "latest": "1.9500"
-  },
-  {
-   "bondName": "26浙商银行永续债01BC",
-   "bondCode": "242680031.IB",
-   "latest": "1.9390"
-  },
-  {
-   "bondName": "25华发集团SCP002",
-   "bondCode": "012582819.IB",
-   "latest": "1.9100"
-  },
-  {
-   "bondName": "26中信银行永续债02BC",
-   "bondCode": "242680015.IB",
-   "latest": "1.9025"
-  },
-  {
-   "bondName": "22农业银行二级02",
-   "bondCode": "2228042.IB",
-   "latest": "1.8875"
-  },
-  {
-   "bondName": "26农行二级资本债01A(BC)",
-   "bondCode": "232680005.IB",
-   "latest": "1.8500"
-  },
-  {
-   "bondName": "26农行TLAC非资本债02B(BC)",
-   "bondCode": "312610007.IB",
-   "latest": "1.8300"
   }
  ]
 }
