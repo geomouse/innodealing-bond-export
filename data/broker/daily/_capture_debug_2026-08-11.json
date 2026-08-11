@@ -1,0 +1,133 @@
+{
+ "bjDate": "2026-08-11",
+ "hourBJ": 16,
+ "threshold": 2.8,
+ "visibleNames": 20,
+ "capturedNames": 20,
+ "estimatedTotal": null,
+ "missingNames": [],
+ "recoveredExtra": 0,
+ "captureComplete": null,
+ "captured": [
+  {
+   "bondName": "S20播交3",
+   "bondCode": "177335.SH",
+   "maxVal": 4,
+   "pass": true
+  },
+  {
+   "bondName": "26首开MTN008B",
+   "bondCode": "102602067.IB",
+   "maxVal": 3.82,
+   "pass": true
+  },
+  {
+   "bondName": "26首股03",
+   "bondCode": "282233.SH",
+   "maxVal": 3.35,
+   "pass": true
+  },
+  {
+   "bondName": "26中交房产MTN003B",
+   "bondCode": "102602045.IB",
+   "maxVal": 3.21,
+   "pass": true
+  },
+  {
+   "bondName": "24潍海01",
+   "bondCode": "254732.SH",
+   "maxVal": 3,
+   "pass": true
+  },
+  {
+   "bondName": "25新微MTN003(科创债)",
+   "bondCode": "102584624.IB",
+   "maxVal": 2.99,
+   "pass": true
+  },
+  {
+   "bondName": "25美置02",
+   "bondCode": "242359.SH",
+   "maxVal": 2.97,
+   "pass": true
+  },
+  {
+   "bondName": "26株城06",
+   "bondCode": "283355.SH",
+   "maxVal": 2.97,
+   "pass": true
+  },
+  {
+   "bondName": "24云南交投MTN003",
+   "bondCode": "102483350.IB",
+   "maxVal": 2.79,
+   "pass": false
+  },
+  {
+   "bondName": "24秦皇岛银行永续债01",
+   "bondCode": "242480087.IB",
+   "maxVal": 2.76,
+   "pass": false
+  },
+  {
+   "bondName": "25华发01",
+   "bondCode": "242255.SH",
+   "maxVal": 2.76,
+   "pass": false
+  },
+  {
+   "bondName": "26信达MTN001",
+   "bondCode": "102680798.IB",
+   "maxVal": 2.71,
+   "pass": false
+  },
+  {
+   "bondName": "26太重MTN006(科创债)",
+   "bondCode": "102602087.IB",
+   "maxVal": 2.68,
+   "pass": false
+  },
+  {
+   "bondName": "26腾达K2",
+   "bondCode": "282288.SH",
+   "maxVal": 2.64,
+   "pass": false
+  },
+  {
+   "bondName": "24普洱01",
+   "bondCode": "253820.SH",
+   "maxVal": 2.6,
+   "pass": false
+  },
+  {
+   "bondName": "21沣控债",
+   "bondCode": "197119.SH",
+   "maxVal": 2.58,
+   "pass": false
+  },
+  {
+   "bondName": "25湖北广电MTN002",
+   "bondCode": "102580735.IB",
+   "maxVal": 2.57,
+   "pass": false
+  },
+  {
+   "bondName": "25湖北工建PPN001",
+   "bondCode": "032580064.IB",
+   "maxVal": 2.55,
+   "pass": false
+  },
+  {
+   "bondName": "25保置06",
+   "bondCode": "243113.SH",
+   "maxVal": 2.52,
+   "pass": false
+  },
+  {
+   "bondName": "26安吉05",
+   "bondCode": "245472.SH",
+   "maxVal": 2.52,
+   "pass": false
+  }
+ ]
+}
