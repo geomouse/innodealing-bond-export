@@ -1,8 +1,10 @@
 {
- "date": "2026-08-10",
- "total": 26,
- "new_today": 0,
- "new_names": [],
- "missing_rate_count": 3,
+ "date": "2026-08-11",
+ "total": 29,
+ "new_today": 1,
+ "new_names": [
+  "26国耀03"
+ ],
+ "missing_rate_count": 6,
  "cross_failed": false
 }
