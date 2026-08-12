@@ -1,10 +1,11 @@
 {
- "date": "2026-08-11",
+ "date": "2026-08-12",
  "total": 29,
- "new_today": 1,
+ "new_today": 2,
  "new_names": [
-  "26国耀03"
+  "26金融街MTN004A",
+  "26金融街MTN004B"
  ],
- "missing_rate_count": 6,
+ "missing_rate_count": 5,
  "cross_failed": false
 }
