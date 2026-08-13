@@ -1,0 +1,133 @@
+{
+ "bjDate": "2026-08-13",
+ "hourBJ": 16,
+ "threshold": 2.8,
+ "visibleNames": 20,
+ "capturedNames": 20,
+ "estimatedTotal": null,
+ "missingNames": [],
+ "recoveredExtra": 0,
+ "captureComplete": null,
+ "captured": [
+  {
+   "bondName": "22遵桥06",
+   "bondCode": "182654.SH",
+   "maxVal": 3.47,
+   "pass": true
+  },
+  {
+   "bondName": "25西咸01",
+   "bondCode": "259880.SH",
+   "maxVal": 3.32,
+   "pass": true
+  },
+  {
+   "bondName": "26遵投01",
+   "bondCode": "281735.SH",
+   "maxVal": 3.32,
+   "pass": true
+  },
+  {
+   "bondName": "26双龙02",
+   "bondCode": "282195.SH",
+   "maxVal": 3.3,
+   "pass": true
+  },
+  {
+   "bondName": "24豫桥04",
+   "bondCode": "256675.SH",
+   "maxVal": 3.23,
+   "pass": true
+  },
+  {
+   "bondName": "24铜仁05",
+   "bondCode": "255457.SH",
+   "maxVal": 3.15,
+   "pass": true
+  },
+  {
+   "bondName": "26贵经01",
+   "bondCode": "282524.SH",
+   "maxVal": 3.1,
+   "pass": true
+  },
+  {
+   "bondName": "25中交房产MTN005B",
+   "bondCode": "102501542.IB",
+   "maxVal": 3,
+   "pass": true
+  },
+  {
+   "bondName": "26联合人寿资本补充债01",
+   "bondCode": "272680005.IB",
+   "maxVal": 2.88,
+   "pass": true
+  },
+  {
+   "bondName": "24红河03",
+   "bondCode": "255144.SH",
+   "maxVal": 2.86,
+   "pass": true
+  },
+  {
+   "bondName": "24青上04",
+   "bondCode": "254483.SH",
+   "maxVal": 2.85,
+   "pass": true
+  },
+  {
+   "bondName": "24中化08",
+   "bondCode": "241135.SH",
+   "maxVal": 2.71,
+   "pass": false
+  },
+  {
+   "bondName": "26津渤海MTN004",
+   "bondCode": "102681196.IB",
+   "maxVal": 2.7,
+   "pass": false
+  },
+  {
+   "bondName": "26青城10",
+   "bondCode": "282440.SH",
+   "maxVal": 2.6,
+   "pass": false
+  },
+  {
+   "bondName": "24深圳地铁MTN006",
+   "bondCode": "102483736.IB",
+   "maxVal": 2.59,
+   "pass": false
+  },
+  {
+   "bondName": "24深铁06",
+   "bondCode": "148641.SZ",
+   "maxVal": 2.58,
+   "pass": false
+  },
+  {
+   "bondName": "21沣控债",
+   "bondCode": "197119.SH",
+   "maxVal": 2.58,
+   "pass": false
+  },
+  {
+   "bondName": "24诚通控股MTN011B",
+   "bondCode": "102481557.IB",
+   "maxVal": 2.58,
+   "pass": false
+  },
+  {
+   "bondName": "24鄂联投MTN007",
+   "bondCode": "102483395.IB",
+   "maxVal": 2.57,
+   "pass": false
+  },
+  {
+   "bondName": "25湖北工建PPN001",
+   "bondCode": "032580064.IB",
+   "maxVal": 2.57,
+   "pass": false
+  }
+ ]
+}
