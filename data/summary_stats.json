@@ -1,11 +1,8 @@
 {
- "date": "2026-08-12",
+ "date": "2026-08-13",
  "total": 29,
- "new_today": 2,
- "new_names": [
-  "26金融街MTN004A",
-  "26金融街MTN004B"
- ],
+ "new_today": 0,
+ "new_names": [],
  "missing_rate_count": 5,
  "cross_failed": false
 }
