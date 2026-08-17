@@ -1,10 +1,9 @@
 {
- "date": "2026-08-14",
- "total": 31,
- "new_today": 2,
+ "date": "2026-08-17",
+ "total": 32,
+ "new_today": 1,
  "new_names": [
-  "26北部湾银行01",
-  "26成都开投PPN002"
+  "26凉山02"
  ],
  "missing_rate_count": 5,
  "cross_failed": false
