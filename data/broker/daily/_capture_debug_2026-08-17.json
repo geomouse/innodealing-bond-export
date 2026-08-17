@@ -1,0 +1,133 @@
+{
+ "bjDate": "2026-08-17",
+ "hourBJ": 16,
+ "threshold": 2.8,
+ "visibleNames": 20,
+ "capturedNames": 20,
+ "estimatedTotal": null,
+ "missingNames": [],
+ "recoveredExtra": 0,
+ "captureComplete": null,
+ "captured": [
+  {
+   "bondName": "25东阳光CP002",
+   "bondCode": "042580626.IB",
+   "maxVal": 5.43,
+   "pass": true
+  },
+  {
+   "bondName": "24空港02",
+   "bondCode": "254694.SH",
+   "maxVal": 3.41,
+   "pass": true
+  },
+  {
+   "bondName": "26安阳钢铁MTN004(科创债)",
+   "bondCode": "102682829.IB",
+   "maxVal": 3.26,
+   "pass": true
+  },
+  {
+   "bondName": "26首股01",
+   "bondCode": "281606.SH",
+   "maxVal": 3.25,
+   "pass": true
+  },
+  {
+   "bondName": "23秦汉04",
+   "bondCode": "252467.SH",
+   "maxVal": 3.25,
+   "pass": true
+  },
+  {
+   "bondName": "25赣建工MTN001",
+   "bondCode": "102584643.IB",
+   "maxVal": 3.12,
+   "pass": true
+  },
+  {
+   "bondName": "26贵经01",
+   "bondCode": "282524.SH",
+   "maxVal": 3.05,
+   "pass": true
+  },
+  {
+   "bondName": "24鲁中投资PPN003",
+   "bondCode": "032480344.IB",
+   "maxVal": 2.92,
+   "pass": true
+  },
+  {
+   "bondName": "26株城06",
+   "bondCode": "283355.SH",
+   "maxVal": 2.92,
+   "pass": true
+  },
+  {
+   "bondName": "25株城06",
+   "bondCode": "259053.SH",
+   "maxVal": 2.79,
+   "pass": false
+  },
+  {
+   "bondName": "24云能投MTN015",
+   "bondCode": "102482996.IB",
+   "maxVal": 2.75,
+   "pass": false
+  },
+  {
+   "bondName": "20黔西南",
+   "bondCode": "152497.SH",
+   "maxVal": 2.75,
+   "pass": false
+  },
+  {
+   "bondName": "21滨投03",
+   "bondCode": "197536.SH",
+   "maxVal": 2.7,
+   "pass": false
+  },
+  {
+   "bondName": "23空港03",
+   "bondCode": "252991.SH",
+   "maxVal": 2.7,
+   "pass": false
+  },
+  {
+   "bondName": "25潍海02",
+   "bondCode": "257602.SH",
+   "maxVal": 2.7,
+   "pass": false
+  },
+  {
+   "bondName": "24仁怀02",
+   "bondCode": "255919.SH",
+   "maxVal": 2.65,
+   "pass": false
+  },
+  {
+   "bondName": "25百色02",
+   "bondCode": "259087.SH",
+   "maxVal": 2.63,
+   "pass": false
+  },
+  {
+   "bondName": "25湖北广电MTN002",
+   "bondCode": "102580735.IB",
+   "maxVal": 2.6,
+   "pass": false
+  },
+  {
+   "bondName": "24洛阳国晟MTN001",
+   "bondCode": "102483067.IB",
+   "maxVal": 2.59,
+   "pass": false
+  },
+  {
+   "bondName": "26鲁发02",
+   "bondCode": "283169.SH",
+   "maxVal": 2.59,
+   "pass": false
+  }
+ ]
+}
