@@ -2,8 +2,8 @@ name: 二级行情(新·下框)成交汇总每日导出
 
 on:
   schedule:
-    # 周一至周五 16:40 北京时间 = 08:40 UTC（早于经纪商16:50 / 旧二级17:10，避免并发登录与推送冲突）
-    - cron: '40 8 * * 1-5'
+    # 周一至周五 16:30 北京时间 = 08:30 UTC（早于经纪商16:40 / 旧二级17:10，避免并发登录与推送冲突）
+    - cron: '30 8 * * 1-5'
   workflow_dispatch:
     inputs:
       force:
@@ -29,7 +29,7 @@ jobs:
         env:
           GH_TOKEN: ${{ github.token }}
           PRESET_HOUR: '16'
-          PRESET_MIN: '40'
+          PRESET_MIN: '30'
         run: |
           if [ "${{ github.event.inputs.force }}" = "true" ]; then
             echo "强制运行(force=true)，跳过去重检查"
@@ -132,5 +132,6 @@ jobs:
 
 # 2026-07-22: 新建二级行情(我的关注·成交行情下框)任务，克隆经纪商已验证脚本
 # 只取下面框 + 3-Sheet + 经纪商表头模板 + 中债（行/到）映射到中债/中证 + 抓全量不按阈值
-# 独立目录 data/secondary2，错峰 16:40 北京，推送前 rebase 防并发冲突；旧 innodealing_secondary.js 保留作兜底
+# 独立目录 data/secondary2，错峰 16:30 北京，推送前 rebase 防并发冲突；旧 innodealing_secondary.js 保留作兜底
 # 2026-07-24: cron 改 16:40 北京；dedup 升级为「今天预设时间(16:40)之后跑过没」避免凌晨误跑吞掉兜底
+# 2026-08-18: 整体提前10分钟 → cron 16:30 北京、PRESET 16:30、cron-job.org 兜底 16:35

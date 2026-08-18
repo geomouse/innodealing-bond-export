@@ -2,8 +2,8 @@ name: 经纪商行情成交汇总每日导出
 
 on:
   schedule:
-    # 周一至周五 16:50 北京时间 = 08:50 UTC（稍晚于二级行情，避免并发登录冲突）
-    - cron: '50 8 * * 1-5'
+    # 周一至周五 16:40 北京时间 = 08:40 UTC（稍晚于新二级16:30，避免并发登录冲突）
+    - cron: '40 8 * * 1-5'
   workflow_dispatch:
     inputs:
       force:
@@ -29,7 +29,7 @@ jobs:
         env:
           GH_TOKEN: ${{ github.token }}
           PRESET_HOUR: '16'
-          PRESET_MIN: '50'
+          PRESET_MIN: '40'
         run: |
           if [ "${{ github.event.inputs.force }}" = "true" ]; then
             echo "强制运行(force=true)，跳过去重检查"
@@ -131,3 +131,4 @@ jobs:
 # 2026-07-22: 新增经纪商行情(成交行情下框)成交汇总 → 3-Sheet 输出 + 历史累积(Sheet3)
 # 主触发器 GitHub schedule(北京16:50)；workflow 内部去重避免重复邮件
 # 2026-07-24: dedup 升级为「今天预设时间(16:50)之后跑过没」避免凌晨误跑吞掉兜底
+# 2026-08-18: 整体提前10分钟 → cron 16:40 北京、PRESET 16:40、cron-job.org 兜底 16:45
