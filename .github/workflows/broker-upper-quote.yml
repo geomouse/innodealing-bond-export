@@ -1,0 +1,125 @@
+name: 经纪商行情上框报价导出
+
+on:
+  schedule:
+    # 周一至周五 16:40 北京时间 = 08:40 UTC（与经纪商成交行情错开）
+    - cron: '40 8 * * 1-5'
+  workflow_dispatch:
+    inputs:
+      force:
+        description: '强制运行（跳过今日去重检查）'
+        type: boolean
+        default: false
+
+permissions:
+  contents: write
+  actions: read
+
+jobs:
+  export:
+    runs-on: ubuntu-latest
+    timeout-minutes: 35
+    env:
+      HEADLESS: 'true'
+      CI: 'true'
+    steps:
+      - name: 去重检查（今日已运行则跳过）
+        id: dedup
+        env:
+          GH_TOKEN: ${{ github.token }}
+          PRESET_HOUR: '16'
+          PRESET_MIN: '40'
+        run: |
+          if [ "${{ github.event.inputs.force }}" = "true" ]; then
+            echo "强制运行(force=true)，跳过去重检查"
+            echo "skip=false" >> "$GITHUB_OUTPUT"
+            exit 0
+          fi
+          export TODAY=$(TZ=Asia/Shanghai date +%Y-%m-%d)
+          echo "检查今日($TODAY)是否已有运行..."
+          RUNS=$(curl -s -H "Authorization: Bearer $GH_TOKEN" -H "Accept: application/vnd.github+json" \
+            "https://api.github.com/repos/$GITHUB_REPOSITORY/actions/workflows/broker-upper-quote.yml/runs?per_page=50")
+          ALREADY=$(echo "$RUNS" | TODAY="$TODAY" GITHUB_RUN_ID="$GITHUB_RUN_ID" PRESET_HOUR="$PRESET_HOUR" PRESET_MIN="$PRESET_MIN" python3 -c "
+          import json, sys, os
+          from datetime import datetime, timezone, timedelta
+          d = json.load(sys.stdin)
+          today = os.environ['TODAY']
+          me = os.environ['GITHUB_RUN_ID']
+          ph = int(os.environ['PRESET_HOUR']); pm = int(os.environ['PRESET_MIN'])
+          bj = timezone(timedelta(hours=8))
+          now = datetime.now(bj)
+          preset = now.replace(hour=ph, minute=pm, second=0, microsecond=0)
+          for r in d.get('workflow_runs', []):
+              if str(r['id']) == me:
+                  continue
+              if r['event'] not in ('schedule', 'workflow_dispatch'):
+                  continue
+              if r['status'] not in ('completed', 'in_progress', 'queued'):
+                  continue
+              cdt = datetime.fromisoformat(r['created_at'].replace('Z','+00:00')).astimezone(bj)
+              if cdt.date().isoformat() != today:
+                  continue
+              if cdt >= preset:
+                  print(r['id'])
+                  break
+          ")
+          if [ -n "$ALREADY" ]; then
+            echo "今日已运行 run#$ALREADY，跳过本次导出与邮件"
+            echo "skip=true" >> "$GITHUB_OUTPUT"
+          else
+            echo "今日尚无运行，继续执行"
+            echo "skip=false" >> "$GITHUB_OUTPUT"
+          fi
+
+      - uses: actions/checkout@v4
+        if: steps.dedup.outputs.skip != 'true'
+
+      - uses: actions/setup-node@v4
+        if: steps.dedup.outputs.skip != 'true'
+        with:
+          node-version: '22'
+
+      - name: 安装 Node.js 依赖
+        if: steps.dedup.outputs.skip != 'true'
+        run: npm install
+
+      - name: 安装 Chromium
+        if: steps.dedup.outputs.skip != 'true'
+        run: npx playwright install --with-deps chromium
+
+      - name: 导出经纪商行情上框报价（生成 Excel）
+        if: steps.dedup.outputs.skip != 'true'
+        env:
+          INNODEALING_USERNAME: ${{ secrets.INNODEALING_USERNAME }}
+          INNODEALING_PASSWORD: ${{ secrets.INNODEALING_PASSWORD }}
+        run: node broker_upper_quote.js
+
+      - name: 提交数据到仓库（同步 xlsx）
+        if: steps.dedup.outputs.skip != 'true'
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "github-actions[bot]@users.noreply.github.com"
+          git add data/broker_upper
+          if git diff --cached --quiet; then
+            echo "没有新数据，跳过推送"
+          else
+            git commit -m "📊 $(date +%Y-%m-%d) 经纪商上框报价(>=1.90/AAA/0-1.9年)"
+            git push
+            echo "数据已推送"
+          fi
+
+      - name: 上传诊断截图与数据
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: broker-upper-quote-${{ github.run_id }}
+          path: |
+            data/broker_upper/
+            screenshots/
+          if-no-files-found: ignore
+          retention-days: 7
+
+# 2026-08-19: 新增「经纪商行情上框(报价)」导出
+# 复用 innodealing_broker.js 的登录/导航连接层(launchPersistentContext + networkidle + quote-web 根 hash)
+# 过滤：全部信用 + 债项AAA + 剩余期限0~1.9年 + Ofr>=1.90；按债券去重取最低 Ofr；含发行人全称/担保人
+# 主触发器 GitHub schedule(北京16:40)；与经纪商成交行情(broker-quote-export)同 GitHub Actions 云端执行
