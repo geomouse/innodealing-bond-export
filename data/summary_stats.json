@@ -1,10 +1,14 @@
 {
- "date": "2026-08-18",
- "total": 33,
- "new_today": 1,
+ "date": "2026-08-19",
+ "total": 38,
+ "new_today": 5,
  "new_names": [
-  "26恒丰银行债01"
+  "26国耀融汇MTN004",
+  "26武汉开投PPN004",
+  "26涪陵国资MTN002A",
+  "26涪陵国资MTN002B",
+  "26达州投资PPN001"
  ],
- "missing_rate_count": 4,
+ "missing_rate_count": 8,
  "cross_failed": false
 }
