@@ -1,8 +1,10 @@
 {
- "date": "2026-08-21",
- "total": 38,
- "new_today": 0,
- "new_names": [],
- "missing_rate_count": 3,
+ "date": "2026-08-24",
+ "total": 39,
+ "new_today": 1,
+ "new_names": [
+  "26齐商银行永续债01"
+ ],
+ "missing_rate_count": 4,
  "cross_failed": false
 }
