@@ -70,6 +70,30 @@ async function exportForDate(page, targetFrame, dateStr, applyAllA = true) {
   }
   console.log(`    [OK] 已设置发行起始日: ${dateStr}`);
   await page.keyboard.press('Escape');
+  await sleep(2500);
+
+  // 关键：设置日期后必须主动触发列表查询，否则列表停在页面默认（非今日）。
+  // 关注组模式靠后续"选 all-A"顺带触发查询；全市场模式无此步骤，需在此显式触发。
+  try {
+    const triggered = await targetFrame.evaluate(() => {
+      const btns = Array.from(document.querySelectorAll('button'));
+      for (const b of btns) {
+        const t = (b.textContent || '').trim();
+        if (t === '查询' || t === '搜索' || t.includes('查询')) { b.click(); return t; }
+      }
+      return '';
+    });
+    if (triggered) {
+      console.log(`    [OK] 已点击「${triggered}」按钮触发列表查询`);
+    } else {
+      const di = targetFrame.locator('input[placeholder*="起始"]').first();
+      await di.click({ force: true });
+      await di.press('Enter');
+      console.log(`    [OK] 已对日期框回车触发查询`);
+    }
+  } catch (e) {
+    console.log(`    [WARN] 触发查询异常: ${e.message}`);
+  }
   await sleep(3000);
 
   // 2. 确认主体组 all-A 仍然选中（仅筛选模式；未筛选模式跳过，保留页面默认全市场视图）

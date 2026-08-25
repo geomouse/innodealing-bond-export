@@ -335,7 +335,8 @@ ws2.freeze_panes = 'B2'
 
 # ---- Sheet3: 新债预测≥2.0（不筛选关注组，全市场当日发行数据）----
 # 数据来源：innodealing_cloud.js 在选 all-A 之前导出的 credit_bond_all_{TODAY}.xlsx（全市场，未筛选关注组）。
-# 筛选条件：新债预测(数值) >= 2.0。该文件不参与主库累积，故不会污染关注组 Sheet1/Sheet2。
+# 筛选条件：① 发行起始日 == 当日（仅列当天发行的新债）；② 新债预测(数值) >= 2.0。
+# 该文件不参与主库累积，故不会污染关注组 Sheet1/Sheet2。
 # 列在 YY评分 之后插入「新债预测」，便于按预测高低排序查看。
 SHEET3_HEADERS = []
 for _h in TARGET_HEADERS:
@@ -346,13 +347,17 @@ ws3 = wb_out.create_sheet(title="新债预测≥2.0(全市场)")
 for ci, h in enumerate(SHEET3_HEADERS, 1):
     c = ws3.cell(1, ci, h); c.font = header_font; c.fill = header_fill
     c.alignment = header_alignment; c.border = thin_border
-sheet3_total = 0          # 全市场当日文件总行数（含预测<2.0）
-sheet3_rows = []          # 通过筛选（预测≥2.0）的行
+sheet3_total = 0          # 全市场文件中“发行起始日==当日”的总行数
+sheet3_rows = []          # 通过筛选（当日 + 预测≥2.0）的行
 all_file = os.path.join(DOWNLOAD_DIR, f'credit_bond_all_{TODAY}.xlsx')
 if os.path.exists(all_file):
     for d, row in read_credit_bond(all_file, TODAY):
         nm = row.get('债券简称')
         if not nm:
+            continue
+        # 仅保留发行起始日 == 当天的债（避免混入非当日新债）
+        vstart = row.get('发行起始日')
+        if vstart is None or str(vstart)[:10] != TODAY:
             continue
         sheet3_total += 1
         fnum = _fnum(row.get('新债预测'))
