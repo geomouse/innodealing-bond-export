@@ -1,94 +1,94 @@
 {
- "bjDate": "2026-08-24",
+ "bjDate": "2026-08-25",
  "threshold": 2,
  "visibleNames": 17,
  "capturedNames": 17,
  "missingNames": [],
  "captured": [
   {
-   "bondName": "26北部湾银行01",
-   "bondCode": "2620004.IB",
-   "latest": "100.0000"
+   "bondName": "20华发债",
+   "bondCode": "111088.SZ",
+   "latest": "2.9300"
   },
   {
-   "bondName": "24云能投MTN015",
-   "bondCode": "102482996.IB",
-   "latest": "2.7000"
+   "bondName": "25华发集团MTN007",
+   "bondCode": "102583077.IB",
+   "latest": "2.6900"
   },
   {
-   "bondName": "26西安高新MTN002A",
-   "bondCode": "102680803.IB",
-   "latest": "2.3100"
+   "bondName": "25华发集团MTN006",
+   "bondCode": "102582514.IB",
+   "latest": "2.6900"
   },
   {
-   "bondName": "22华发集团MTN002",
-   "bondCode": "102280331.IB",
-   "latest": "2.1500"
+   "bondName": "25华发集团MTN004",
+   "bondCode": "102580856.IB",
+   "latest": "2.6000"
   },
   {
-   "bondName": "25桂债06",
-   "bondCode": "280465.SH",
+   "bondName": "26成经01",
+   "bondCode": "282929.SH",
    "latest": "2.0800"
   },
   {
-   "bondName": "26成都经开PPN002",
-   "bondCode": "032680157.IB",
-   "latest": "2.0800"
-  },
-  {
-   "bondName": "21华发集团MTN009",
-   "bondCode": "102101775.IB",
-   "latest": "2.0000"
+   "bondName": "25万州经开PPN003",
+   "bondCode": "032501206.IB",
+   "latest": "2.0700"
   },
   {
    "bondName": "25成经01",
    "bondCode": "258847.SH",
-   "latest": "1.9600"
+   "latest": "1.9500"
+  },
+  {
+   "bondName": "25涪陵05",
+   "bondCode": "133944.SZ",
+   "latest": "1.9500"
+  },
+  {
+   "bondName": "25涪陵01",
+   "bondCode": "134153.SZ",
+   "latest": "1.9400"
+  },
+  {
+   "bondName": "26涪陵国资MTN002A",
+   "bondCode": "102602205.IB",
+   "latest": "1.9100"
   },
   {
    "bondName": "26浙商银行永续债01BC",
    "bondCode": "242680031.IB",
-   "latest": "1.9125"
+   "latest": "1.9075"
   },
   {
-   "bondName": "26中信银行永续债02BC",
-   "bondCode": "242680015.IB",
-   "latest": "1.8750"
+   "bondName": "21江油债",
+   "bondCode": "184186.SH",
+   "latest": "1.8700"
   },
   {
    "bondName": "26中信银行永续债01BC",
    "bondCode": "242680001.IB",
-   "latest": "1.8650"
+   "latest": "1.8625"
   },
   {
-   "bondName": "24西安高新MTN004",
-   "bondCode": "102480430.IB",
-   "latest": "1.8200"
+   "bondName": "25云能投MTN007",
+   "bondCode": "102501683.IB",
+   "latest": "1.8400"
   },
   {
-   "bondName": "24涪陵国资MTN002",
-   "bondCode": "102400694.IB",
-   "latest": "1.7500"
+   "bondName": "24恒丰银行二级资本债02",
+   "bondCode": "232400025.IB",
+   "latest": "1.7350"
   },
   {
-   "bondName": "25中信银行二级资本债01BC",
-   "bondCode": "232580009.IB",
-   "latest": "1.7300"
+   "bondName": "26北部湾银行01",
+   "bondCode": "2620004.IB",
+   "latest": "1.6500"
   },
   {
-   "bondName": "24云能投MTN013",
-   "bondCode": "102482216.IB",
-   "latest": "1.7000"
-  },
-  {
-   "bondName": "23中信银行二级资本债01A",
-   "bondCode": "232380089.IB",
-   "latest": "1.6000"
-  },
-  {
-   "bondName": "26恒丰银行债01",
-   "bondCode": "212680022.IB",
-   "latest": "1.6000"
+   "bondName": "24云能投MTN007",
+   "bondCode": "102400690.IB",
+   "latest": "1.6500"
   }
  ]
 }
