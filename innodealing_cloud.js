@@ -70,6 +70,17 @@ async function exportForDate(page, targetFrame, dateStr, applyAllA = true) {
   }
   console.log(`    [OK] 已设置发行起始日: ${dateStr}`);
 
+  // 诊断：打印筛选区全部 button 文本与 input placeholder，定位“查询/刷新”触发方式
+  try {
+    const diag = await targetFrame.evaluate(() => {
+      const btns = Array.from(document.querySelectorAll('button')).map(b => (b.textContent || '').trim()).filter(Boolean);
+      const inputs = Array.from(document.querySelectorAll('input')).map(i => i.getAttribute('placeholder') || '').filter(Boolean);
+      return { btns: btns.slice(0, 60), inputs: inputs.slice(0, 60) };
+    });
+    console.log('  [DIAG] buttons:', JSON.stringify(diag.btns));
+    console.log('  [DIAG] inputs :', JSON.stringify(diag.inputs));
+  } catch (e) { console.log('  [DIAG] err', e.message); }
+
   // 关键：nativeInputValueSetter 仅改 DOM 不更新 React state，列表查询用时仍是默认(非今日)。
   // 改用 Playwright 原生 fill（自动聚焦、触发 React onChange），再用 Enter 提交，使日期框 state=今天并触发查询刷新。
   try {
