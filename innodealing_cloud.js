@@ -70,15 +70,14 @@ async function exportForDate(page, targetFrame, dateStr, applyAllA = true) {
   }
   console.log(`    [OK] 已设置发行起始日: ${dateStr}`);
 
-  // 关键：之前的 nativeInputValueSetter 仅改 DOM，不会更新 React state，导致列表仍按默认(非今日)。
-  // 这里用 Playwright 原生 fill 重新写入，触发 React onChange，使日期框 state=今天，列表随查询刷新。
+  // 关键：nativeInputValueSetter 仅改 DOM 不更新 React state，列表查询用时仍是默认(非今日)。
+  // 改用 Playwright 原生 fill（自动聚焦、触发 React onChange），再用 Enter 提交，使日期框 state=今天并触发查询刷新。
   try {
-    const di = targetFrame.locator('input[placeholder*="起始"]').first();
-    await di.click({ force: true });
+    const di = targetFrame.locator('input[placeholder*="发行起始日"]').first();
     await di.fill('');
     await di.fill(dateStr);
     await di.press('Enter');
-    console.log(`    [OK] 已用 Playwright 重设起始日并回车(确保 React state 更新为 ${dateStr})`);
+    console.log(`    [OK] 已用 Playwright fill 重设起始日并回车(React state=${dateStr})`);
   } catch (e) {
     console.log(`    [WARN] 重设起始日失败: ${e.message}`);
   }
