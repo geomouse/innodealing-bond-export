@@ -1,10 +1,11 @@
 {
- "date": "2026-08-24",
- "total": 39,
- "new_today": 1,
+ "date": "2026-08-25",
+ "total": 41,
+ "new_today": 2,
  "new_names": [
-  "26齐商银行永续债01"
+  "26三峡银行三农债",
+  "26华发集团SCP007"
  ],
- "missing_rate_count": 4,
+ "missing_rate_count": 6,
  "cross_failed": false
 }
