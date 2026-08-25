@@ -72,6 +72,20 @@ async function exportForDate(page, targetFrame, dateStr, applyAllA = true) {
   await page.keyboard.press('Escape');
   await sleep(3000);
 
+  // 关键修复：单纯设置日期框不足以让列表按"起始日"刷新（只有选关注组 all-A 才会触发查询）。
+  // 全市场模式(applyAllA=false)跳过选组步骤，列表会停留在页面默认（含 8-24 等旧债）。
+  // 因此显式用输入框回车触发一次查询，确保两种模式都只含"发行起始日=今天"的当日债。
+  try {
+    const di = targetFrame.locator('input[placeholder*="起始"]').first();
+    await di.click();
+    await di.fill(dateStr);
+    await di.press('Enter');
+    console.log(`    [OK] 已触发日期查询(确保列表按起始日=${dateStr}刷新)`);
+  } catch (e) {
+    console.log(`    [WARN] 触发日期查询失败: ${e.message}`);
+  }
+  await sleep(3000);
+
   // 2. 确认主体组 all-A 仍然选中（仅筛选模式；未筛选模式跳过，保留页面默认全市场视图）
   if (applyAllA) {
     const allAStillSelected = await targetFrame.evaluate(() => {
