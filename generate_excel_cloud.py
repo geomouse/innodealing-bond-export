@@ -184,6 +184,14 @@ def issue_date_of_row(row):
     return ''
 
 
+def _fnum(v):
+    """把可能是数值字符串的值转 float；无法转换（空/非数字）返回 None。"""
+    try:
+        return float(v)
+    except (TypeError, ValueError):
+        return None
+
+
 # ---------- 导出真源 × 两表 交叉验证 ----------
 # 真源 = 债立方当日导出文件 credit_bond_{TODAY}.xlsx。
 # Sheet1 的语义 = 「截标/发行日期 == 今天」的债券（与用户预期一致）。
@@ -229,6 +237,10 @@ RUN_DATE = TODAY
 master_count_before = len(master)
 new_this_run = []
 credit_files = sorted(glob.glob(os.path.join(DOWNLOAD_DIR, 'credit_bond_*.xlsx')))
+# 排除「未筛选全市场」文件（credit_bond_all_*.xlsx）：它仅用于新 sheet，绝不能并入
+# 关注组主库，否则会重现 7/28 非关注组债券污染主库的问题。
+credit_files = [f for f in credit_files
+                if not os.path.basename(f).startswith('credit_bond_all_')]
 if credit_files:
     for f in credit_files:
         m = re.search(r'credit_bond_(\d{4}-\d{2}-\d{2})\.xlsx', f)
@@ -321,6 +333,50 @@ for ci, h in enumerate(TARGET_HEADERS, 2):
 ws2.row_dimensions[1].height = 30
 ws2.freeze_panes = 'B2'
 
+# ---- Sheet3: 新债预测≥2.0（不筛选关注组，全市场当日发行数据）----
+# 数据来源：innodealing_cloud.js 在选 all-A 之前导出的 credit_bond_all_{TODAY}.xlsx（全市场，未筛选关注组）。
+# 筛选条件：新债预测(数值) >= 2.0。该文件不参与主库累积，故不会污染关注组 Sheet1/Sheet2。
+# 列在 YY评分 之后插入「新债预测」，便于按预测高低排序查看。
+SHEET3_HEADERS = []
+for _h in TARGET_HEADERS:
+    SHEET3_HEADERS.append(_h)
+    if _h == 'YY评分':
+        SHEET3_HEADERS.append('新债预测')
+ws3 = wb_out.create_sheet(title="新债预测≥2.0(全市场)")
+for ci, h in enumerate(SHEET3_HEADERS, 1):
+    c = ws3.cell(1, ci, h); c.font = header_font; c.fill = header_fill
+    c.alignment = header_alignment; c.border = thin_border
+sheet3_total = 0          # 全市场当日文件总行数（含预测<2.0）
+sheet3_rows = []          # 通过筛选（预测≥2.0）的行
+all_file = os.path.join(DOWNLOAD_DIR, f'credit_bond_all_{TODAY}.xlsx')
+if os.path.exists(all_file):
+    for d, row in read_credit_bond(all_file, TODAY):
+        nm = row.get('债券简称')
+        if not nm:
+            continue
+        sheet3_total += 1
+        fnum = _fnum(row.get('新债预测'))
+        if fnum is None or fnum < 2.0:
+            continue
+        sheet3_rows.append(row)
+else:
+    print(f"[WARN] 未找到未筛选全市场文件 {all_file}，Sheet3 为空（需 innodealing_cloud.js 先导出）")
+# 按新债预测降序排列，重点债券靠前
+sheet3_rows.sort(key=lambda r: (_fnum(r.get('新债预测')) or 0), reverse=True)
+for ri, rd in enumerate(sheet3_rows, 2):
+    for ci, h in enumerate(SHEET3_HEADERS, 1):
+        v = rd.get(h)
+        c = ws3.cell(ri, ci, v if v is not None else '')
+        c.font = data_font; c.alignment = data_alignment; c.border = thin_border
+        if h == '票面利率(%)' and not v:
+            c.fill = missing_fill
+for ci, h in enumerate(SHEET3_HEADERS, 1):
+    ws3.column_dimensions[get_column_letter(ci)].width = col_widths.get(h, 12)
+ws3.row_dimensions[1].height = 30
+ws3.freeze_panes = 'A2'
+sheet3_count = len(sheet3_rows)
+print(f"  Sheet3 新债预测≥2.0(全市场): {sheet3_count} 条（全市场当日文件共 {sheet3_total} 行）")
+
 # ---------- 5) 两表一致性自检 + 导出真源交叉验证 ----------
 sheet1_count = len(sheet1_names)
 delta = len(master) - master_count_before
@@ -343,11 +399,12 @@ rate_filled = len(master) - len(missing)
 print(f"\n[SUCCESS] 输出: {OUTPUT_PATH}")
 print(f"  Sheet1 当日新增: {sheet1_count} 条")
 print(f"  Sheet2 汇总: {len(sorted_bonds)} 条 (累计，只增不减)")
+print(f"  Sheet3 新债预测≥2.0(全市场): {sheet3_count} 条")
 print(f"  票面利率补全: {rate_filled}/{len(master)}")
 
 # ---------- 6) 输出统计（供邮件与自检消费）----------
-# __STATS__ 行供 workflow 用 grep 提取 -> send_email.js 解析 (today:total:rateFilled:rateTotal)
-print(f"__STATS__:{sheet1_count}:{len(master)}:{rate_filled}:{len(master)}")
+# __STATS__ 行供 workflow 用 grep 提取 -> send_email.js 解析 (today:total:rateFilled:rateTotal:forecastCount)
+print(f"__STATS__:{sheet1_count}:{len(master)}:{rate_filled}:{len(master)}:{sheet3_count}")
 stats = {
     "date": TODAY,
     "total": len(master),
@@ -355,6 +412,7 @@ stats = {
     "new_names": sorted(sheet1_names),
     "missing_rate_count": len(missing),
     "cross_failed": cross_failed,
+    "forecast_sheet_count": sheet3_count,
 }
 with open(os.path.join(DATA_DIR, "summary_stats.json"), "w", encoding="utf-8") as f:
     json.dump(stats, f, ensure_ascii=False, indent=1)

@@ -30,7 +30,9 @@ function getBusinessDays(count) {
 }
 
 // 导出单个日期的数据
-async function exportForDate(page, targetFrame, dateStr) {
+// applyAllA=true  → 筛选关注组 all-A（写入 credit_bond_{date}.xlsx，用于主库/Sheet1/Sheet2）
+// applyAllA=false → 不筛选关注组（页面默认全市场，写入 credit_bond_all_{date}.xlsx，用于新 sheet）
+async function exportForDate(page, targetFrame, dateStr, applyAllA = true) {
   console.log(`  === 导出 ${dateStr} ===`);
 
   // 1. 设置发行起始日
@@ -70,40 +72,45 @@ async function exportForDate(page, targetFrame, dateStr) {
   await page.keyboard.press('Escape');
   await sleep(3000);
 
-  // 2. 确认主体组 all-A 仍然选中
-  const allAStillSelected = await targetFrame.evaluate(() => {
-    const selectors = document.querySelectorAll('.dmuiv4-select');
-    for (const sel of selectors) {
-      if (sel.textContent.includes('all-A')) return true;
-    }
-    return false;
-  });
-  if (!allAStillSelected) {
-    console.log(`    [INFO] ${dateStr} 主体组未选中，重新选择...`);
-    const box = await targetFrame.evaluate(() => {
-      const sel = Array.from(document.querySelectorAll('.dmuiv4-select'))
-        .find(s => s.textContent.includes('请选择主体组'));
-      if (!sel) return null;
-      const rect = sel.getBoundingClientRect();
-      return { x: rect.x, y: rect.y, width: rect.width, height: rect.height };
+  // 2. 确认主体组 all-A 仍然选中（仅筛选模式；未筛选模式跳过，保留页面默认全市场视图）
+  if (applyAllA) {
+    const allAStillSelected = await targetFrame.evaluate(() => {
+      const selectors = document.querySelectorAll('.dmuiv4-select');
+      for (const sel of selectors) {
+        if (sel.textContent.includes('all-A')) return true;
+      }
+      return false;
     });
-    if (box) {
-      await page.mouse.click(box.x + box.width - 12, box.y + box.height / 2);
-      await sleep(1000);
-      await targetFrame.evaluate(() => {
-        const items = document.querySelectorAll('.dmuiv4-select-item-option-content');
-        for (const item of items) {
-          if (item.textContent.trim() === 'all-A') { item.click(); return true; }
-        }
-        return false;
+    if (!allAStillSelected) {
+      console.log(`    [INFO] ${dateStr} 主体组未选中，重新选择...`);
+      const box = await targetFrame.evaluate(() => {
+        const sel = Array.from(document.querySelectorAll('.dmuiv4-select'))
+          .find(s => s.textContent.includes('请选择主体组'));
+        if (!sel) return null;
+        const rect = sel.getBoundingClientRect();
+        return { x: rect.x, y: rect.y, width: rect.width, height: rect.height };
       });
-      await sleep(1000);
+      if (box) {
+        await page.mouse.click(box.x + box.width - 12, box.y + box.height / 2);
+        await sleep(1000);
+        await targetFrame.evaluate(() => {
+          const items = document.querySelectorAll('.dmuiv4-select-item-option-content');
+          for (const item of items) {
+            if (item.textContent.trim() === 'all-A') { item.click(); return true; }
+          }
+          return false;
+        });
+        await sleep(1000);
+      }
     }
+  } else {
+    console.log(`    [INFO] ${dateStr} 未筛选模式（全市场），不做关注组选择`);
   }
 
   // 3. 导出数据
   let downloadPath = null;
   let downloadError = null;
+  const prefix = applyAllA ? '' : 'all_';
   const downloadPromise = new Promise((resolve) => {
     const timer = setTimeout(() => {
       downloadError = 'timeout';
@@ -113,10 +120,10 @@ async function exportForDate(page, targetFrame, dateStr) {
     page.once('download', async (download) => {
       clearTimeout(timer);
       try {
-        const savePath = path.join(DATA_DIR, `credit_bond_${dateStr}.xlsx`);
+        const savePath = path.join(DATA_DIR, `credit_bond_${prefix}${dateStr}.xlsx`);
         await download.saveAs(savePath);
         const size = fs.statSync(savePath).size;
-        console.log(`    [OK] 下载成功: credit_bond_${dateStr}.xlsx (${(size/1024).toFixed(1)} KB)`);
+        console.log(`    [OK] 下载成功: credit_bond_${prefix}${dateStr}.xlsx (${(size/1024).toFixed(1)} KB)`);
         resolve(savePath);
       } catch (e) {
         downloadError = `save: ${e.message}`;
@@ -226,6 +233,19 @@ async function main() {
     await sleep(1000);
     console.log('  [OK] 已加载信用债发行页面');
 
+    // ===== STEP 3.5: 导出未筛选(全市场)当日数据 → credit_bond_all_{today}.xlsx =====
+    // 用于新 sheet（不筛选关注组、新债预测≥2.0 的全市场新债）。
+    // 此时尚未选择任何主体组，页面默认即全市场视图；该文件独立保存，后续 STEP3 选 all-A 不影响它。
+    console.log('[3.5] 导出未筛选(全市场)当日数据...');
+    const unfilteredDate = businessDays[0]; // 今天（北京时间，businessDays[0] 为最近交易日）
+    const unResult = await exportForDate(page, targetFrame, unfilteredDate, false);
+    if (unResult.success) {
+      console.log(`  [OK] 未筛选当日数据已导出: credit_bond_all_${unfilteredDate}.xlsx`);
+    } else {
+      console.log(`  [WARN] 未筛选当日数据导出失败（不影响关注组主流程）: ${unfilteredDate}`);
+    }
+    await sleep(1000);
+
     // ===== STEP 3: 选择主体组 all-A（带校验，失败即终止，避免混入非关注组）=====
     console.log('[3/4] 选择主体组 all-A...');
     const hasAllASelected = () => targetFrame.evaluate(() => {
@@ -278,7 +298,7 @@ async function main() {
     console.log(`[4/4] 逐日导出 ${businessDays.length} 个交易日...`);
     const results = [];
     for (const dateStr of businessDays) {
-      const result = await exportForDate(page, targetFrame, dateStr);
+      const result = await exportForDate(page, targetFrame, dateStr, true);
       results.push(result);
       await sleep(1000);
     }
