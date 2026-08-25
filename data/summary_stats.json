@@ -1,11 +1,13 @@
 {
  "date": "2026-08-25",
- "total": 41,
- "new_today": 2,
+ "total": 42,
+ "new_today": 3,
  "new_names": [
   "26三峡银行三农债",
+  "26北部湾银行02",
   "26华发集团SCP007"
  ],
- "missing_rate_count": 5,
- "cross_failed": false
+ "missing_rate_count": 6,
+ "cross_failed": false,
+ "forecast_sheet_count": 23
 }
