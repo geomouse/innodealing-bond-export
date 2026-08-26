@@ -35,80 +35,75 @@ function getBusinessDays(count) {
 async function exportForDate(page, targetFrame, dateStr, applyAllA = true) {
   console.log(`  === 导出 ${dateStr} ===`);
 
-  // 1. 设置发行起始日
-  const dateSet = await targetFrame.evaluate((ds) => {
-    const inputs = document.querySelectorAll('input');
-    for (const inp of inputs) {
-      const ph = inp.getAttribute('placeholder') || '';
-      if (ph.includes('起始日') || ph.includes('开始日期')) {
-        const nativeInputValueSetter = Object.getOwnPropertyDescriptor(
-          window.HTMLInputElement.prototype, 'value'
-        ).set;
-        nativeInputValueSetter.call(inp, '');
-        inp.dispatchEvent(new Event('input', { bubbles: true }));
-        nativeInputValueSetter.call(inp, ds);
-        inp.dispatchEvent(new Event('input', { bubbles: true }));
-        inp.dispatchEvent(new Event('change', { bubbles: true }));
-        return true;
+  // 未筛选(全市场)模式：一级发行页面默认即当天视图，直接下载当日数据即可，
+  // 不必设置日期（原生 setter 无法触发 React 查询刷新，反而会把日期框状态弄乱）。
+  if (applyAllA) {
+    // 1. 设置发行起始日（仅筛选关注组、需要逐日导出的场景才需要）
+    const dateSet = await targetFrame.evaluate((ds) => {
+      const inputs = document.querySelectorAll('input');
+      for (const inp of inputs) {
+        const ph = inp.getAttribute('placeholder') || '';
+        if (ph.includes('起始日') || ph.includes('开始日期')) {
+          const nativeInputValueSetter = Object.getOwnPropertyDescriptor(
+            window.HTMLInputElement.prototype, 'value'
+          ).set;
+          nativeInputValueSetter.call(inp, '');
+          inp.dispatchEvent(new Event('input', { bubbles: true }));
+          nativeInputValueSetter.call(inp, ds);
+          inp.dispatchEvent(new Event('input', { bubbles: true }));
+          inp.dispatchEvent(new Event('change', { bubbles: true }));
+          return true;
+        }
+      }
+      return false;
+    }, dateStr);
+
+    if (!dateSet) {
+      const dateInput = targetFrame.locator('input[placeholder*="起始"]').first();
+      if (await dateInput.count() > 0) {
+        await dateInput.click();
+        await sleep(300);
+        await dateInput.fill('');
+
+        await dateInput.fill(dateStr);
+        await dateInput.press('Enter');
+      } else {
+        console.log(`    [WARN] ${dateStr} 未找到日期输入框`);
+        return { date: dateStr, success: false };
       }
     }
-    return false;
-  }, dateStr);
+    console.log(`    [OK] 已设置发行起始日: ${dateStr}`);
 
-  if (!dateSet) {
-    const dateInput = targetFrame.locator('input[placeholder*="起始"]').first();
-    if (await dateInput.count() > 0) {
-      await dateInput.click();
-      await sleep(300);
-      await dateInput.fill('');
-      await dateInput.fill(dateStr);
-      await dateInput.press('Enter');
-    } else {
-      console.log(`    [WARN] ${dateStr} 未找到日期输入框`);
-      return { date: dateStr, success: false };
+    // 原生 setter 不刷新 React state，再用 Playwright fill + Enter 提交查询
+    try {
+      const di = targetFrame.locator('input[placeholder*="发行起始日"]').first();
+      await di.fill('');
+      await di.fill(dateStr);
+      await di.press('Enter');
+      console.log(`    [OK] 已用 Playwright fill 重设起始日并回车(React state=${dateStr})`);
+    } catch (e) {
+      console.log(`    [WARN] 重设起始日失败: ${e.message}`);
     }
-  }
-  console.log(`    [OK] 已设置发行起始日: ${dateStr}`);
+    await sleep(3000);
 
-  // 诊断：打印筛选区全部 button 文本与 input placeholder，定位“查询/刷新”触发方式
-  try {
-    const diag = await targetFrame.evaluate(() => {
-      const btns = Array.from(document.querySelectorAll('button')).map(b => (b.textContent || '').trim()).filter(Boolean);
-      const inputs = Array.from(document.querySelectorAll('input')).map(i => i.getAttribute('placeholder') || '').filter(Boolean);
-      return { btns: btns.slice(0, 60), inputs: inputs.slice(0, 60) };
-    });
-    console.log('  [DIAG] buttons:', JSON.stringify(diag.btns));
-    console.log('  [DIAG] inputs :', JSON.stringify(diag.inputs));
-  } catch (e) { console.log('  [DIAG] err', e.message); }
-
-  // 关键：nativeInputValueSetter 仅改 DOM 不更新 React state，列表查询用时仍是默认(非今日)。
-  // 改用 Playwright 原生 fill（自动聚焦、触发 React onChange），再用 Enter 提交，使日期框 state=今天并触发查询刷新。
-  try {
-    const di = targetFrame.locator('input[placeholder*="发行起始日"]').first();
-    await di.fill('');
-    await di.fill(dateStr);
-    await di.press('Enter');
-    console.log(`    [OK] 已用 Playwright fill 重设起始日并回车(React state=${dateStr})`);
-  } catch (e) {
-    console.log(`    [WARN] 重设起始日失败: ${e.message}`);
+    // 兜底：尝试点击“查询/搜索/刷新”按钮
+    try {
+      const clicked = await targetFrame.evaluate(() => {
+        const btns = Array.from(document.querySelectorAll('button'));
+        for (const b of btns) {
+          const t = (b.textContent || '').trim();
+          if (t === '查询' || t === '搜索' || t === '刷新' || t.includes('查询')) { b.click(); return t; }
+        }
+        return '';
+      });
+      if (clicked) console.log(`    [OK] 已点击「${clicked}」按钮刷新列表`);
+    } catch (e) {
+      console.log(`    [WARN] 点击刷新/查询按钮异常: ${e.message}`);
+    }
+    await sleep(3000);
+  } else {
+    console.log(`    [INFO] 未筛选模式：依赖页面默认当日视图，不修改日期，直接下载当日全量`);
   }
-  await sleep(3000);
-
-  // 兜底：尝试点击“查询/搜索/刷新”按钮，强制刷新列表
-  try {
-    const clicked = await targetFrame.evaluate(() => {
-      const btns = Array.from(document.querySelectorAll('button'));
-      for (const b of btns) {
-        const t = (b.textContent || '').trim();
-        if (t === '查询' || t === '搜索' || t === '刷新' || t.includes('查询')) { b.click(); return t; }
-      }
-      return '';
-    });
-    if (clicked) console.log(`    [OK] 已点击「${clicked}」按钮刷新列表`);
-  } catch (e) {
-    console.log(`    [WARN] 点击刷新/查询按钮异常: ${e.message}`);
-  }
-  await sleep(3000);
 
   // 2. 确认主体组 all-A 仍然选中（仅筛选模式；未筛选模式跳过，保留页面默认全市场视图）
   if (applyAllA) {
