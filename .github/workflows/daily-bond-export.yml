@@ -19,9 +19,8 @@ jobs:
         id: dedup
         env:
           GH_TOKEN: ${{ github.token }}
-          # TEMP 2026-08-26: 放宽到今日23:59，允许手动 dispatch 重跑验证全市场多日回填(8-25)；验证后恢复 8/0
-          PRESET_HOUR: '23'
-          PRESET_MIN: '59'
+          PRESET_HOUR: '8'
+          PRESET_MIN: '0'
         run: |
           export TODAY=$(TZ=Asia/Shanghai date +%Y-%m-%d)
           echo "检查今日($TODAY)是否已有运行..."
