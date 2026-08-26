@@ -244,18 +244,22 @@ async function main() {
     await sleep(1000);
     console.log('  [OK] 已加载信用债发行页面');
 
-    // ===== STEP 3.5: 导出未筛选(全市场)当日数据 → credit_bond_all_{today}.xlsx =====
+    // ===== STEP 3.5: 导出未筛选(全市场) 多日数据 → credit_bond_all_{date}.xlsx =====
     // 用于新 sheet（不筛选关注组、新债预测≥2.0 的全市场新债）。
+    // 循环最近 N 个交易日导出（与关注组 STEP4 一致）：既能回填历史日期缺口
+    // （如某天跑批因日期 bug 错抓漏抓的债），又能在债券截标后自动补全票面利率
+    // （历史日查询返回已定价数据，票面利率有值）。
     // 此时尚未选择任何主体组，页面默认即全市场视图；该文件独立保存，后续 STEP3 选 all-A 不影响它。
-    console.log('[3.5] 导出未筛选(全市场)当日数据...');
-    const unfilteredDate = businessDays[0]; // 今天（北京时间，businessDays[0] 为最近交易日）
-    const unResult = await exportForDate(page, targetFrame, unfilteredDate, false);
-    if (unResult.success) {
-      console.log(`  [OK] 未筛选当日数据已导出: credit_bond_all_${unfilteredDate}.xlsx`);
-    } else {
-      console.log(`  [WARN] 未筛选当日数据导出失败（不影响关注组主流程）: ${unfilteredDate}`);
+    console.log('[3.5] 导出未筛选(全市场) 多日数据...');
+    for (const unfilteredDate of businessDays) {
+      const unResult = await exportForDate(page, targetFrame, unfilteredDate, false);
+      if (unResult.success) {
+        console.log(`  [OK] 未筛选数据已导出: credit_bond_all_${unfilteredDate}.xlsx`);
+      } else {
+        console.log(`  [WARN] 未筛选数据导出失败（不影响关注组主流程）: ${unfilteredDate}`);
+      }
+      await sleep(1000);
     }
-    await sleep(1000);
 
     // ===== STEP 3: 选择主体组 all-A（带校验，失败即终止，避免混入非关注组）=====
     console.log('[3/4] 选择主体组 all-A...');

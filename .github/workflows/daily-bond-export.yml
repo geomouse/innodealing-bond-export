@@ -13,14 +13,15 @@ permissions:
 jobs:
   export:
     runs-on: ubuntu-latest
-    timeout-minutes: 15
+    timeout-minutes: 25
     steps:
       - name: 去重检查（今日已运行则跳过）
         id: dedup
         env:
           GH_TOKEN: ${{ github.token }}
-          PRESET_HOUR: '8'
-          PRESET_MIN: '0'
+          # TEMP 2026-08-26: 放宽到今日23:59，允许手动 dispatch 重跑验证全市场多日回填(8-25)；验证后恢复 8/0
+          PRESET_HOUR: '23'
+          PRESET_MIN: '59'
         run: |
           export TODAY=$(TZ=Asia/Shanghai date +%Y-%m-%d)
           echo "检查今日($TODAY)是否已有运行..."
