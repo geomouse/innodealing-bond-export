@@ -54,6 +54,27 @@ function getBusinessDays(count) {
 async function exportForDate(page, targetFrame, dateStr, applyAllA = true) {
   console.log(`  === 导出 ${dateStr} ===`);
 
+  // 诊断：打印所有 input（placeholder/type/class/readonly）与日期相关元素，定位真实日期选择器
+  try {
+    const diag = await targetFrame.evaluate(() => {
+      const inputs = Array.from(document.querySelectorAll('input')).map(i => ({
+        ph: i.getAttribute('placeholder') || '',
+        type: i.getAttribute('type') || '',
+        cls: (i.className || '').slice(0, 80),
+        readonly: i.readOnly,
+      }));
+      const dateEls = Array.from(document.querySelectorAll('*')).filter(e => {
+        const t = (e.textContent || '').trim();
+        const c = (e.className || '');
+        return (t.includes('起始') || t.includes('截标') || t.includes('发行日') || t.includes('日期') || t.includes('申购'))
+          && (c.includes('picker') || c.includes('Picker') || c.includes('date') || c.includes('Date') || c.includes('select') || c.includes('Select') || c.includes('input') || e.tagName === 'INPUT' || e.tagName === 'LABEL');
+      }).slice(0, 40).map(e => ({ tag: e.tagName, cls: (e.className||'').slice(0,80), text: (e.textContent||'').trim().slice(0,40) }));
+      return { inputs: inputs.slice(0, 50), dateEls };
+    });
+    console.log('  [DIAG-INPUTS]', JSON.stringify(diag.inputs));
+    console.log('  [DIAG-DATEELS]', JSON.stringify(diag.dateEls));
+  } catch (e) { console.log('  [DIAG] err', e.message); }
+
   // 两种模式都显式把“发行起始日”设为 dateStr（今天），避免页面默认停在前一天。
   // 优先用可触发 React 的 setAntdDate；失败再用 Playwright 原生 fill + Enter 兜底。
   console.log(`    [INFO] 设置发行起始日为 ${dateStr} ...`);
