@@ -13,31 +13,27 @@ if (!fs.existsSync(DATA_DIR)) fs.mkdirSync(DATA_DIR, { recursive: true });
 
 function sleep(ms) { return new Promise(r => setTimeout(r, ms)); }
 
-// 可靠地设置一级发行页面的「日期区间」(RangePicker) 为单日 dateStr，并触发查询刷新。
-// 真实结构：页面有一个下拉(dmuiv4-select)选择按哪个日期维度（默认=发行起始日）+ 一个 RangePicker，
-// 其两个 input 的 placeholder 分别为『开始日期』与『结束日期』（绝非『发行起始日』，那是维度下拉的文本）。
-// 把 开始日期 与 结束日期 都设为同一天 -> 区间即“当天”，筛出当日发行。
-// 关键点：React 通过 _valueTracker 追踪输入值，必须 tracker.setValue('') 清空后再 set 新值并派发 input/change，
-// 否则 React 误判“未变化”而忽略，日期框不刷新、查询不发起。
+// 用真实 UI 交互设置一级发行页面的「日期区间」(RangePicker) 为单日 dateStr。
+// antd RangePicker 必须用 点击->键入->回车确认 才能提交（单纯改 DOM 值不触发 onChange），
+// 所以这里用 Playwright locator 模拟真实用户输入：点开输入框、全选、键入 YYYY-MM-DD、回车确认，
+// 开始与结束分别确认后 antd 才真正提交区间并发起查询。
 async function setRangeDate(frame, dateStr) {
-  return await frame.evaluate((ds) => {
-    const inputs = Array.from(document.querySelectorAll('input'));
-    const start = inputs.find(i => (i.getAttribute('placeholder') || '') === '开始日期');
-    const end = inputs.find(i => (i.getAttribute('placeholder') || '') === '结束日期');
-    if (!start || !end) return 'NO_INPUT:' + (!start ? 'no-start' : '') + (!end ? 'no-end' : '');
-    function setVal(inp, v) {
-      try { inp.focus(); } catch (e) {}
-      const proto = Object.getOwnPropertyDescriptor(window.HTMLInputElement.prototype, 'value');
-      const tracker = inp._valueTracker;
-      if (tracker) { try { tracker.setValue(''); } catch (e) {} }
-      proto.set.call(inp, v);
-      inp.dispatchEvent(new Event('input', { bubbles: true }));
-      inp.dispatchEvent(new Event('change', { bubbles: true }));
-    }
-    setVal(start, ds);
-    setVal(end, ds);
-    return 'SET';
-  }, dateStr);
+  try {
+    const s = frame.locator('input[placeholder="开始日期"]').first();
+    await s.click({ timeout: 8000 });
+    await s.press('Control+A');
+    await s.type(dateStr, { delay: 30 });
+    await s.press('Enter');                 // 确认开始日，焦点跳到结束日
+    await sleep(800);
+    const e = frame.locator('input[placeholder="结束日期"]').first();
+    await e.click({ timeout: 8000 });
+    await e.press('Control+A');
+    await e.type(dateStr, { delay: 30 });
+    await e.press('Enter');                 // 确认结束日 -> 触发 onChange -> 查询
+    return 'UI-SET';
+  } catch (err) {
+    return 'UI-ERR:' + err.message;
+  }
 }
 
 // 计算最近 N 个交易日（北京时间 UTC+8，跳过周末）
@@ -62,44 +58,13 @@ function getBusinessDays(count) {
 async function exportForDate(page, targetFrame, dateStr, applyAllA = true) {
   console.log(`  === 导出 ${dateStr} ===`);
 
-  // 诊断：打印所有 input（placeholder/type/class/readonly）与日期相关元素，定位真实日期选择器
-  try {
-    const diag = await targetFrame.evaluate(() => {
-      const inputs = Array.from(document.querySelectorAll('input')).map(i => ({
-        ph: i.getAttribute('placeholder') || '',
-        type: i.getAttribute('type') || '',
-        cls: (i.className || '').slice(0, 80),
-        readonly: i.readOnly,
-      }));
-      const dateEls = Array.from(document.querySelectorAll('*')).filter(e => {
-        const t = (e.textContent || '').trim();
-        const c = (e.className || '');
-        return (t.includes('起始') || t.includes('截标') || t.includes('发行日') || t.includes('日期') || t.includes('申购'))
-          && (c.includes('picker') || c.includes('Picker') || c.includes('date') || c.includes('Date') || c.includes('select') || c.includes('Select') || c.includes('input') || e.tagName === 'INPUT' || e.tagName === 'LABEL');
-      }).slice(0, 40).map(e => ({ tag: e.tagName, cls: (e.className||'').slice(0,80), text: (e.textContent||'').trim().slice(0,40) }));
-      return { inputs: inputs.slice(0, 50), dateEls };
-    });
-    console.log('  [DIAG-INPUTS]', JSON.stringify(diag.inputs));
-    console.log('  [DIAG-DATEELS]', JSON.stringify(diag.dateEls));
-  } catch (e) { console.log('  [DIAG] err', e.message); }
-
   // 两种模式都显式把日期区间设为单日 dateStr（今天），避免页面默认停在前一天。
   // RangePicker 的 input placeholder 为『开始日期』『结束日期』；把两者都设为同一天即“当日”。
-  console.log(`    [INFO] 设置日期区间为单日 ${dateStr} ...`);
+  // 注意：antd RangePicker 不能用 DOM value setter 提交（只改显示文本不触发 onChange），
+  // 必须用真实 UI 交互（点击->键入->回车确认）才能让 antd 真正提交区间并发起查询。
+  console.log(`    [INFO] 用 UI 交互设置日期区间为单日 ${dateStr} ...`);
   const setResult = await setRangeDate(targetFrame, dateStr);
   console.log(`    [DATE] setRangeDate -> ${setResult}`);
-  if (setResult !== 'SET') {
-    try {
-      const ds = targetFrame.locator('input[placeholder="开始日期"]').first();
-      const de = targetFrame.locator('input[placeholder="结束日期"]').first();
-      await ds.fill(''); await ds.fill(dateStr); await ds.press('Enter');
-      await de.fill(''); await de.fill(dateStr); await de.press('Enter');
-      console.log(`    [DATE] Playwright fill 重设日期区间并回车 OK`);
-    } catch (e) {
-      console.log(`    [WARN] 重设日期区间兜底失败: ${e.message}`);
-    }
-  }
-  await sleep(3000);
 
   // 兜底：点击“查询/搜索/刷新”按钮，强制刷新列表
   try {
@@ -115,7 +80,8 @@ async function exportForDate(page, targetFrame, dateStr, applyAllA = true) {
   } catch (e) {
     console.log(`    [WARN] 点击刷新/查询按钮异常: ${e.message}`);
   }
-  await sleep(3000);
+  // 等待查询返回（异步 API）
+  await sleep(6000);
 
   // 2. 确认主体组 all-A 仍然选中（仅筛选模式；未筛选模式跳过，保留页面默认全市场视图）
   if (applyAllA) {
