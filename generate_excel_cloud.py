@@ -39,6 +39,8 @@ SCRIPT_DIR = os.path.dirname(os.path.abspath(__file__))
 DATA_DIR = os.path.join(SCRIPT_DIR, 'data')
 DOWNLOAD_DIR = DATA_DIR  # 导出脚本把 credit_bond_*.xlsx 写到 data/
 MASTER_PATH = os.path.join(DATA_DIR, 'bonds_master.json')
+# Sheet4（新债预测≥2.0 全市场）累积主库，与关注组的 bonds_master.json / Sheet2 对应
+FORECAST_MASTER_PATH = os.path.join(DATA_DIR, 'forecast_master.json')
 
 # ---- 北京时间（云端 runner 默认 UTC，必须 +8h 校正）----
 _beijing = datetime.now(timezone.utc) + timedelta(hours=8)
@@ -147,6 +149,71 @@ def save_master(m):
     os.makedirs(DATA_DIR, exist_ok=True)
     with open(MASTER_PATH, 'w', encoding='utf-8') as f:
         json.dump(m, f, ensure_ascii=False, indent=1)
+
+
+# ---------- 构建 Sheet4 主库（新债预测≥2.0 全市场，每日累积）----------
+# 与关注组的 bonds_master.json / Sheet2 对应：Sheet4 是 Sheet3 的累积汇总。
+# 数据源：所有 credit_bond_all_*.xlsx（每日 Sheet3 的真源）。按债券简称去重累积，
+# 永不丢弃（只增不减）——每天运行把当日 all_ 文件并入，自然实现“每日累积 Sheet3”。
+# 票面利率补齐（解决“之前的票面利率空”）：
+#   ① 跨所有 all_ 文件，若某文件同一债带非空票面利率则回填（优先非空）；
+#   ② 再从关注组主库 bonds_master.json 与历史 credit_bond_*.xlsx 按债券简称二次回填。
+# 注：当日新发(pre-issue)债券在 08:00 导出时票面利率尚为空属正常；其票面利率会在
+#     发行后（次日 all_ 文件中该债已带值）被①自动补齐。
+def build_forecast_master():
+    fm = {}
+    all_files = sorted(glob.glob(os.path.join(DOWNLOAD_DIR, 'credit_bond_all_*.xlsx')))
+    for f in all_files:
+        m = re.search(r'credit_bond_all_(\d{4}-\d{2}-\d{2})\.xlsx', f)
+        fdate = m.group(1) if m else TODAY
+        for d, row in read_credit_bond(f, fdate):
+            nm = row.get('债券简称')
+            if not nm:
+                continue
+            fv = _fnum(row.get('新债预测'))
+            if fv is None or fv < 2.0:
+                continue
+            iss = _parse_issue_date(row.get('发行起始日') or '') or fdate
+            if nm not in fm:
+                fm[nm] = {'data': dict(row), 'first_seen': iss, 'issue_date': iss}
+            else:
+                cur = fm[nm]['data']
+                for k, v in row.items():
+                    if v in (None, '', 0):
+                        continue
+                    if k in ('债券代码', '票面利率(%)'):
+                        cur[k] = v            # 优先回填非空票面利率/代码（跨文件补齐）
+                    elif iss >= fm[nm]['issue_date'] or k not in cur:
+                        cur[k] = v
+                if iss > fm[nm]['issue_date']:
+                    fm[nm]['issue_date'] = iss
+                    fm[nm]['first_seen'] = iss
+    # 二次回填：关注组主库 + 历史 credit_bond_*.xlsx（按债券简称）
+    backfill = []
+    if os.path.exists(MASTER_PATH):
+        try:
+            with open(MASTER_PATH, encoding='utf-8') as fh:
+                bm = json.load(fh)
+            for n, info in bm.items():
+                backfill.append((n, info.get('data', {})))
+        except Exception:
+            pass
+    for f in sorted(glob.glob(os.path.join(DOWNLOAD_DIR, 'credit_bond_*.xlsx'))):
+        if os.path.basename(f).startswith('credit_bond_all_'):
+            continue
+        m = re.search(r'credit_bond_(\d{4}-\d{2}-\d{2})\.xlsx', f)
+        fdate = m.group(1) if m else TODAY
+        for d, row in read_credit_bond(f, fdate):
+            nm = row.get('债券简称')
+            if nm:
+                backfill.append((nm, row))
+    for nm, rowd in backfill:
+        if nm in fm:
+            for k in ('债券代码', '票面利率(%)'):
+                v = rowd.get(k)
+                if v not in (None, '', 0) and fm[nm]['data'].get(k) in (None, '', 0):
+                    fm[nm]['data'][k] = v
+    return fm
 
 
 def _parse_issue_date(s):
@@ -384,6 +451,45 @@ ws3.freeze_panes = 'A2'
 sheet3_count = len(sheet3_rows)
 print(f"  Sheet3 新债预测≥2.0(全市场): {sheet3_count} 条（全市场当日文件共 {sheet3_total} 行）")
 
+# ---- Sheet4: 新债预测≥2.0(全市场) 汇总（Sheet3 的每日累积）----
+# 从所有 credit_bond_all_*.xlsx 累积（按债券简称去重），并跨文件/关注组回填票面利率。
+# 列：首次提取日期 + Sheet3 表头（含“新债预测”），按发行起始日降序、预测降序。
+fm = build_forecast_master()
+try:
+    with open(FORECAST_MASTER_PATH, 'w', encoding='utf-8') as f:
+        json.dump(fm, f, ensure_ascii=False, indent=1)
+except Exception:
+    pass
+sheet4_items = sorted(
+    fm.items(),
+    key=lambda x: (x[1]['issue_date'], _fnum(x[1]['data'].get('新债预测')) or 0),
+    reverse=True)
+SHEET4_HEADERS = SHEET3_HEADERS
+ws4 = wb_out.create_sheet(title="新债预测≥2.0(全市场)汇总")
+S4_HEADERS = ['首次提取日期'] + SHEET4_HEADERS
+for ci, h in enumerate(S4_HEADERS, 1):
+    c = ws4.cell(1, ci, h); c.font = header_font; c.fill = header_fill
+    c.alignment = header_alignment; c.border = thin_border
+for ri, (name, info) in enumerate(sheet4_items, 2):
+    c0 = ws4.cell(ri, 1, info['first_seen']); c0.font = data_font
+    c0.alignment = data_alignment; c0.border = thin_border
+    for ci, h in enumerate(SHEET4_HEADERS, 2):
+        v = info['data'].get(h)
+        c = ws4.cell(ri, ci, v if v is not None else '')
+        c.font = data_font; c.alignment = data_alignment; c.border = thin_border
+        if h == '票面利率(%)' and not v:
+            c.fill = missing_fill
+ws4.column_dimensions['A'].width = 12
+for ci, h in enumerate(SHEET4_HEADERS, 2):
+    ws4.column_dimensions[get_column_letter(ci)].width = col_widths.get(h, 12)
+ws4.row_dimensions[1].height = 30
+ws4.freeze_panes = 'B2'
+sheet4_total = len(sheet4_items)
+sheet4_filled = sum(1 for _, info in fm.items()
+                    if info['data'].get('票面利率(%)') not in (None, ''))
+sheet4_empty = sheet4_total - sheet4_filled
+print(f"  Sheet4 新债预测≥2.0(全市场)汇总: {sheet4_total} 条（累计，票面利率已补齐 {sheet4_filled} 条，仍空 {sheet4_empty} 条）")
+
 # ---------- 5) 两表一致性自检 + 导出真源交叉验证 ----------
 sheet1_count = len(sheet1_names)
 delta = len(master) - master_count_before
@@ -407,11 +513,12 @@ print(f"\n[SUCCESS] 输出: {OUTPUT_PATH}")
 print(f"  Sheet1 当日新增: {sheet1_count} 条")
 print(f"  Sheet2 汇总: {len(sorted_bonds)} 条 (累计，只增不减)")
 print(f"  Sheet3 新债预测≥2.0(全市场): {sheet3_count} 条")
-print(f"  票面利率补全: {rate_filled}/{len(master)}")
+print(f"  Sheet4 新债预测≥2.0(全市场)汇总: {sheet4_total} 条 (累计)")
+print(f"  票面利率补全: {rate_filled}/{len(master)}；Sheet4 票面利率已补齐 {sheet4_filled}/{sheet4_total}")
 
 # ---------- 6) 输出统计（供邮件与自检消费）----------
-# __STATS__ 行供 workflow 用 grep 提取 -> send_email.js 解析 (today:total:rateFilled:rateTotal:forecastCount)
-print(f"__STATS__:{sheet1_count}:{len(master)}:{rate_filled}:{len(master)}:{sheet3_count}")
+# __STATS__ 行供 workflow 用 grep 提取 -> send_email.js 解析 (today:total:rateFilled:rateTotal:forecastCount:sheet4Count)
+print(f"__STATS__:{sheet1_count}:{len(master)}:{rate_filled}:{len(master)}:{sheet3_count}:{sheet4_total}")
 stats = {
     "date": TODAY,
     "total": len(master),
@@ -420,6 +527,7 @@ stats = {
     "missing_rate_count": len(missing),
     "cross_failed": cross_failed,
     "forecast_sheet_count": sheet3_count,
+    "forecast_summary_count": sheet4_total,
 }
 with open(os.path.join(DATA_DIR, "summary_stats.json"), "w", encoding="utf-8") as f:
     json.dump(stats, f, ensure_ascii=False, indent=1)

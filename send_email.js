@@ -25,6 +25,7 @@ async function sendEmail(excelPath, dateStr, stats) {
 
   const [todayCount, totalCount, rateFilled, rateTotal] = stats;
   const forecastCount = stats[4] !== undefined ? stats[4] : '0';
+  const sheet4Count = stats[5] !== undefined ? stats[5] : '0';
   const ratePct = rateTotal > 0 ? (rateFilled / rateTotal * 100).toFixed(0) : '0';
 
   let subject = `[信用债发行汇总] ${dateStr} | 今日${todayCount}条 | 累计${totalCount}只`;
@@ -43,6 +44,7 @@ async function sendEmail(excelPath, dateStr, stats) {
       <p><strong>累计债券：</strong>${totalCount} 只</p>
       <p><strong>票面利率补全：</strong>${rateFilled}/${rateTotal} (${ratePct}%)</p>
       <p><strong>新债预测≥2.0(全市场)：</strong>${forecastCount} 条（见 Sheet3，不筛选关注组）</p>
+      <p><strong>新债预测≥2.0 累计汇总：</strong>${sheet4Count} 只（见 Sheet4，每日累积 + 票面利率补齐）</p>
       <p><strong>数据来源：</strong>债立方 web.innodealing.com</p>
       <hr>
       <p><small>由 GitHub Actions 自动生成 | ${new Date().toISOString()}</small></p>
