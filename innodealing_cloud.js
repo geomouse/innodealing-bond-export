@@ -13,23 +13,31 @@ if (!fs.existsSync(DATA_DIR)) fs.mkdirSync(DATA_DIR, { recursive: true });
 
 function sleep(ms) { return new Promise(r => setTimeout(r, ms)); }
 
-// 可靠地设置 antd/React 受控日期框的值并触发 onChange（查询刷新）。
-// 关键点：React 通过 _valueTracker 追踪输入值，仅用原生 setter + input 事件会被 React 误判为“未变化”而忽略。
-// 必须先 tracker.setValue('') 清空追踪值，再 set 新值并派发 input/change 事件，React 才会真正触发 onChange -> 页面发起查询。
-async function setAntdDate(frame, phSub, dateStr) {
-  return await frame.evaluate(({ ph, ds }) => {
+// 可靠地设置一级发行页面的「日期区间」(RangePicker) 为单日 dateStr，并触发查询刷新。
+// 真实结构：页面有一个下拉(dmuiv4-select)选择按哪个日期维度（默认=发行起始日）+ 一个 RangePicker，
+// 其两个 input 的 placeholder 分别为『开始日期』与『结束日期』（绝非『发行起始日』，那是维度下拉的文本）。
+// 把 开始日期 与 结束日期 都设为同一天 -> 区间即“当天”，筛出当日发行。
+// 关键点：React 通过 _valueTracker 追踪输入值，必须 tracker.setValue('') 清空后再 set 新值并派发 input/change，
+// 否则 React 误判“未变化”而忽略，日期框不刷新、查询不发起。
+async function setRangeDate(frame, dateStr) {
+  return await frame.evaluate((ds) => {
     const inputs = Array.from(document.querySelectorAll('input'));
-    const inp = inputs.find(i => (i.getAttribute('placeholder') || '').includes(ph));
-    if (!inp) return 'NO_INPUT';
-    try { inp.focus(); } catch (e) {}
-    const proto = Object.getOwnPropertyDescriptor(window.HTMLInputElement.prototype, 'value');
-    const tracker = inp._valueTracker;
-    if (tracker) { try { tracker.setValue(''); } catch (e) {} }
-    proto.set.call(inp, ds);
-    inp.dispatchEvent(new Event('input', { bubbles: true }));
-    inp.dispatchEvent(new Event('change', { bubbles: true }));
+    const start = inputs.find(i => (i.getAttribute('placeholder') || '') === '开始日期');
+    const end = inputs.find(i => (i.getAttribute('placeholder') || '') === '结束日期');
+    if (!start || !end) return 'NO_INPUT:' + (!start ? 'no-start' : '') + (!end ? 'no-end' : '');
+    function setVal(inp, v) {
+      try { inp.focus(); } catch (e) {}
+      const proto = Object.getOwnPropertyDescriptor(window.HTMLInputElement.prototype, 'value');
+      const tracker = inp._valueTracker;
+      if (tracker) { try { tracker.setValue(''); } catch (e) {} }
+      proto.set.call(inp, v);
+      inp.dispatchEvent(new Event('input', { bubbles: true }));
+      inp.dispatchEvent(new Event('change', { bubbles: true }));
+    }
+    setVal(start, ds);
+    setVal(end, ds);
     return 'SET';
-  }, { ph: phSub, ds: dateStr });
+  }, dateStr);
 }
 
 // 计算最近 N 个交易日（北京时间 UTC+8，跳过周末）
@@ -75,20 +83,20 @@ async function exportForDate(page, targetFrame, dateStr, applyAllA = true) {
     console.log('  [DIAG-DATEELS]', JSON.stringify(diag.dateEls));
   } catch (e) { console.log('  [DIAG] err', e.message); }
 
-  // 两种模式都显式把“发行起始日”设为 dateStr（今天），避免页面默认停在前一天。
-  // 优先用可触发 React 的 setAntdDate；失败再用 Playwright 原生 fill + Enter 兜底。
-  console.log(`    [INFO] 设置发行起始日为 ${dateStr} ...`);
-  const setResult = await setAntdDate(targetFrame, '起始日', dateStr);
-  console.log(`    [DATE] setAntdDate -> ${setResult}`);
+  // 两种模式都显式把日期区间设为单日 dateStr（今天），避免页面默认停在前一天。
+  // RangePicker 的 input placeholder 为『开始日期』『结束日期』；把两者都设为同一天即“当日”。
+  console.log(`    [INFO] 设置日期区间为单日 ${dateStr} ...`);
+  const setResult = await setRangeDate(targetFrame, dateStr);
+  console.log(`    [DATE] setRangeDate -> ${setResult}`);
   if (setResult !== 'SET') {
     try {
-      const di = targetFrame.locator('input[placeholder*="发行起始日"]').first();
-      await di.fill('');
-      await di.fill(dateStr);
-      await di.press('Enter');
-      console.log(`    [DATE] Playwright fill 重设起始日并回车 OK`);
+      const ds = targetFrame.locator('input[placeholder="开始日期"]').first();
+      const de = targetFrame.locator('input[placeholder="结束日期"]').first();
+      await ds.fill(''); await ds.fill(dateStr); await ds.press('Enter');
+      await de.fill(''); await de.fill(dateStr); await de.press('Enter');
+      console.log(`    [DATE] Playwright fill 重设日期区间并回车 OK`);
     } catch (e) {
-      console.log(`    [WARN] 重设起始日兜底失败: ${e.message}`);
+      console.log(`    [WARN] 重设日期区间兜底失败: ${e.message}`);
     }
   }
   await sleep(3000);
