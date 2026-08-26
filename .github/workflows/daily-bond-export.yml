@@ -19,8 +19,8 @@ jobs:
         id: dedup
         env:
           GH_TOKEN: ${{ github.token }}
-          PRESET_HOUR: '8'
-          PRESET_MIN: '0'
+          PRESET_HOUR: '23'
+          PRESET_MIN: '59'
         run: |
           export TODAY=$(TZ=Asia/Shanghai date +%Y-%m-%d)
           echo "检查今日($TODAY)是否已有运行..."
