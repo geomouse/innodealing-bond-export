@@ -1,0 +1,133 @@
+{
+ "bjDate": "2026-08-26",
+ "hourBJ": 16,
+ "threshold": 2.8,
+ "visibleNames": 20,
+ "capturedNames": 20,
+ "estimatedTotal": null,
+ "missingNames": [],
+ "recoveredExtra": 0,
+ "captureComplete": null,
+ "captured": [
+  {
+   "bondName": "25复星高科CP001",
+   "bondCode": "042580474.IB",
+   "maxVal": 3.67,
+   "pass": true
+  },
+  {
+   "bondName": "24天地源MTN002",
+   "bondCode": "102482814.IB",
+   "maxVal": 3.36,
+   "pass": true
+  },
+  {
+   "bondName": "24铜仁05",
+   "bondCode": "255457.SH",
+   "maxVal": 3.15,
+   "pass": true
+  },
+  {
+   "bondName": "25沣东控股PPN002",
+   "bondCode": "032580655.IB",
+   "maxVal": 3,
+   "pass": true
+  },
+  {
+   "bondName": "24皖供销PPN001",
+   "bondCode": "032480445.IB",
+   "maxVal": 3,
+   "pass": true
+  },
+  {
+   "bondName": "25沣控01",
+   "bondCode": "258456.SH",
+   "maxVal": 2.95,
+   "pass": true
+  },
+  {
+   "bondName": "26交房01",
+   "bondCode": "520403.SZ",
+   "maxVal": 2.79,
+   "pass": false
+  },
+  {
+   "bondName": "25青岛上合MTN002",
+   "bondCode": "102582674.IB",
+   "maxVal": 2.74,
+   "pass": false
+  },
+  {
+   "bondName": "23青资01",
+   "bondCode": "253244.SH",
+   "maxVal": 2.5,
+   "pass": false
+  },
+  {
+   "bondName": "23西咸新发MTN003",
+   "bondCode": "102382392.IB",
+   "maxVal": 2.45,
+   "pass": false
+  },
+  {
+   "bondName": "24青上03",
+   "bondCode": "254482.SH",
+   "maxVal": 2.42,
+   "pass": false
+  },
+  {
+   "bondName": "24金财债",
+   "bondCode": "256751.SH",
+   "maxVal": 2.4,
+   "pass": false
+  },
+  {
+   "bondName": "24西港F1",
+   "bondCode": "254206.SH",
+   "maxVal": 2.4,
+   "pass": false
+  },
+  {
+   "bondName": "25泰租Z1",
+   "bondCode": "258894.SH",
+   "maxVal": 2.36,
+   "pass": false
+  },
+  {
+   "bondName": "26滨江房产CP002",
+   "bondCode": "042680295.IB",
+   "maxVal": 2.3,
+   "pass": false
+  },
+  {
+   "bondName": "24动投03",
+   "bondCode": "254461.SH",
+   "maxVal": 2.29,
+   "pass": false
+  },
+  {
+   "bondName": "24华发集团MTN008",
+   "bondCode": "102481538.IB",
+   "maxVal": 2.29,
+   "pass": false
+  },
+  {
+   "bondName": "24胶州城投PPN005",
+   "bondCode": "032400903.IB",
+   "maxVal": 2.29,
+   "pass": false
+  },
+  {
+   "bondName": "24清源供水ABN001优先",
+   "bondCode": "082400778.IB",
+   "maxVal": 2.28,
+   "pass": false
+  },
+  {
+   "bondName": "25昆明发展PPN001",
+   "bondCode": "032580185.IB",
+   "maxVal": 2.23,
+   "pass": false
+  }
+ ]
+}
