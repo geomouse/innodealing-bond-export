@@ -1,0 +1,133 @@
+{
+ "bjDate": "2026-08-27",
+ "hourBJ": 16,
+ "threshold": 2.8,
+ "visibleNames": 20,
+ "capturedNames": 20,
+ "estimatedTotal": null,
+ "missingNames": [],
+ "recoveredExtra": 0,
+ "captureComplete": null,
+ "captured": [
+  {
+   "bondName": "25西咸PPN001",
+   "bondCode": "032580336.IB",
+   "maxVal": 2.8,
+   "pass": true
+  },
+  {
+   "bondName": "26交房01",
+   "bondCode": "520403.SZ",
+   "maxVal": 2.78,
+   "pass": false
+  },
+  {
+   "bondName": "25上合控股PPN001",
+   "bondCode": "032580071.IB",
+   "maxVal": 2.7,
+   "pass": false
+  },
+  {
+   "bondName": "24沣东债",
+   "bondCode": "253717.SH",
+   "maxVal": 2.6,
+   "pass": false
+  },
+  {
+   "bondName": "24青岛上合MTN001",
+   "bondCode": "102401098.IB",
+   "maxVal": 2.35,
+   "pass": false
+  },
+  {
+   "bondName": "24青上02",
+   "bondCode": "253583.SH",
+   "maxVal": 2.34,
+   "pass": false
+  },
+  {
+   "bondName": "25胶州城投MTN001",
+   "bondCode": "102580876.IB",
+   "maxVal": 2.31,
+   "pass": false
+  },
+  {
+   "bondName": "23津渤海MTN003",
+   "bondCode": "102381571.IB",
+   "maxVal": 2.23,
+   "pass": false
+  },
+  {
+   "bondName": "24城阳02",
+   "bondCode": "255411.SH",
+   "maxVal": 2.21,
+   "pass": false
+  },
+  {
+   "bondName": "鑫耀3优",
+   "bondCode": "500405.SZ",
+   "maxVal": 2.17,
+   "pass": false
+  },
+  {
+   "bondName": "25延旅Y1",
+   "bondCode": "257521.SH",
+   "maxVal": 2.1,
+   "pass": false
+  },
+  {
+   "bondName": "25安阳钢铁MTN006(科创债)",
+   "bondCode": "102584347.IB",
+   "maxVal": 2.1,
+   "pass": false
+  },
+  {
+   "bondName": "25中交01",
+   "bondCode": "134164.SZ",
+   "maxVal": 2.03,
+   "pass": false
+  },
+  {
+   "bondName": "26电建地产MTN003",
+   "bondCode": "102682976.IB",
+   "maxVal": 2.03,
+   "pass": false
+  },
+  {
+   "bondName": "22惠民城建PPN001",
+   "bondCode": "032280188.IB",
+   "maxVal": 2,
+   "pass": false
+  },
+  {
+   "bondName": "22兖州01",
+   "bondCode": "194562.SH",
+   "maxVal": 2,
+   "pass": false
+  },
+  {
+   "bondName": "25中控01",
+   "bondCode": "259210.SH",
+   "maxVal": 2,
+   "pass": false
+  },
+  {
+   "bondName": "24电建地产MTN002",
+   "bondCode": "102483019.IB",
+   "maxVal": 2,
+   "pass": false
+  },
+  {
+   "bondName": "25电建地产MTN002",
+   "bondCode": "102583887.IB",
+   "maxVal": 2,
+   "pass": false
+  },
+  {
+   "bondName": "23珠海华发MTN001",
+   "bondCode": "102380652.IB",
+   "maxVal": 1.99,
+   "pass": false
+  }
+ ]
+}
