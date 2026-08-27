@@ -1,10 +1,10 @@
 {
  "date": "2026-08-27",
- "total": 42,
+ "total": 43,
  "new_today": 0,
  "new_names": [],
  "missing_rate_count": 3,
  "cross_failed": false,
- "forecast_sheet_count": 19,
- "forecast_summary_count": 154
+ "forecast_sheet_count": 24,
+ "forecast_summary_count": 159
 }
