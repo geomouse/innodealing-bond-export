@@ -1,8 +1,8 @@
 {
- "bjDate": "2026-08-27",
+ "bjDate": "2026-08-28",
  "threshold": 2,
- "visibleNames": 17,
- "capturedNames": 17,
+ "visibleNames": 16,
+ "capturedNames": 16,
  "missingNames": [],
  "captured": [
   {
@@ -84,11 +84,6 @@
    "bondName": "24武汉开投PPN005",
    "bondCode": "032481623.IB",
    "latest": "1.8300"
-  },
-  {
-   "bondName": "25武开02",
-   "bondCode": "257500.SH",
-   "latest": "1.8200"
   }
  ]
 }
