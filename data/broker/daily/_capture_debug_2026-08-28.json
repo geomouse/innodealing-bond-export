@@ -1,7 +1,7 @@
 {
  "bjDate": "2026-08-28",
- "hourBJ": 3,
- "threshold": 2.4,
+ "hourBJ": 16,
+ "threshold": 2.8,
  "visibleNames": 20,
  "capturedNames": 20,
  "estimatedTotal": null,
@@ -10,124 +10,124 @@
  "captureComplete": null,
  "captured": [
   {
-   "bondName": "25金辉集团MTN001",
-   "bondCode": "102501442.IB",
-   "maxVal": 3.25,
+   "bondName": "24潍海01",
+   "bondCode": "254732.SH",
+   "maxVal": 2.99,
    "pass": true
   },
   {
-   "bondName": "26华发集团MTN003",
-   "bondCode": "102681601.IB",
-   "maxVal": 2.95,
+   "bondName": "26株城06",
+   "bondCode": "283355.SH",
+   "maxVal": 2.9,
    "pass": true
   },
   {
-   "bondName": "26中交房产MTN002",
-   "bondCode": "102681269.IB",
-   "maxVal": 2.93,
+   "bondName": "24华阳新材MTN009",
+   "bondCode": "102483706.IB",
+   "maxVal": 2.81,
    "pass": true
   },
   {
-   "bondName": "26鲁商MTN003",
-   "bondCode": "102682096.IB",
-   "maxVal": 2.85,
-   "pass": true
-  },
-  {
-   "bondName": "25西咸PPN001",
-   "bondCode": "032580336.IB",
+   "bondName": "24安居03",
+   "bondCode": "255649.SH",
    "maxVal": 2.8,
    "pass": true
   },
   {
-   "bondName": "26交房01",
-   "bondCode": "520403.SZ",
+   "bondName": "24安居01",
+   "bondCode": "254408.SH",
    "maxVal": 2.78,
-   "pass": true
+   "pass": false
   },
   {
-   "bondName": "26太重MTN008(科创债)",
-   "bondCode": "102683146.IB",
-   "maxVal": 2.73,
-   "pass": true
+   "bondName": "24秦皇岛银行永续债01",
+   "bondCode": "242480087.IB",
+   "maxVal": 2.75,
+   "pass": false
   },
   {
-   "bondName": "25胶州湾PPN004",
-   "bondCode": "032501369.IB",
-   "maxVal": 2.71,
-   "pass": true
+   "bondName": "24潍西01",
+   "bondCode": "254989.SH",
+   "maxVal": 2.705,
+   "pass": false
   },
   {
-   "bondName": "25上合控股PPN001",
-   "bondCode": "032580071.IB",
+   "bondName": "24首开MTN002",
+   "bondCode": "102480314.IB",
    "maxVal": 2.7,
-   "pass": true
+   "pass": false
   },
   {
-   "bondName": "26海鸿G5",
-   "bondCode": "245767.SH",
+   "bondName": "24天屹V1",
+   "bondCode": "134114.SZ",
+   "maxVal": 2.69,
+   "pass": false
+  },
+  {
+   "bondName": "26齐商银行永续债01",
+   "bondCode": "242680030.IB",
    "maxVal": 2.65,
-   "pass": true
+   "pass": false
   },
   {
-   "bondName": "25扬州建工MTN001B",
-   "bondCode": "102580478.IB",
+   "bondName": "26信达MTN001",
+   "bondCode": "102680798.IB",
    "maxVal": 2.62,
-   "pass": true
+   "pass": false
   },
   {
-   "bondName": "26津渤海MTN005",
-   "bondCode": "102601943.IB",
-   "maxVal": 2.6,
-   "pass": true
+   "bondName": "26青城10",
+   "bondCode": "282440.SH",
+   "maxVal": 2.58,
+   "pass": false
   },
   {
-   "bondName": "26津渤海MTN008",
-   "bondCode": "102681519.IB",
-   "maxVal": 2.6,
-   "pass": true
-  },
-  {
-   "bondName": "24沣东债",
-   "bondCode": "253717.SH",
-   "maxVal": 2.6,
-   "pass": true
-  },
-  {
-   "bondName": "25镇江产投MTN002",
-   "bondCode": "102580810.IB",
-   "maxVal": 2.575,
-   "pass": true
-  },
-  {
-   "bondName": "24天恒置业MTN006",
-   "bondCode": "102485303.IB",
-   "maxVal": 2.54,
-   "pass": true
-  },
-  {
-   "bondName": "25宏利01",
-   "bondCode": "258861.SH",
+   "bondName": "26医养01",
+   "bondCode": "283426.SH",
    "maxVal": 2.53,
-   "pass": true
+   "pass": false
   },
   {
-   "bondName": "24鄂联投MTN007",
-   "bondCode": "102483395.IB",
+   "bondName": "25保利置业MTN001",
+   "bondCode": "102582862.IB",
    "maxVal": 2.5,
-   "pass": true
+   "pass": false
+  },
+  {
+   "bondName": "24铁投Y2",
+   "bondCode": "241520.SH",
+   "maxVal": 2.5,
+   "pass": false
+  },
+  {
+   "bondName": "25保置06",
+   "bondCode": "243113.SH",
+   "maxVal": 2.49,
+   "pass": false
   },
   {
    "bondName": "26海国06",
    "bondCode": "245771.SH",
-   "maxVal": 2.47,
-   "pass": true
+   "maxVal": 2.485,
+   "pass": false
   },
   {
-   "bondName": "26润投V1",
-   "bondCode": "134878.SZ",
+   "bondName": "26恒源01",
+   "bondCode": "282509.SH",
+   "maxVal": 2.46,
+   "pass": false
+  },
+  {
+   "bondName": "22厦门农商二级01",
+   "bondCode": "2221008.IB",
    "maxVal": 2.45,
-   "pass": true
+   "pass": false
+  },
+  {
+   "bondName": "24胶州湾PPN004",
+   "bondCode": "032481168.IB",
+   "maxVal": 2.42,
+   "pass": false
   }
  ]
 }
