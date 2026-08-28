@@ -1,0 +1,133 @@
+{
+ "bjDate": "2026-08-29",
+ "hourBJ": 4,
+ "threshold": 2.4,
+ "visibleNames": 20,
+ "capturedNames": 20,
+ "estimatedTotal": null,
+ "missingNames": [],
+ "recoveredExtra": 0,
+ "captureComplete": null,
+ "captured": [
+  {
+   "bondName": "25青岛海科PPN001B",
+   "bondCode": "032580602.IB",
+   "maxVal": 3.27,
+   "pass": true
+  },
+  {
+   "bondName": "24潍海01",
+   "bondCode": "254732.SH",
+   "maxVal": 2.99,
+   "pass": true
+  },
+  {
+   "bondName": "26株城06",
+   "bondCode": "283355.SH",
+   "maxVal": 2.9,
+   "pass": true
+  },
+  {
+   "bondName": "24华阳新材MTN009",
+   "bondCode": "102483706.IB",
+   "maxVal": 2.81,
+   "pass": true
+  },
+  {
+   "bondName": "24安居03",
+   "bondCode": "255649.SH",
+   "maxVal": 2.8,
+   "pass": true
+  },
+  {
+   "bondName": "24安居01",
+   "bondCode": "254408.SH",
+   "maxVal": 2.78,
+   "pass": true
+  },
+  {
+   "bondName": "24秦皇岛银行永续债01",
+   "bondCode": "242480087.IB",
+   "maxVal": 2.75,
+   "pass": true
+  },
+  {
+   "bondName": "24潍西01",
+   "bondCode": "254989.SH",
+   "maxVal": 2.705,
+   "pass": true
+  },
+  {
+   "bondName": "24首开MTN002",
+   "bondCode": "102480314.IB",
+   "maxVal": 2.7,
+   "pass": true
+  },
+  {
+   "bondName": "24天屹V1",
+   "bondCode": "134114.SZ",
+   "maxVal": 2.69,
+   "pass": true
+  },
+  {
+   "bondName": "26齐商银行永续债01",
+   "bondCode": "242680030.IB",
+   "maxVal": 2.65,
+   "pass": true
+  },
+  {
+   "bondName": "26信达MTN001",
+   "bondCode": "102680798.IB",
+   "maxVal": 2.62,
+   "pass": true
+  },
+  {
+   "bondName": "25芦淞01",
+   "bondCode": "258992.SH",
+   "maxVal": 2.6,
+   "pass": true
+  },
+  {
+   "bondName": "26青城10",
+   "bondCode": "282440.SH",
+   "maxVal": 2.58,
+   "pass": true
+  },
+  {
+   "bondName": "26金融街MTN004A",
+   "bondCode": "102683030.IB",
+   "maxVal": 2.54,
+   "pass": true
+  },
+  {
+   "bondName": "26医养01",
+   "bondCode": "283426.SH",
+   "maxVal": 2.53,
+   "pass": true
+  },
+  {
+   "bondName": "25保利置业MTN001",
+   "bondCode": "102582862.IB",
+   "maxVal": 2.5,
+   "pass": true
+  },
+  {
+   "bondName": "24铁投Y2",
+   "bondCode": "241520.SH",
+   "maxVal": 2.5,
+   "pass": true
+  },
+  {
+   "bondName": "25保置06",
+   "bondCode": "243113.SH",
+   "maxVal": 2.49,
+   "pass": true
+  },
+  {
+   "bondName": "26海国06",
+   "bondCode": "245771.SH",
+   "maxVal": 2.485,
+   "pass": true
+  }
+ ]
+}
