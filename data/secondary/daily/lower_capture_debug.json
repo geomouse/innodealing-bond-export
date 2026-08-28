@@ -1,5 +1,5 @@
 {
- "bjDate": "2026-08-28",
+ "bjDate": "2026-08-29",
  "threshold": 2,
  "visibleNames": 17,
  "capturedNames": 17,
@@ -36,9 +36,19 @@
    "latest": "1.9300"
   },
   {
+   "bondName": "26中信银行永续债02BC",
+   "bondCode": "242680015.IB",
+   "latest": "1.9000"
+  },
+  {
    "bondName": "26国耀03",
    "bondCode": "245830.SH",
    "latest": "1.8400"
+  },
+  {
+   "bondName": "25中信银行二级资本债01BC",
+   "bondCode": "232580009.IB",
+   "latest": "1.7450"
   },
   {
    "bondName": "24中信银行永续债01",
@@ -46,13 +56,13 @@
    "latest": "1.6700"
   },
   {
-   "bondName": "26北部湾银行01",
-   "bondCode": "2620004.IB",
-   "latest": "1.6525"
-  },
-  {
    "bondName": "26北部湾银行02",
    "bondCode": "2620006.IB",
+   "latest": "1.6500"
+  },
+  {
+   "bondName": "26北部湾银行01",
+   "bondCode": "2620004.IB",
    "latest": "1.6500"
   },
   {
@@ -79,16 +89,6 @@
    "bondName": "25恒丰银行债01",
    "bondCode": "212580004.IB",
    "latest": "1.5500"
-  },
-  {
-   "bondName": "26恒丰银行CD242",
-   "bondCode": "112619242.IB",
-   "latest": "1.4950"
-  },
-  {
-   "bondName": "26恒丰银行CD228",
-   "bondCode": "112619228.IB",
-   "latest": "1.4900"
   }
  ]
 }
