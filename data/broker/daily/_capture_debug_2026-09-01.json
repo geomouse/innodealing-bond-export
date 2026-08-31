@@ -1,0 +1,133 @@
+{
+ "bjDate": "2026-09-01",
+ "hourBJ": 0,
+ "threshold": 2.4,
+ "visibleNames": 20,
+ "capturedNames": 20,
+ "estimatedTotal": null,
+ "missingNames": [],
+ "recoveredExtra": 0,
+ "captureComplete": null,
+ "captured": [
+  {
+   "bondName": "20黔开债",
+   "bondCode": "152702.SH",
+   "maxVal": 3.2,
+   "pass": true
+  },
+  {
+   "bondName": "26鲁商MTN004",
+   "bondCode": "102683100.IB",
+   "maxVal": 3.09,
+   "pass": true
+  },
+  {
+   "bondName": "26首开03",
+   "bondCode": "282369.SH",
+   "maxVal": 3.04,
+   "pass": true
+  },
+  {
+   "bondName": "25中交房产MTN001",
+   "bondCode": "102501124.IB",
+   "maxVal": 2.82,
+   "pass": true
+  },
+  {
+   "bondName": "25华发08",
+   "bondCode": "244375.SH",
+   "maxVal": 2.8,
+   "pass": true
+  },
+  {
+   "bondName": "26武发02",
+   "bondCode": "283056.SH",
+   "maxVal": 2.78,
+   "pass": true
+  },
+  {
+   "bondName": "26西金01",
+   "bondCode": "282897.SH",
+   "maxVal": 2.66,
+   "pass": true
+  },
+  {
+   "bondName": "24赣建工MTN001B",
+   "bondCode": "102483429.IB",
+   "maxVal": 2.54,
+   "pass": true
+  },
+  {
+   "bondName": "25云建投MTN004B",
+   "bondCode": "102501319.IB",
+   "maxVal": 2.51,
+   "pass": true
+  },
+  {
+   "bondName": "24铁投Y2",
+   "bondCode": "241520.SH",
+   "maxVal": 2.5,
+   "pass": true
+  },
+  {
+   "bondName": "26海国06",
+   "bondCode": "245771.SH",
+   "maxVal": 2.49,
+   "pass": true
+  },
+  {
+   "bondName": "24红投03",
+   "bondCode": "256411.SH",
+   "maxVal": 2.44,
+   "pass": true
+  },
+  {
+   "bondName": "26象屿MTN005",
+   "bondCode": "102683187.IB",
+   "maxVal": 2.425,
+   "pass": true
+  },
+  {
+   "bondName": "25吉林银行二级资本债01",
+   "bondCode": "232580004.IB",
+   "maxVal": 2.425,
+   "pass": true
+  },
+  {
+   "bondName": "25胶州城投MTN004",
+   "bondCode": "102584196.IB",
+   "maxVal": 2.4,
+   "pass": true
+  },
+  {
+   "bondName": "26中城01",
+   "bondCode": "282969.SH",
+   "maxVal": 2.4,
+   "pass": true
+  },
+  {
+   "bondName": "26桂林银行永续债01",
+   "bondCode": "242680019.IB",
+   "maxVal": 2.37,
+   "pass": false
+  },
+  {
+   "bondName": "24津渤海MTN007",
+   "bondCode": "102483621.IB",
+   "maxVal": 2.35,
+   "pass": false
+  },
+  {
+   "bondName": "26云建投MTN001",
+   "bondCode": "102680052.IB",
+   "maxVal": 2.33,
+   "pass": false
+  },
+  {
+   "bondName": "26云建投MTN007",
+   "bondCode": "102682809.IB",
+   "maxVal": 2.32,
+   "pass": false
+  }
+ ]
+}
