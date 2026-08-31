@@ -1,12 +1,10 @@
 {
- "date": "2026-08-28",
+ "date": "2026-08-31",
  "total": 44,
- "new_today": 1,
- "new_names": [
-  "26西安高新MTN009"
- ],
+ "new_today": 0,
+ "new_names": [],
  "missing_rate_count": 4,
  "cross_failed": false,
- "forecast_sheet_count": 9,
- "forecast_summary_count": 166
+ "forecast_sheet_count": 8,
+ "forecast_summary_count": 173
 }
