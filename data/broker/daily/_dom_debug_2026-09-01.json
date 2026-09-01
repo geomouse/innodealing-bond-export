@@ -1,5 +1,5 @@
 {
- "agGridCount": 212,
+ "agGridCount": 213,
  "agRows": 0,
  "tabs": [
   {
@@ -55,8 +55,12 @@
  },
  "fixedCols": [
   {
-   "name": "类型",
-   "x": 127
+   "name": "中盈",
+   "x": 156
+  },
+  {
+   "name": "xc1",
+   "x": 198
   },
   {
    "name": "债券简称",
