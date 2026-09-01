@@ -5,51 +5,51 @@
   {
    "text": "成交行情",
    "x": 257,
-   "y": 602,
+   "y": 565,
    "cls": ""
   },
   {
    "text": "成交明细",
    "x": 326,
-   "y": 602,
+   "y": 565,
    "cls": ""
   }
  ],
  "avgHeader": {
   "x": 1032,
-  "y": 627,
+  "y": 590,
   "w": 56,
   "h": 20,
   "chain": [
    {
     "tag": "DIV",
     "cls": "dm-table-table-td-content",
-    "y": 627,
+    "y": 590,
     "h": 20
    },
    {
     "tag": "DIV",
     "cls": "dm-table-table-td",
-    "y": 627,
+    "y": 590,
     "h": 20
    },
    {
     "tag": "DIV",
     "cls": "dm-table-table-tr",
-    "y": 627,
+    "y": 590,
     "h": 20
    },
    {
     "tag": "DIV",
     "cls": "dm-table-table-thead",
-    "y": 627,
+    "y": 590,
     "h": 20
    },
    {
     "tag": "DIV",
     "cls": "dm-table-table-container",
-    "y": 627,
-    "h": 496
+    "y": 590,
+    "h": 524
    }
   ]
  },
