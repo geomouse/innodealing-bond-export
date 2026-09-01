@@ -1,10 +1,12 @@
 {
- "date": "2026-08-31",
- "total": 44,
- "new_today": 0,
- "new_names": [],
- "missing_rate_count": 3,
+ "date": "2026-09-01",
+ "total": 45,
+ "new_today": 1,
+ "new_names": [
+  "26成都开投PPN003"
+ ],
+ "missing_rate_count": 4,
  "cross_failed": false,
- "forecast_sheet_count": 7,
- "forecast_summary_count": 172
+ "forecast_sheet_count": 25,
+ "forecast_summary_count": 198
 }
