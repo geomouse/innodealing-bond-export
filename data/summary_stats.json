@@ -1,13 +1,13 @@
 {
- "date": "2026-09-02",
- "total": 47,
+ "date": "2026-09-03",
+ "total": 49,
  "new_today": 2,
  "new_names": [
-  "26国耀04",
-  "26珠华04"
+  "26桂债03",
+  "26金源华兴PPN001"
  ],
- "missing_rate_count": 5,
+ "missing_rate_count": 6,
  "cross_failed": false,
- "forecast_sheet_count": 11,
- "forecast_summary_count": 207
+ "forecast_sheet_count": 21,
+ "forecast_summary_count": 228
 }
