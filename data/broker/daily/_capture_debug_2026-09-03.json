@@ -1,0 +1,133 @@
+{
+ "bjDate": "2026-09-03",
+ "hourBJ": 16,
+ "threshold": 2.8,
+ "visibleNames": 20,
+ "capturedNames": 20,
+ "estimatedTotal": null,
+ "missingNames": [],
+ "recoveredExtra": 0,
+ "captureComplete": null,
+ "captured": [
+  {
+   "bondName": "24营海02",
+   "bondCode": "255245.SH",
+   "maxVal": 3.3,
+   "pass": true
+  },
+  {
+   "bondName": "25西咸01",
+   "bondCode": "259880.SH",
+   "maxVal": 3.18,
+   "pass": true
+  },
+  {
+   "bondName": "26株城06",
+   "bondCode": "283355.SH",
+   "maxVal": 2.87,
+   "pass": true
+  },
+  {
+   "bondName": "26长春轨交MTN006",
+   "bondCode": "102681950.IB",
+   "maxVal": 2.82,
+   "pass": true
+  },
+  {
+   "bondName": "24华阳新材MTN009",
+   "bondCode": "102483706.IB",
+   "maxVal": 2.75,
+   "pass": false
+  },
+  {
+   "bondName": "26经发F2",
+   "bondCode": "283419.SH",
+   "maxVal": 2.7,
+   "pass": false
+  },
+  {
+   "bondName": "26新城控股MTN001",
+   "bondCode": "102602131.IB",
+   "maxVal": 2.62,
+   "pass": false
+  },
+  {
+   "bondName": "26津城建MTN016",
+   "bondCode": "102683184.IB",
+   "maxVal": 2.59,
+   "pass": false
+  },
+  {
+   "bondName": "25家投01",
+   "bondCode": "258095.SH",
+   "maxVal": 2.58,
+   "pass": false
+  },
+  {
+   "bondName": "26南山集SCP003",
+   "bondCode": "012682113.IB",
+   "maxVal": 2.57,
+   "pass": false
+  },
+  {
+   "bondName": "24诚通控股MTN009B",
+   "bondCode": "102480956.IB",
+   "maxVal": 2.555,
+   "pass": false
+  },
+  {
+   "bondName": "24诚通控股MTN011B",
+   "bondCode": "102481557.IB",
+   "maxVal": 2.5525,
+   "pass": false
+  },
+  {
+   "bondName": "25西港01",
+   "bondCode": "258053.SH",
+   "maxVal": 2.5,
+   "pass": false
+  },
+  {
+   "bondName": "26联发集MTN001",
+   "bondCode": "102681468.IB",
+   "maxVal": 2.47,
+   "pass": false
+  },
+  {
+   "bondName": "26保利10",
+   "bondCode": "245927.SH",
+   "maxVal": 2.47,
+   "pass": false
+  },
+  {
+   "bondName": "26济南能源MTN002B",
+   "bondCode": "102683486.IB",
+   "maxVal": 2.45,
+   "pass": false
+  },
+  {
+   "bondName": "26建集Y4",
+   "bondCode": "245681.SH",
+   "maxVal": 2.45,
+   "pass": false
+  },
+  {
+   "bondName": "26建集Y3",
+   "bondCode": "245365.SH",
+   "maxVal": 2.44,
+   "pass": false
+  },
+  {
+   "bondName": "25天津港MTN004B(科创债)",
+   "bondCode": "102583041.IB",
+   "maxVal": 2.415,
+   "pass": false
+  },
+  {
+   "bondName": "25昆明空港PPN001",
+   "bondCode": "032580495.IB",
+   "maxVal": 2.41,
+   "pass": false
+  }
+ ]
+}
