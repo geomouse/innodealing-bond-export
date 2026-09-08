@@ -1,13 +1,10 @@
 {
- "date": "2026-09-07",
+ "date": "2026-09-08",
  "total": 51,
- "new_today": 2,
- "new_names": [
-  "26金融街MTN005A",
-  "26金融街MTN005B"
- ],
+ "new_today": 0,
+ "new_names": [],
  "missing_rate_count": 5,
  "cross_failed": false,
- "forecast_sheet_count": 13,
- "forecast_summary_count": 247
+ "forecast_sheet_count": 10,
+ "forecast_summary_count": 255
 }
