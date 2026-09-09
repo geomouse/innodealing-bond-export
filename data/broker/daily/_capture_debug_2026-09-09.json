@@ -1,0 +1,133 @@
+{
+ "bjDate": "2026-09-09",
+ "hourBJ": 16,
+ "threshold": 2.8,
+ "visibleNames": 20,
+ "capturedNames": 20,
+ "estimatedTotal": null,
+ "missingNames": [],
+ "recoveredExtra": 0,
+ "captureComplete": null,
+ "captured": [
+  {
+   "bondName": "24高科A3",
+   "bondCode": "144963.SZ",
+   "maxVal": 4,
+   "pass": true
+  },
+  {
+   "bondName": "24黔城01",
+   "bondCode": "255858.SH",
+   "maxVal": 3.55,
+   "pass": true
+  },
+  {
+   "bondName": "26昆投03",
+   "bondCode": "520357.SZ",
+   "maxVal": 3.45,
+   "pass": true
+  },
+  {
+   "bondName": "24铜仁05",
+   "bondCode": "255457.SH",
+   "maxVal": 3.15,
+   "pass": true
+  },
+  {
+   "bondName": "24铜仁03",
+   "bondCode": "254727.SH",
+   "maxVal": 3.11,
+   "pass": true
+  },
+  {
+   "bondName": "23空港04",
+   "bondCode": "253381.SH",
+   "maxVal": 2.95,
+   "pass": true
+  },
+  {
+   "bondName": "24交通01",
+   "bondCode": "255073.SH",
+   "maxVal": 2.85,
+   "pass": true
+  },
+  {
+   "bondName": "24青上04",
+   "bondCode": "254483.SH",
+   "maxVal": 2.75,
+   "pass": false
+  },
+  {
+   "bondName": "25青岛上合PPN003",
+   "bondCode": "032501380.IB",
+   "maxVal": 2.75,
+   "pass": false
+  },
+  {
+   "bondName": "25青上02",
+   "bondCode": "259901.SH",
+   "maxVal": 2.73,
+   "pass": false
+  },
+  {
+   "bondName": "25潍西01",
+   "bondCode": "280119.SH",
+   "maxVal": 2.65,
+   "pass": false
+  },
+  {
+   "bondName": "25秦皇岛银行二级资本债01",
+   "bondCode": "232580037.IB",
+   "maxVal": 2.64,
+   "pass": false
+  },
+  {
+   "bondName": "26经发F2",
+   "bondCode": "283419.SH",
+   "maxVal": 2.58,
+   "pass": false
+  },
+  {
+   "bondName": "25胶州湾PPN002",
+   "bondCode": "032501159.IB",
+   "maxVal": 2.5,
+   "pass": false
+  },
+  {
+   "bondName": "23金街10",
+   "bondCode": "148378.SZ",
+   "maxVal": 2.48,
+   "pass": false
+  },
+  {
+   "bondName": "24伊川02",
+   "bondCode": "257101.SH",
+   "maxVal": 2.45,
+   "pass": false
+  },
+  {
+   "bondName": "23信地02",
+   "bondCode": "115515.SH",
+   "maxVal": 2.44,
+   "pass": false
+  },
+  {
+   "bondName": "25越秀房托MTN001",
+   "bondCode": "102582949.IB",
+   "maxVal": 2.4,
+   "pass": false
+  },
+  {
+   "bondName": "26徐州产城MTN003",
+   "bondCode": "102683211.IB",
+   "maxVal": 2.39,
+   "pass": false
+  },
+  {
+   "bondName": "26济建02",
+   "bondCode": "283678.SH",
+   "maxVal": 2.38,
+   "pass": false
+  }
+ ]
+}
