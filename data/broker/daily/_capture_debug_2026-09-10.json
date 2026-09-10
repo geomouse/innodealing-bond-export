@@ -1,0 +1,133 @@
+{
+ "bjDate": "2026-09-10",
+ "hourBJ": 16,
+ "threshold": 2.8,
+ "visibleNames": 20,
+ "capturedNames": 20,
+ "estimatedTotal": null,
+ "missingNames": [],
+ "recoveredExtra": 0,
+ "captureComplete": null,
+ "captured": [
+  {
+   "bondName": "24空港02",
+   "bondCode": "254694.SH",
+   "maxVal": 3.34,
+   "pass": true
+  },
+  {
+   "bondName": "26安阳钢铁MTN004(科创债)",
+   "bondCode": "102682829.IB",
+   "maxVal": 3.29,
+   "pass": true
+  },
+  {
+   "bondName": "24潍滨01",
+   "bondCode": "254287.SH",
+   "maxVal": 2.89,
+   "pass": true
+  },
+  {
+   "bondName": "26泰华03",
+   "bondCode": "283729.SH",
+   "maxVal": 2.875,
+   "pass": true
+  },
+  {
+   "bondName": "26株城06",
+   "bondCode": "283355.SH",
+   "maxVal": 2.85,
+   "pass": true
+  },
+  {
+   "bondName": "24金街04",
+   "bondCode": "148797.SZ",
+   "maxVal": 2.65,
+   "pass": false
+  },
+  {
+   "bondName": "26齐商银行永续债01",
+   "bondCode": "242680030.IB",
+   "maxVal": 2.64,
+   "pass": false
+  },
+  {
+   "bondName": "24高密02",
+   "bondCode": "256617.SH",
+   "maxVal": 2.6,
+   "pass": false
+  },
+  {
+   "bondName": "26津城建MTN016",
+   "bondCode": "102683184.IB",
+   "maxVal": 2.58,
+   "pass": false
+  },
+  {
+   "bondName": "26昆明城建MTN002",
+   "bondCode": "102681318.IB",
+   "maxVal": 2.55,
+   "pass": false
+  },
+  {
+   "bondName": "26金融街MTN005",
+   "bondCode": "102683543.IB",
+   "maxVal": 2.5499,
+   "pass": false
+  },
+  {
+   "bondName": "25稠州商行二级资本债01",
+   "bondCode": "232580020.IB",
+   "maxVal": 2.5,
+   "pass": false
+  },
+  {
+   "bondName": "24青岛海科MTN001",
+   "bondCode": "102485082.IB",
+   "maxVal": 2.5,
+   "pass": false
+  },
+  {
+   "bondName": "26信达投资MTN002B",
+   "bondCode": "102683165.IB",
+   "maxVal": 2.48,
+   "pass": false
+  },
+  {
+   "bondName": "26冀中峰峰MTN002A",
+   "bondCode": "102683552.IB",
+   "maxVal": 2.4499,
+   "pass": false
+  },
+  {
+   "bondName": "26太新01",
+   "bondCode": "281981.SH",
+   "maxVal": 2.41,
+   "pass": false
+  },
+  {
+   "bondName": "26济轨01",
+   "bondCode": "283900.SH",
+   "maxVal": 2.41,
+   "pass": false
+  },
+  {
+   "bondName": "24天恒02",
+   "bondCode": "255013.SH",
+   "maxVal": 2.41,
+   "pass": false
+  },
+  {
+   "bondName": "25昆明土地SCP005",
+   "bondCode": "012583172.IB",
+   "maxVal": 2.4,
+   "pass": false
+  },
+  {
+   "bondName": "26大丰02",
+   "bondCode": "283137.SH",
+   "maxVal": 2.3933,
+   "pass": false
+  }
+ ]
+}
