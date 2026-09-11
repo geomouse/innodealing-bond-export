@@ -1,12 +1,10 @@
 {
- "date": "2026-09-10",
+ "date": "2026-09-11",
  "total": 54,
- "new_today": 1,
- "new_names": [
-  "26云能MTN005"
- ],
+ "new_today": 0,
+ "new_names": [],
  "missing_rate_count": 7,
  "cross_failed": false,
- "forecast_sheet_count": 16,
+ "forecast_sheet_count": 0,
  "forecast_summary_count": 289
 }
