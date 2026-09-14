@@ -1,0 +1,133 @@
+{
+ "bjDate": "2026-09-14",
+ "hourBJ": 16,
+ "threshold": 2.8,
+ "visibleNames": 20,
+ "capturedNames": 20,
+ "estimatedTotal": null,
+ "missingNames": [],
+ "recoveredExtra": 0,
+ "captureComplete": null,
+ "captured": [
+  {
+   "bondName": "23首开MTN004",
+   "bondCode": "102380833.IB",
+   "maxVal": 3.9,
+   "pass": true
+  },
+  {
+   "bondName": "21钟山01",
+   "bondCode": "178037.SH",
+   "maxVal": 3.66,
+   "pass": true
+  },
+  {
+   "bondName": "24信泰01",
+   "bondCode": "255016.SH",
+   "maxVal": 3.4,
+   "pass": true
+  },
+  {
+   "bondName": "26首股05",
+   "bondCode": "283025.SH",
+   "maxVal": 3.3,
+   "pass": true
+  },
+  {
+   "bondName": "26金融街MTN004B",
+   "bondCode": "102683031.IB",
+   "maxVal": 2.77,
+   "pass": false
+  },
+  {
+   "bondName": "22首股02",
+   "bondCode": "185769.SH",
+   "maxVal": 2.7,
+   "pass": false
+  },
+  {
+   "bondName": "24首开MTN003",
+   "bondCode": "102481149.IB",
+   "maxVal": 2.69,
+   "pass": false
+  },
+  {
+   "bondName": "26济南高新MTN003B",
+   "bondCode": "102601967.IB",
+   "maxVal": 2.64,
+   "pass": false
+  },
+  {
+   "bondName": "24首开MTN001",
+   "bondCode": "102480110.IB",
+   "maxVal": 2.6,
+   "pass": false
+  },
+  {
+   "bondName": "25深铁03",
+   "bondCode": "524115.SZ",
+   "maxVal": 2.59,
+   "pass": false
+  },
+  {
+   "bondName": "26津城建MTN016",
+   "bondCode": "102683184.IB",
+   "maxVal": 2.58,
+   "pass": false
+  },
+  {
+   "bondName": "24西经01",
+   "bondCode": "254638.SH",
+   "maxVal": 2.57,
+   "pass": false
+  },
+  {
+   "bondName": "25家投01",
+   "bondCode": "258095.SH",
+   "maxVal": 2.55,
+   "pass": false
+  },
+  {
+   "bondName": "26联发集MTN002",
+   "bondCode": "102602018.IB",
+   "maxVal": 2.49,
+   "pass": false
+  },
+  {
+   "bondName": "26越秀租赁MTN001B(绿色)",
+   "bondCode": "102682950.IB",
+   "maxVal": 2.48,
+   "pass": false
+  },
+  {
+   "bondName": "26贵金02",
+   "bondCode": "282571.SH",
+   "maxVal": 2.46,
+   "pass": false
+  },
+  {
+   "bondName": "24青岛少海PPN001",
+   "bondCode": "032480288.IB",
+   "maxVal": 2.45,
+   "pass": false
+  },
+  {
+   "bondName": "24昆产01",
+   "bondCode": "254742.SH",
+   "maxVal": 2.4,
+   "pass": false
+  },
+  {
+   "bondName": "26太湖新城MTN009",
+   "bondCode": "102683316.IB",
+   "maxVal": 2.36,
+   "pass": false
+  },
+  {
+   "bondName": "24京建工01",
+   "bondCode": "2480082.IB",
+   "maxVal": 2.34,
+   "pass": false
+  }
+ ]
+}
