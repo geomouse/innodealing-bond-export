@@ -1,0 +1,133 @@
+{
+ "bjDate": "2026-09-15",
+ "hourBJ": 16,
+ "threshold": 2.8,
+ "visibleNames": 20,
+ "capturedNames": 20,
+ "estimatedTotal": null,
+ "missingNames": [],
+ "recoveredExtra": 0,
+ "captureComplete": null,
+ "captured": [
+  {
+   "bondName": "26陕建集团SCP007",
+   "bondCode": "012681142.IB",
+   "maxVal": 5.5,
+   "pass": true
+  },
+  {
+   "bondName": "26华发实业MTN002A",
+   "bondCode": "102681674.IB",
+   "maxVal": 4,
+   "pass": true
+  },
+  {
+   "bondName": "23华发03",
+   "bondCode": "251710.SH",
+   "maxVal": 3.6,
+   "pass": true
+  },
+  {
+   "bondName": "25复星高科CP003",
+   "bondCode": "042580591.IB",
+   "maxVal": 3.4,
+   "pass": true
+  },
+  {
+   "bondName": "24信泰01",
+   "bondCode": "255016.SH",
+   "maxVal": 3.4,
+   "pass": true
+  },
+  {
+   "bondName": "25铜仁02",
+   "bondCode": "258966.SH",
+   "maxVal": 3.35,
+   "pass": true
+  },
+  {
+   "bondName": "22遵桥01",
+   "bondCode": "196198.SH",
+   "maxVal": 3.28,
+   "pass": true
+  },
+  {
+   "bondName": "26齐河02",
+   "bondCode": "283477.SH",
+   "maxVal": 3.15,
+   "pass": true
+  },
+  {
+   "bondName": "24昆交01",
+   "bondCode": "255764.SH",
+   "maxVal": 3.11,
+   "pass": true
+  },
+  {
+   "bondName": "24华发集团MTN004",
+   "bondCode": "102400640.IB",
+   "maxVal": 3.05,
+   "pass": true
+  },
+  {
+   "bondName": "24泰丰02",
+   "bondCode": "254402.SH",
+   "maxVal": 2.89,
+   "pass": true
+  },
+  {
+   "bondName": "26首开MTN006",
+   "bondCode": "102602026.IB",
+   "maxVal": 2.85,
+   "pass": true
+  },
+  {
+   "bondName": "26珠华04",
+   "bondCode": "520444.SZ",
+   "maxVal": 2.78,
+   "pass": false
+  },
+  {
+   "bondName": "23珠华01",
+   "bondCode": "148438.SZ",
+   "maxVal": 2.72,
+   "pass": false
+  },
+  {
+   "bondName": "24青上04",
+   "bondCode": "254483.SH",
+   "maxVal": 2.7,
+   "pass": false
+  },
+  {
+   "bondName": "22首股01",
+   "bondCode": "185704.SH",
+   "maxVal": 2.68,
+   "pass": false
+  },
+  {
+   "bondName": "24中化08",
+   "bondCode": "241135.SH",
+   "maxVal": 2.66,
+   "pass": false
+  },
+  {
+   "bondName": "26格林美MTN002(科创债)",
+   "bondCode": "102682598.IB",
+   "maxVal": 2.65,
+   "pass": false
+  },
+  {
+   "bondName": "26济南高新MTN003B",
+   "bondCode": "102601967.IB",
+   "maxVal": 2.64,
+   "pass": false
+  },
+  {
+   "bondName": "23珠江04",
+   "bondCode": "115596.SH",
+   "maxVal": 2.62,
+   "pass": false
+  }
+ ]
+}
