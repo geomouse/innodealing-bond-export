@@ -1,12 +1,10 @@
 {
- "date": "2026-09-15",
+ "date": "2026-09-16",
  "total": 55,
- "new_today": 1,
- "new_names": [
-  "26华发集团MTN007"
- ],
+ "new_today": 0,
+ "new_names": [],
  "missing_rate_count": 7,
  "cross_failed": false,
- "forecast_sheet_count": 19,
- "forecast_summary_count": 326
+ "forecast_sheet_count": 25,
+ "forecast_summary_count": 351
 }
