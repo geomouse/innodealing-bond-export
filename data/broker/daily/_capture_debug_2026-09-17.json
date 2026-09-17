@@ -1,0 +1,133 @@
+{
+ "bjDate": "2026-09-17",
+ "hourBJ": 16,
+ "threshold": 2.8,
+ "visibleNames": 20,
+ "capturedNames": 20,
+ "estimatedTotal": null,
+ "missingNames": [],
+ "recoveredExtra": 0,
+ "captureComplete": null,
+ "captured": [
+  {
+   "bondName": "25百工01",
+   "bondCode": "280257.SH",
+   "maxVal": 2.975,
+   "pass": true
+  },
+  {
+   "bondName": "24皖供销PPN001",
+   "bondCode": "032480445.IB",
+   "maxVal": 2.9,
+   "pass": true
+  },
+  {
+   "bondName": "24瑞建01",
+   "bondCode": "256643.SH",
+   "maxVal": 2.85,
+   "pass": true
+  },
+  {
+   "bondName": "24西安浐灞MTN001",
+   "bondCode": "102482253.IB",
+   "maxVal": 2.83,
+   "pass": true
+  },
+  {
+   "bondName": "26株城06",
+   "bondCode": "283355.SH",
+   "maxVal": 2.77,
+   "pass": false
+  },
+  {
+   "bondName": "24交通01",
+   "bondCode": "255073.SH",
+   "maxVal": 2.75,
+   "pass": false
+  },
+  {
+   "bondName": "23珠华01",
+   "bondCode": "148438.SZ",
+   "maxVal": 2.735,
+   "pass": false
+  },
+  {
+   "bondName": "25沣控02",
+   "bondCode": "258792.SH",
+   "maxVal": 2.72,
+   "pass": false
+  },
+  {
+   "bondName": "24中化08",
+   "bondCode": "241135.SH",
+   "maxVal": 2.66,
+   "pass": false
+  },
+  {
+   "bondName": "25胶州湾PPN004",
+   "bondCode": "032501369.IB",
+   "maxVal": 2.65,
+   "pass": false
+  },
+  {
+   "bondName": "26青岛上合PPN001",
+   "bondCode": "032601457.IB",
+   "maxVal": 2.65,
+   "pass": false
+  },
+  {
+   "bondName": "24天屹V1",
+   "bondCode": "134114.SZ",
+   "maxVal": 2.61,
+   "pass": false
+  },
+  {
+   "bondName": "22黔投03",
+   "bondCode": "114114.SH",
+   "maxVal": 2.6,
+   "pass": false
+  },
+  {
+   "bondName": "25湖北广电MTN002",
+   "bondCode": "102580735.IB",
+   "maxVal": 2.57,
+   "pass": false
+  },
+  {
+   "bondName": "24诚通控股MTN012B",
+   "bondCode": "102481755.IB",
+   "maxVal": 2.535,
+   "pass": false
+  },
+  {
+   "bondName": "25鲁商MTN004",
+   "bondCode": "102584716.IB",
+   "maxVal": 2.5,
+   "pass": false
+  },
+  {
+   "bondName": "21沣控债",
+   "bondCode": "197119.SH",
+   "maxVal": 2.5,
+   "pass": false
+  },
+  {
+   "bondName": "23潍坊滨投PPN001",
+   "bondCode": "032300551.IB",
+   "maxVal": 2.45,
+   "pass": false
+  },
+  {
+   "bondName": "25上合控股PPN001",
+   "bondCode": "032580071.IB",
+   "maxVal": 2.45,
+   "pass": false
+  },
+  {
+   "bondName": "26海国08",
+   "bondCode": "245929.SH",
+   "maxVal": 2.4,
+   "pass": false
+  }
+ ]
+}
