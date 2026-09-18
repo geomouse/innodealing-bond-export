@@ -1,14 +1,10 @@
 {
- "date": "2026-09-17",
+ "date": "2026-09-18",
  "total": 58,
- "new_today": 3,
- "new_names": [
-  "26华发集团SCP008",
-  "26长开05",
-  "26长开06"
- ],
+ "new_today": 0,
+ "new_names": [],
  "missing_rate_count": 9,
  "cross_failed": false,
- "forecast_sheet_count": 23,
- "forecast_summary_count": 372
+ "forecast_sheet_count": 10,
+ "forecast_summary_count": 380
 }
