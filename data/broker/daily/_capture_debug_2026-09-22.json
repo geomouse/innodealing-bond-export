@@ -1,0 +1,133 @@
+{
+ "bjDate": "2026-09-22",
+ "hourBJ": 16,
+ "threshold": 2.8,
+ "visibleNames": 20,
+ "capturedNames": 20,
+ "estimatedTotal": null,
+ "missingNames": [],
+ "recoveredExtra": 0,
+ "captureComplete": null,
+ "captured": [
+  {
+   "bondName": "24曲金控PPN002",
+   "bondCode": "032400697.IB",
+   "maxVal": 3.25,
+   "pass": true
+  },
+  {
+   "bondName": "25曲金01",
+   "bondCode": "258761.SH",
+   "maxVal": 3.17,
+   "pass": true
+  },
+  {
+   "bondName": "26双龙02",
+   "bondCode": "282195.SH",
+   "maxVal": 3.17,
+   "pass": true
+  },
+  {
+   "bondName": "24豫桥01",
+   "bondCode": "256432.SH",
+   "maxVal": 3.15,
+   "pass": true
+  },
+  {
+   "bondName": "25遵旅02",
+   "bondCode": "257340.SH",
+   "maxVal": 3.05,
+   "pass": true
+  },
+  {
+   "bondName": "25蓝创02",
+   "bondCode": "257778.SH",
+   "maxVal": 2.9,
+   "pass": true
+  },
+  {
+   "bondName": "26首开MTN006",
+   "bondCode": "102602026.IB",
+   "maxVal": 2.85,
+   "pass": true
+  },
+  {
+   "bondName": "23光大银行债02",
+   "bondCode": "212380020.IB",
+   "maxVal": 2.7333,
+   "pass": false
+  },
+  {
+   "bondName": "25西咸PPN001",
+   "bondCode": "032580336.IB",
+   "maxVal": 2.65,
+   "pass": false
+  },
+  {
+   "bondName": "24中化08",
+   "bondCode": "241135.SH",
+   "maxVal": 2.63,
+   "pass": false
+  },
+  {
+   "bondName": "26天恒置业MTN003",
+   "bondCode": "102683052.IB",
+   "maxVal": 2.6,
+   "pass": false
+  },
+  {
+   "bondName": "24华阳新材MTN009",
+   "bondCode": "102483706.IB",
+   "maxVal": 2.6,
+   "pass": false
+  },
+  {
+   "bondName": "26乌城02",
+   "bondCode": "283774.SH",
+   "maxVal": 2.58,
+   "pass": false
+  },
+  {
+   "bondName": "26珠华03",
+   "bondCode": "524751.SZ",
+   "maxVal": 2.55,
+   "pass": false
+  },
+  {
+   "bondName": "25稠州商行二级资本债01",
+   "bondCode": "232580020.IB",
+   "maxVal": 2.53,
+   "pass": false
+  },
+  {
+   "bondName": "26涪陵实业MTN002B",
+   "bondCode": "102683683.IB",
+   "maxVal": 2.53,
+   "pass": false
+  },
+  {
+   "bondName": "24越秀集团MTN005B",
+   "bondCode": "102482802.IB",
+   "maxVal": 2.509,
+   "pass": false
+  },
+  {
+   "bondName": "26津投04",
+   "bondCode": "245640.SH",
+   "maxVal": 2.508,
+   "pass": false
+  },
+  {
+   "bondName": "24越秀集团MTN004B",
+   "bondCode": "102482204.IB",
+   "maxVal": 2.505,
+   "pass": false
+  },
+  {
+   "bondName": "24深铁06",
+   "bondCode": "148641.SZ",
+   "maxVal": 2.49,
+   "pass": false
+  }
+ ]
+}
