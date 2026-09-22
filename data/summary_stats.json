@@ -1,13 +1,13 @@
 {
- "date": "2026-09-21",
- "total": 60,
+ "date": "2026-09-22",
+ "total": 62,
  "new_today": 2,
  "new_names": [
-  "26中信银行债01",
-  "26香城01"
+  "26北部湾银行绿债01",
+  "26西安高新MTN010"
  ],
- "missing_rate_count": 8,
+ "missing_rate_count": 9,
  "cross_failed": false,
  "forecast_sheet_count": 28,
- "forecast_summary_count": 406
+ "forecast_summary_count": 432
 }
