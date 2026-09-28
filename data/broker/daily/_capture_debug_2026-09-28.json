@@ -1,0 +1,133 @@
+{
+ "bjDate": "2026-09-28",
+ "hourBJ": 16,
+ "threshold": 2.8,
+ "visibleNames": 20,
+ "capturedNames": 20,
+ "estimatedTotal": null,
+ "missingNames": [],
+ "recoveredExtra": 0,
+ "captureComplete": null,
+ "captured": [
+  {
+   "bondName": "26安阳钢铁MTN006(科创债)",
+   "bondCode": "102683767.IB",
+   "maxVal": 2.9,
+   "pass": true
+  },
+  {
+   "bondName": "25沣东控股PPN002",
+   "bondCode": "032580655.IB",
+   "maxVal": 2.8,
+   "pass": true
+  },
+  {
+   "bondName": "26泰华05",
+   "bondCode": "283870.SH",
+   "maxVal": 2.76,
+   "pass": false
+  },
+  {
+   "bondName": "26桂国控MTN001(乡村振兴)",
+   "bondCode": "102683824.IB",
+   "maxVal": 2.52,
+   "pass": false
+  },
+  {
+   "bondName": "26联发集MTN003",
+   "bondCode": "102683764.IB",
+   "maxVal": 2.42,
+   "pass": false
+  },
+  {
+   "bondName": "24泰安金控PPN003",
+   "bondCode": "032481012.IB",
+   "maxVal": 2.4,
+   "pass": false
+  },
+  {
+   "bondName": "26平发03",
+   "bondCode": "283856.SH",
+   "maxVal": 2.3967,
+   "pass": false
+  },
+  {
+   "bondName": "26日照新融PPN001",
+   "bondCode": "032680514.IB",
+   "maxVal": 2.385,
+   "pass": false
+  },
+  {
+   "bondName": "26越秀新能MTN001B(绿色)",
+   "bondCode": "102682491.IB",
+   "maxVal": 2.3625,
+   "pass": false
+  },
+  {
+   "bondName": "26联发02",
+   "bondCode": "281907.SH",
+   "maxVal": 2.35,
+   "pass": false
+  },
+  {
+   "bondName": "26济南能源MTN002B",
+   "bondCode": "102683486.IB",
+   "maxVal": 2.26,
+   "pass": false
+  },
+  {
+   "bondName": "26贵州债13",
+   "bondCode": "2605839.IB",
+   "maxVal": 2.255,
+   "pass": false
+  },
+  {
+   "bondName": "25附息国债21",
+   "bondCode": "250021.IB",
+   "maxVal": 2.2517,
+   "pass": false
+  },
+  {
+   "bondName": "25秦农农商银行二级资本债01",
+   "bondCode": "232580062.IB",
+   "maxVal": 2.25,
+   "pass": false
+  },
+  {
+   "bondName": "26电网K2",
+   "bondCode": "245902.SH",
+   "maxVal": 2.25,
+   "pass": false
+  },
+  {
+   "bondName": "PR19文停",
+   "bondCode": "152114.SH",
+   "maxVal": 2.25,
+   "pass": false
+  },
+  {
+   "bondName": "26贵州债22",
+   "bondCode": "2671149.IB",
+   "maxVal": 2.2491,
+   "pass": false
+  },
+  {
+   "bondName": "26贵州债21",
+   "bondCode": "2671148.IB",
+   "maxVal": 2.2483,
+   "pass": false
+  },
+  {
+   "bondName": "25黑龙江债28",
+   "bondCode": "2505961.IB",
+   "maxVal": 2.2475,
+   "pass": false
+  },
+  {
+   "bondName": "26吉林债07",
+   "bondCode": "2605383.IB",
+   "maxVal": 2.2475,
+   "pass": false
+  }
+ ]
+}
