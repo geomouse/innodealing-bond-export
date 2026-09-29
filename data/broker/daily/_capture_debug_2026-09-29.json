@@ -1,252 +1,132 @@
 {
  "bjDate": "2026-09-29",
- "hourBJ": 0,
- "threshold": 2.4,
- "visibleNames": 40,
- "capturedNames": 40,
+ "hourBJ": 16,
+ "threshold": 2.8,
+ "visibleNames": 20,
+ "capturedNames": 20,
  "estimatedTotal": null,
  "missingNames": [],
  "recoveredExtra": 0,
  "captureComplete": null,
  "captured": [
   {
-   "bondName": "26超长特别国债03",
-   "bondCode": "2600003.IB",
-   "maxVal": 2.2469,
+   "bondName": "26遵投01",
+   "bondCode": "281735.SH",
+   "maxVal": 3.27,
+   "pass": true
+  },
+  {
+   "bondName": "25铜仁02",
+   "bondCode": "258966.SH",
+   "maxVal": 3.24,
+   "pass": true
+  },
+  {
+   "bondName": "26中交房产MTN004",
+   "bondCode": "102602096.IB",
+   "maxVal": 2.945,
+   "pass": true
+  },
+  {
+   "bondName": "25绿城地产MTN002",
+   "bondCode": "102581306.IB",
+   "maxVal": 2.88,
+   "pass": true
+  },
+  {
+   "bondName": "26泰华03",
+   "bondCode": "283729.SH",
+   "maxVal": 2.74,
    "pass": false
   },
   {
-   "bondName": "25超长特别国债06",
-   "bondCode": "2500006.IB",
-   "maxVal": 2.1307,
+   "bondName": "25滇度债",
+   "bondCode": "281048.SH",
+   "maxVal": 2.63,
    "pass": false
   },
   {
-   "bondName": "26超长特别国债02",
-   "bondCode": "2600002.IB",
-   "maxVal": 2.1238,
+   "bondName": "25交产01",
+   "bondCode": "259286.SH",
+   "maxVal": 2.52,
    "pass": false
   },
   {
-   "bondName": "26附息国债02",
-   "bondCode": "260002.IB",
-   "maxVal": 2.119,
+   "bondName": "24诚通控股MTN010B",
+   "bondCode": "102481339.IB",
+   "maxVal": 2.52,
    "pass": false
   },
   {
-   "bondName": "26超长特别国债04",
-   "bondCode": "2600004.IB",
-   "maxVal": 2.1144,
+   "bondName": "23金街10",
+   "bondCode": "148378.SZ",
+   "maxVal": 2.46,
    "pass": false
   },
   {
-   "bondName": "26超长特别国债05",
-   "bondCode": "2600005.IB",
-   "maxVal": 2.0933,
+   "bondName": "24深铁07",
+   "bondCode": "148664.SZ",
+   "maxVal": 2.43,
    "pass": false
   },
   {
-   "bondName": "26超长特别国债06",
-   "bondCode": "2600006.IB",
-   "maxVal": 2.0907,
+   "bondName": "华能YK33",
+   "bondCode": "246134.SH",
+   "maxVal": 2.4,
    "pass": false
   },
   {
-   "bondName": "23附息国债23",
-   "bondCode": "230023.IB",
-   "maxVal": 2.0857,
+   "bondName": "26铝集K7",
+   "bondCode": "246101.SH",
+   "maxVal": 2.395,
    "pass": false
   },
   {
-   "bondName": "25超长特别国债02",
-   "bondCode": "2500002.IB",
-   "maxVal": 2.0806,
+   "bondName": "华能YK29",
+   "bondCode": "245344.SH",
+   "maxVal": 2.385,
    "pass": false
   },
   {
-   "bondName": "26农行二级资本债03BC",
-   "bondCode": "232680038.IB",
-   "maxVal": 1.8022,
+   "bondName": "25吉林银行二级资本债01",
+   "bondCode": "232580004.IB",
+   "maxVal": 2.345,
    "pass": false
   },
   {
-   "bondName": "26农发10",
-   "bondCode": "260410.IB",
-   "maxVal": 1.7768,
+   "bondName": "25秦农农商银行永续债02",
+   "bondCode": "242580065.IB",
+   "maxVal": 2.3,
    "pass": false
   },
   {
-   "bondName": "26国开05",
-   "bondCode": "260205.IB",
-   "maxVal": 1.7523,
+   "bondName": "26金茂投资MTN002",
+   "bondCode": "102682626.IB",
+   "maxVal": 2.27,
    "pass": false
   },
   {
-   "bondName": "25国开20",
-   "bondCode": "250220.IB",
-   "maxVal": 1.7509,
+   "bondName": "26渝富K2",
+   "bondCode": "245162.SH",
+   "maxVal": 2.27,
    "pass": false
   },
   {
-   "bondName": "26国开10",
-   "bondCode": "260210.IB",
-   "maxVal": 1.7499,
+   "bondName": "26铝集K4",
+   "bondCode": "245892.SH",
+   "maxVal": 2.2625,
    "pass": false
   },
   {
-   "bondName": "25国开15",
-   "bondCode": "250215.IB",
-   "maxVal": 1.7145,
+   "bondName": "26冶产05",
+   "bondCode": "283403.SH",
+   "maxVal": 2.26,
    "pass": false
   },
   {
-   "bondName": "26附息国债16",
-   "bondCode": "260016.IB",
-   "maxVal": 1.6714,
-   "pass": false
-  },
-  {
-   "bondName": "26附息国债10",
-   "bondCode": "260010.IB",
-   "maxVal": 1.6708,
-   "pass": false
-  },
-  {
-   "bondName": "26附息国债12",
-   "bondCode": "260012.IB",
-   "maxVal": 1.4948,
-   "pass": false
-  },
-  {
-   "bondName": "25国开08",
-   "bondCode": "250208.IB",
-   "maxVal": 1.474,
-   "pass": false
-  },
-  {
-   "bondName": "26进出08",
-   "bondCode": "260308.IB",
-   "maxVal": 1.3721,
-   "pass": false
-  },
-  {
-   "bondName": "25附息国债06",
-   "bondCode": "250006.IB",
-   "maxVal": 1.14,
-   "pass": false
-  },
-  {
-   "bondName": "26贴现国债31",
-   "bondCode": "269931.IB",
-   "maxVal": 1.14,
-   "pass": false
-  },
-  {
-   "bondName": "21江苏债02",
-   "bondCode": "2105006.IB",
-   "maxVal": 1.12,
-   "pass": false
-  },
-  {
-   "bondName": "23进出13",
-   "bondCode": "230313.IB",
-   "maxVal": 1.1183,
-   "pass": false
-  },
-  {
-   "bondName": "21附息国债13",
-   "bondCode": "210013.IB",
-   "maxVal": 1.105,
-   "pass": false
-  },
-  {
-   "bondName": "23附息国债02",
-   "bondCode": "230002.IB",
-   "maxVal": 1.1025,
-   "pass": false
-  },
-  {
-   "bondName": "26贴现国债25",
-   "bondCode": "269925.IB",
-   "maxVal": 1.09,
-   "pass": false
-  },
-  {
-   "bondName": "22附息国债16",
-   "bondCode": "220016.IB",
-   "maxVal": 1.07,
-   "pass": false
-  },
-  {
-   "bondName": "22附息国债22",
-   "bondCode": "220022.IB",
-   "maxVal": 1.07,
-   "pass": false
-  },
-  {
-   "bondName": "24附息国债03",
-   "bondCode": "240003.IB",
-   "maxVal": 1.065,
-   "pass": false
-  },
-  {
-   "bondName": "25附息国债19",
-   "bondCode": "250019.IB",
-   "maxVal": 1.0494,
-   "pass": false
-  },
-  {
-   "bondName": "21附息国债07",
-   "bondCode": "210007.IB",
-   "maxVal": 1.03,
-   "pass": false
-  },
-  {
-   "bondName": "22附息国债02",
-   "bondCode": "220002.IB",
-   "maxVal": 1.0125,
-   "pass": false
-  },
-  {
-   "bondName": "22附息国债07",
-   "bondCode": "220007.IB",
-   "maxVal": 1.01,
-   "pass": false
-  },
-  {
-   "bondName": "26贴现国债44",
-   "bondCode": "269944.IB",
-   "maxVal": 0.9883,
-   "pass": false
-  },
-  {
-   "bondName": "26贴现国债59",
-   "bondCode": "269959.IB",
-   "maxVal": 0.952,
-   "pass": false
-  },
-  {
-   "bondName": "23附息国债25",
-   "bondCode": "230025.IB",
-   "maxVal": 0.9,
-   "pass": false
-  },
-  {
-   "bondName": "18附息国债11",
-   "bondCode": "180011.IB",
-   "maxVal": 0.78,
-   "pass": false
-  },
-  {
-   "bondName": "16附息国债23",
-   "bondCode": "160023.IB",
-   "maxVal": 0.71,
-   "pass": false
-  },
-  {
-   "bondName": "19附息国债16",
-   "bondCode": "190016.IB",
-   "maxVal": 0.6875,
+   "bondName": "25吉林债23",
+   "bondCode": "2505886.IB",
+   "maxVal": 2.2583,
    "pass": false
   }
  ]
