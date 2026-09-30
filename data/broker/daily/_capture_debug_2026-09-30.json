@@ -1,0 +1,133 @@
+{
+ "bjDate": "2026-09-30",
+ "hourBJ": 16,
+ "threshold": 2.8,
+ "visibleNames": 20,
+ "capturedNames": 20,
+ "estimatedTotal": null,
+ "missingNames": [],
+ "recoveredExtra": 0,
+ "captureComplete": null,
+ "captured": [
+  {
+   "bondName": "26附息国债13",
+   "bondCode": "260013.IB",
+   "maxVal": 1.2381,
+   "pass": false
+  },
+  {
+   "bondName": "25附息国债17",
+   "bondCode": "250017.IB",
+   "maxVal": 1.2245,
+   "pass": false
+  },
+  {
+   "bondName": "26附息国债14",
+   "bondCode": "260014.IB",
+   "maxVal": 1.2011,
+   "pass": false
+  },
+  {
+   "bondName": "25广D13",
+   "bondCode": "524462.SZ",
+   "maxVal": 1.2,
+   "pass": false
+  },
+  {
+   "bondName": "26附息国债01",
+   "bondCode": "260001.IB",
+   "maxVal": 1.2,
+   "pass": false
+  },
+  {
+   "bondName": "26贴现国债43",
+   "bondCode": "269943.IB",
+   "maxVal": 1.19,
+   "pass": false
+  },
+  {
+   "bondName": "26贴现国债61",
+   "bondCode": "269961.IB",
+   "maxVal": 1.19,
+   "pass": false
+  },
+  {
+   "bondName": "26贴现国债51",
+   "bondCode": "269951.IB",
+   "maxVal": 1.19,
+   "pass": false
+  },
+  {
+   "bondName": "25进出61",
+   "bondCode": "250361.IB",
+   "maxVal": 1.175,
+   "pass": false
+  },
+  {
+   "bondName": "26贴现国债60",
+   "bondCode": "269960.IB",
+   "maxVal": 1.167,
+   "pass": false
+  },
+  {
+   "bondName": "26贴现国债62",
+   "bondCode": "269962.IB",
+   "maxVal": 1.1626,
+   "pass": false
+  },
+  {
+   "bondName": "26贴现国债58",
+   "bondCode": "269958.IB",
+   "maxVal": 1.139,
+   "pass": false
+  },
+  {
+   "bondName": "25附息国债06",
+   "bondCode": "250006.IB",
+   "maxVal": 1.135,
+   "pass": false
+  },
+  {
+   "bondName": "25附息国债19",
+   "bondCode": "250019.IB",
+   "maxVal": 1.005,
+   "pass": false
+  },
+  {
+   "bondName": "18附息国债27",
+   "bondCode": "180027.IB",
+   "maxVal": 0.995,
+   "pass": false
+  },
+  {
+   "bondName": "26贴现国债46",
+   "bondCode": "269946.IB",
+   "maxVal": 0.96,
+   "pass": false
+  },
+  {
+   "bondName": "23附息国债25",
+   "bondCode": "230025.IB",
+   "maxVal": 0.9,
+   "pass": false
+  },
+  {
+   "bondName": "26贴现国债44",
+   "bondCode": "269944.IB",
+   "maxVal": 0.9,
+   "pass": false
+  },
+  {
+   "bondName": "23进出13",
+   "bondCode": "230313.IB",
+   "maxVal": 0.9,
+   "pass": false
+  },
+  {
+   "bondName": "20附息国债17",
+   "bondCode": "200017.IB",
+   "maxVal": 0.87,
+   "pass": false
+  }
+ ]
+}
