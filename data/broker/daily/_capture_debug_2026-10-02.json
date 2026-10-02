@@ -1,0 +1,133 @@
+{
+ "bjDate": "2026-10-02",
+ "hourBJ": 16,
+ "threshold": 2.8,
+ "visibleNames": 20,
+ "capturedNames": 20,
+ "estimatedTotal": null,
+ "missingNames": [],
+ "recoveredExtra": 0,
+ "captureComplete": null,
+ "captured": [
+  {
+   "bondName": "26湖北广电SCP001",
+   "bondCode": "012682199.IB",
+   "maxVal": 2.85,
+   "pass": true
+  },
+  {
+   "bondName": "26津城建MTN016",
+   "bondCode": "102683184.IB",
+   "maxVal": 2.45,
+   "pass": false
+  },
+  {
+   "bondName": "26临沂城投MTN004",
+   "bondCode": "102683782.IB",
+   "maxVal": 2.4225,
+   "pass": false
+  },
+  {
+   "bondName": "23金街03",
+   "bondCode": "148276.SZ",
+   "maxVal": 2.42,
+   "pass": false
+  },
+  {
+   "bondName": "26建发Y4",
+   "bondCode": "246114.SH",
+   "maxVal": 2.41,
+   "pass": false
+  },
+  {
+   "bondName": "25吉林银行二级资本债01",
+   "bondCode": "232580004.IB",
+   "maxVal": 2.32,
+   "pass": false
+  },
+  {
+   "bondName": "26三门峡MTN005",
+   "bondCode": "102683642.IB",
+   "maxVal": 2.28,
+   "pass": false
+  },
+  {
+   "bondName": "25贵州债37",
+   "bondCode": "2571321.IB",
+   "maxVal": 2.265,
+   "pass": false
+  },
+  {
+   "bondName": "26贵州债22",
+   "bondCode": "2671149.IB",
+   "maxVal": 2.2641,
+   "pass": false
+  },
+  {
+   "bondName": "26贵州债21",
+   "bondCode": "2671148.IB",
+   "maxVal": 2.2605,
+   "pass": false
+  },
+  {
+   "bondName": "25附息国债21",
+   "bondCode": "250021.IB",
+   "maxVal": 2.2579,
+   "pass": false
+  },
+  {
+   "bondName": "26铁道16",
+   "bondCode": "2680032.IB",
+   "maxVal": 2.255,
+   "pass": false
+  },
+  {
+   "bondName": "G26铁道6",
+   "bondCode": "2680034.IB",
+   "maxVal": 2.2542,
+   "pass": false
+  },
+  {
+   "bondName": "26超长特别国债03",
+   "bondCode": "2600003.IB",
+   "maxVal": 2.2541,
+   "pass": false
+  },
+  {
+   "bondName": "26重庆57",
+   "bondCode": "236876.IB",
+   "maxVal": 2.2525,
+   "pass": false
+  },
+  {
+   "bondName": "26湖南债30",
+   "bondCode": "2605930.IB",
+   "maxVal": 2.2525,
+   "pass": false
+  },
+  {
+   "bondName": "26河南债67",
+   "bondCode": "2671072.IB",
+   "maxVal": 2.2525,
+   "pass": false
+  },
+  {
+   "bondName": "26河北债15",
+   "bondCode": "2605248.IB",
+   "maxVal": 2.2525,
+   "pass": false
+  },
+  {
+   "bondName": "23铁道20",
+   "bondCode": "2380306.IB",
+   "maxVal": 2.2525,
+   "pass": false
+  },
+  {
+   "bondName": "26山东债88",
+   "bondCode": "2671033.IB",
+   "maxVal": 2.2525,
+   "pass": false
+  }
+ ]
+}
