@@ -1,7 +1,7 @@
 {
  "bjDate": "2026-10-06",
- "hourBJ": 1,
- "threshold": 2.4,
+ "hourBJ": 16,
+ "threshold": 2.8,
  "visibleNames": 20,
  "capturedNames": 20,
  "estimatedTotal": null,
@@ -19,25 +19,25 @@
    "bondName": "26津城建MTN016",
    "bondCode": "102683184.IB",
    "maxVal": 2.45,
-   "pass": true
+   "pass": false
   },
   {
    "bondName": "26临沂城投MTN004",
    "bondCode": "102683782.IB",
    "maxVal": 2.4225,
-   "pass": true
+   "pass": false
   },
   {
    "bondName": "23金街03",
    "bondCode": "148276.SZ",
    "maxVal": 2.42,
-   "pass": true
+   "pass": false
   },
   {
    "bondName": "26建发Y4",
    "bondCode": "246114.SH",
    "maxVal": 2.41,
-   "pass": true
+   "pass": false
   },
   {
    "bondName": "25吉林银行二级资本债01",
