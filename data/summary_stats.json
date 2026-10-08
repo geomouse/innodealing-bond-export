@@ -1,10 +1,12 @@
 {
- "date": "2026-10-07",
- "total": 66,
- "new_today": 0,
- "new_names": [],
- "missing_rate_count": 7,
+ "date": "2026-10-08",
+ "total": 67,
+ "new_today": 1,
+ "new_names": [
+  "26成都经开PPN004"
+ ],
+ "missing_rate_count": 8,
  "cross_failed": false,
- "forecast_sheet_count": 0,
- "forecast_summary_count": 467
+ "forecast_sheet_count": 2,
+ "forecast_summary_count": 469
 }
