@@ -1,0 +1,133 @@
+{
+ "bjDate": "2026-10-09",
+ "hourBJ": 16,
+ "threshold": 2.8,
+ "visibleNames": 20,
+ "capturedNames": 20,
+ "estimatedTotal": null,
+ "missingNames": [],
+ "recoveredExtra": 0,
+ "captureComplete": null,
+ "captured": [
+  {
+   "bondName": "26豫园商城SCP002",
+   "bondCode": "012681223.IB",
+   "maxVal": 4.3,
+   "pass": true
+  },
+  {
+   "bondName": "22华发03",
+   "bondCode": "137752.SH",
+   "maxVal": 3.45,
+   "pass": true
+  },
+  {
+   "bondName": "25滨旅01",
+   "bondCode": "280593.SH",
+   "maxVal": 3.44,
+   "pass": true
+  },
+  {
+   "bondName": "22华发实业MTN002A",
+   "bondCode": "102281723.IB",
+   "maxVal": 3.35,
+   "pass": true
+  },
+  {
+   "bondName": "23曲文01",
+   "bondCode": "114785.SH",
+   "maxVal": 3,
+   "pass": true
+  },
+  {
+   "bondName": "24新蒲02",
+   "bondCode": "254894.SH",
+   "maxVal": 2.95,
+   "pass": true
+  },
+  {
+   "bondName": "25华发01",
+   "bondCode": "242255.SH",
+   "maxVal": 2.9,
+   "pass": true
+  },
+  {
+   "bondName": "26首开MTN006",
+   "bondCode": "102602026.IB",
+   "maxVal": 2.8,
+   "pass": true
+  },
+  {
+   "bondName": "23珠华01",
+   "bondCode": "148438.SZ",
+   "maxVal": 2.71,
+   "pass": false
+  },
+  {
+   "bondName": "22黔水01",
+   "bondCode": "194964.SH",
+   "maxVal": 2.64,
+   "pass": false
+  },
+  {
+   "bondName": "25胶州湾PPN004",
+   "bondCode": "032501369.IB",
+   "maxVal": 2.63,
+   "pass": false
+  },
+  {
+   "bondName": "25西港01",
+   "bondCode": "258053.SH",
+   "maxVal": 2.62,
+   "pass": false
+  },
+  {
+   "bondName": "25潍州01",
+   "bondCode": "257384.SH",
+   "maxVal": 2.58,
+   "pass": false
+  },
+  {
+   "bondName": "26济南高新MTN009B",
+   "bondCode": "102690037.IB",
+   "maxVal": 2.52,
+   "pass": false
+  },
+  {
+   "bondName": "26济南高新MTN008B",
+   "bondCode": "102683699.IB",
+   "maxVal": 2.52,
+   "pass": false
+  },
+  {
+   "bondName": "23金街11",
+   "bondCode": "148459.SZ",
+   "maxVal": 2.5,
+   "pass": false
+  },
+  {
+   "bondName": "24桂投资MTN007",
+   "bondCode": "102483329.IB",
+   "maxVal": 2.5,
+   "pass": false
+  },
+  {
+   "bondName": "24诚通控股MTN013B",
+   "bondCode": "102482012.IB",
+   "maxVal": 2.495,
+   "pass": false
+  },
+  {
+   "bondName": "24云南交投MTN003",
+   "bondCode": "102483350.IB",
+   "maxVal": 2.49,
+   "pass": false
+  },
+  {
+   "bondName": "26涪陵实业MTN002B",
+   "bondCode": "102683683.IB",
+   "maxVal": 2.48,
+   "pass": false
+  }
+ ]
+}
