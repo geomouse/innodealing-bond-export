@@ -1,5 +1,5 @@
 {
- "bjDate": "2026-10-09",
+ "bjDate": "2026-10-10",
  "threshold": 2,
  "visibleNames": 17,
  "capturedNames": 17,
@@ -71,6 +71,11 @@
    "latest": "1.4700"
   },
   {
+   "bondName": "26浙商银行CD069",
+   "bondCode": "112613069.IB",
+   "latest": "1.4675"
+  },
+  {
    "bondName": "26中信银行CD255",
    "bondCode": "112608255.IB",
    "latest": "1.4675"
@@ -84,11 +89,6 @@
    "bondName": "26浙商银行CD084",
    "bondCode": "112613084.IB",
    "latest": "1.4600"
-  },
-  {
-   "bondName": "26恒丰银行CD226",
-   "bondCode": "112619226.IB",
-   "latest": "1.4550"
   }
  ]
 }
