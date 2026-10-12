@@ -1,12 +1,13 @@
 {
- "date": "2026-10-09",
- "total": 68,
- "new_today": 1,
+ "date": "2026-10-12",
+ "total": 70,
+ "new_today": 2,
  "new_names": [
-  "26云能04"
+  "26国耀05",
+  "26成都经开PPN003"
  ],
  "missing_rate_count": 9,
  "cross_failed": false,
- "forecast_sheet_count": 4,
- "forecast_summary_count": 473
+ "forecast_sheet_count": 18,
+ "forecast_summary_count": 491
 }
