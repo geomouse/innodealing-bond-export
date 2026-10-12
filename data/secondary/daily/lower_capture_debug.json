@@ -1,8 +1,8 @@
 {
- "bjDate": "2026-10-12",
+ "bjDate": "2026-10-13",
  "threshold": 2,
- "visibleNames": 17,
- "capturedNames": 17,
+ "visibleNames": 16,
+ "capturedNames": 16,
  "missingNames": [],
  "captured": [
   {
@@ -84,11 +84,6 @@
    "bondName": "24恒丰银行二级资本债02",
    "bondCode": "232400025.IB",
    "latest": "1.6675"
-  },
-  {
-   "bondName": "26重庆三峡银行债01",
-   "bondCode": "212680061.IB",
-   "latest": "1.6550"
   }
  ]
 }
