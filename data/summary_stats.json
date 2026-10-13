@@ -1,13 +1,13 @@
 {
- "date": "2026-10-12",
- "total": 70,
+ "date": "2026-10-13",
+ "total": 72,
  "new_today": 2,
  "new_names": [
-  "26国耀05",
-  "26成都经开PPN003"
+  "26金融街MTN006A",
+  "26金融街MTN006B"
  ],
- "missing_rate_count": 9,
+ "missing_rate_count": 10,
  "cross_failed": false,
- "forecast_sheet_count": 18,
- "forecast_summary_count": 491
+ "forecast_sheet_count": 22,
+ "forecast_summary_count": 513
 }
