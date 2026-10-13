@@ -1,5 +1,5 @@
 {
- "bjDate": "2026-10-13",
+ "bjDate": "2026-10-14",
  "threshold": 2,
  "visibleNames": 16,
  "capturedNames": 16,
@@ -24,6 +24,11 @@
    "bondName": "24金街04",
    "bondCode": "148797.SZ",
    "latest": "2.6500"
+  },
+  {
+   "bondName": "25赣州银行永续债01",
+   "bondCode": "242580046.IB",
+   "latest": "2.2600"
   },
   {
    "bondName": "24华发集团MTN014",
@@ -79,11 +84,6 @@
    "bondName": "22青白江PPN001",
    "bondCode": "032281066.IB",
    "latest": "1.7900"
-  },
-  {
-   "bondName": "26中信银行永续债02BC",
-   "bondCode": "242680015.IB",
-   "latest": "1.7825"
   }
  ]
 }
