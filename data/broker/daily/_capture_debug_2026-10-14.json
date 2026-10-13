@@ -1,0 +1,133 @@
+{
+ "bjDate": "2026-10-14",
+ "hourBJ": 0,
+ "threshold": 2.4,
+ "visibleNames": 20,
+ "capturedNames": 20,
+ "estimatedTotal": null,
+ "missingNames": [],
+ "recoveredExtra": 0,
+ "captureComplete": null,
+ "captured": [
+  {
+   "bondName": "26豫园商城SCP003",
+   "bondCode": "012681580.IB",
+   "maxVal": 4.45,
+   "pass": true
+  },
+  {
+   "bondName": "23华发03",
+   "bondCode": "251710.SH",
+   "maxVal": 3.54,
+   "pass": true
+  },
+  {
+   "bondName": "24黔城01",
+   "bondCode": "255858.SH",
+   "maxVal": 3.4,
+   "pass": true
+  },
+  {
+   "bondName": "23安顺02",
+   "bondCode": "253307.SH",
+   "maxVal": 3.37,
+   "pass": true
+  },
+  {
+   "bondName": "22华发实业MTN002A",
+   "bondCode": "102281723.IB",
+   "maxVal": 3.36,
+   "pass": true
+  },
+  {
+   "bondName": "25首股03",
+   "bondCode": "259163.SH",
+   "maxVal": 3.35,
+   "pass": true
+  },
+  {
+   "bondName": "26华发03",
+   "bondCode": "283215.SH",
+   "maxVal": 3.26,
+   "pass": true
+  },
+  {
+   "bondName": "25铜仁02",
+   "bondCode": "258966.SH",
+   "maxVal": 3.25,
+   "pass": true
+  },
+  {
+   "bondName": "26昆投03",
+   "bondCode": "520357.SZ",
+   "maxVal": 3.18,
+   "pass": true
+  },
+  {
+   "bondName": "26双龙02",
+   "bondCode": "282195.SH",
+   "maxVal": 3.15,
+   "pass": true
+  },
+  {
+   "bondName": "24首开MTN006",
+   "bondCode": "102484124.IB",
+   "maxVal": 3.1,
+   "pass": true
+  },
+  {
+   "bondName": "22首开PPN001",
+   "bondCode": "032280522.IB",
+   "maxVal": 3.08,
+   "pass": true
+  },
+  {
+   "bondName": "24遵投02",
+   "bondCode": "256665.SH",
+   "maxVal": 2.92,
+   "pass": true
+  },
+  {
+   "bondName": "26昆投02",
+   "bondCode": "134961.SZ",
+   "maxVal": 2.92,
+   "pass": true
+  },
+  {
+   "bondName": "25华荣01",
+   "bondCode": "257746.SH",
+   "maxVal": 2.9,
+   "pass": true
+  },
+  {
+   "bondName": "26贵经01",
+   "bondCode": "282524.SH",
+   "maxVal": 2.9,
+   "pass": true
+  },
+  {
+   "bondName": "26鲁商MTN004",
+   "bondCode": "102683100.IB",
+   "maxVal": 2.9,
+   "pass": true
+  },
+  {
+   "bondName": "24黄产02",
+   "bondCode": "255682.SH",
+   "maxVal": 2.9,
+   "pass": true
+  },
+  {
+   "bondName": "26首股01",
+   "bondCode": "281606.SH",
+   "maxVal": 2.85,
+   "pass": true
+  },
+  {
+   "bondName": "25华发集团MTN012",
+   "bondCode": "102584762.IB",
+   "maxVal": 2.79,
+   "pass": true
+  }
+ ]
+}
