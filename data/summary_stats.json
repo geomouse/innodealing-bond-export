@@ -1,13 +1,12 @@
 {
- "date": "2026-10-13",
- "total": 72,
- "new_today": 2,
+ "date": "2026-10-14",
+ "total": 73,
+ "new_today": 1,
  "new_names": [
-  "26金融街MTN006A",
-  "26金融街MTN006B"
+  "26华发集团SCP009"
  ],
- "missing_rate_count": 9,
+ "missing_rate_count": 10,
  "cross_failed": false,
- "forecast_sheet_count": 23,
- "forecast_summary_count": 514
+ "forecast_sheet_count": 11,
+ "forecast_summary_count": 525
 }
