@@ -1,12 +1,13 @@
 {
- "date": "2026-10-14",
- "total": 73,
- "new_today": 1,
+ "date": "2026-10-15",
+ "total": 77,
+ "new_today": 2,
  "new_names": [
-  "26华发集团SCP009"
+  "26株产K1",
+  "26鸿飞03"
  ],
- "missing_rate_count": 10,
+ "missing_rate_count": 13,
  "cross_failed": false,
- "forecast_sheet_count": 11,
- "forecast_summary_count": 525
+ "forecast_sheet_count": 18,
+ "forecast_summary_count": 543
 }
