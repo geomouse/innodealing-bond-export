@@ -1,13 +1,10 @@
 {
- "date": "2026-10-15",
+ "date": "2026-10-16",
  "total": 77,
- "new_today": 2,
- "new_names": [
-  "26株产K1",
-  "26鸿飞03"
- ],
- "missing_rate_count": 12,
+ "new_today": 0,
+ "new_names": [],
+ "missing_rate_count": 11,
  "cross_failed": false,
- "forecast_sheet_count": 18,
- "forecast_summary_count": 543
+ "forecast_sheet_count": 5,
+ "forecast_summary_count": 548
 }
