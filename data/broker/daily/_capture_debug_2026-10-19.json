@@ -1,0 +1,145 @@
+{
+ "bjDate": "2026-10-19",
+ "hourBJ": 16,
+ "threshold": 2.8,
+ "visibleNames": 22,
+ "capturedNames": 22,
+ "estimatedTotal": null,
+ "missingNames": [],
+ "recoveredExtra": 0,
+ "captureComplete": null,
+ "captured": [
+  {
+   "bondName": "25滨旅01",
+   "bondCode": "280593.SH",
+   "maxVal": 3.41,
+   "pass": true
+  },
+  {
+   "bondName": "26中交房产MTN003B",
+   "bondCode": "102602045.IB",
+   "maxVal": 3.13,
+   "pass": true
+  },
+  {
+   "bondName": "24昆交01",
+   "bondCode": "255764.SH",
+   "maxVal": 2.95,
+   "pass": true
+  },
+  {
+   "bondName": "25华发01",
+   "bondCode": "242255.SH",
+   "maxVal": 2.82,
+   "pass": true
+  },
+  {
+   "bondName": "26西咸PPN001",
+   "bondCode": "032680243.IB",
+   "maxVal": 2.7,
+   "pass": false
+  },
+  {
+   "bondName": "24泾河02",
+   "bondCode": "256624.SH",
+   "maxVal": 2.66,
+   "pass": false
+  },
+  {
+   "bondName": "24青上04",
+   "bondCode": "254483.SH",
+   "maxVal": 2.58,
+   "pass": false
+  },
+  {
+   "bondName": "26胶州湾PPN001",
+   "bondCode": "032601449.IB",
+   "maxVal": 2.53,
+   "pass": false
+  },
+  {
+   "bondName": "24诚通控股MTN013B",
+   "bondCode": "102482012.IB",
+   "maxVal": 2.48,
+   "pass": false
+  },
+  {
+   "bondName": "24诚通控股MTN011B",
+   "bondCode": "102481557.IB",
+   "maxVal": 2.48,
+   "pass": false
+  },
+  {
+   "bondName": "24天屹V1",
+   "bondCode": "134114.SZ",
+   "maxVal": 2.4,
+   "pass": false
+  },
+  {
+   "bondName": "26津城建MTN016",
+   "bondCode": "102683184.IB",
+   "maxVal": 2.38,
+   "pass": false
+  },
+  {
+   "bondName": "26泉汇产发MTN002",
+   "bondCode": "102682906.IB",
+   "maxVal": 2.325,
+   "pass": false
+  },
+  {
+   "bondName": "25保利置业MTN002",
+   "bondCode": "102501538.IB",
+   "maxVal": 2.305,
+   "pass": false
+  },
+  {
+   "bondName": "26皖国资MTN001B",
+   "bondCode": "102681096.IB",
+   "maxVal": 2.28,
+   "pass": false
+  },
+  {
+   "bondName": "24鲁中投资PPN002",
+   "bondCode": "032480260.IB",
+   "maxVal": 2.26,
+   "pass": false
+  },
+  {
+   "bondName": "24青上07",
+   "bondCode": "256873.SH",
+   "maxVal": 2.25,
+   "pass": false
+  },
+  {
+   "bondName": "25附息国债21",
+   "bondCode": "250021.IB",
+   "maxVal": 2.2218,
+   "pass": false
+  },
+  {
+   "bondName": "26上饶城投PPN003",
+   "bondCode": "032680484.IB",
+   "maxVal": 2.22,
+   "pass": false
+  },
+  {
+   "bondName": "26辽宁债53",
+   "bondCode": "2671227.IB",
+   "maxVal": 2.2188,
+   "pass": false
+  },
+  {
+   "bondName": "26辽宁债52",
+   "bondCode": "2671226.IB",
+   "maxVal": 2.2185,
+   "pass": false
+  },
+  {
+   "bondName": "26贵州债21",
+   "bondCode": "2671148.IB",
+   "maxVal": 2.2184,
+   "pass": false
+  }
+ ]
+}
