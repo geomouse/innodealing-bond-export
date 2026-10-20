@@ -1,13 +1,12 @@
 {
- "date": "2026-10-19",
- "total": 79,
- "new_today": 2,
+ "date": "2026-10-20",
+ "total": 80,
+ "new_today": 1,
  "new_names": [
-  "26华发集团SCP010",
-  "26浙商银行债01"
+  "26铜梁金龙PPN001"
  ],
  "missing_rate_count": 12,
  "cross_failed": false,
- "forecast_sheet_count": 7,
- "forecast_summary_count": 559
+ "forecast_sheet_count": 17,
+ "forecast_summary_count": 575
 }
