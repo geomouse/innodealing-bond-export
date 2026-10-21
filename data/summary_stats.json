@@ -1,12 +1,12 @@
 {
- "date": "2026-10-20",
- "total": 80,
+ "date": "2026-10-21",
+ "total": 81,
  "new_today": 1,
  "new_names": [
-  "26铜梁金龙PPN001"
+  "26云能MTN006"
  ],
  "missing_rate_count": 12,
  "cross_failed": false,
- "forecast_sheet_count": 17,
- "forecast_summary_count": 575
+ "forecast_sheet_count": 12,
+ "forecast_summary_count": 584
 }
