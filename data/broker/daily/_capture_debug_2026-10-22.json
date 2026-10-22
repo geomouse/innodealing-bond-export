@@ -1,0 +1,133 @@
+{
+ "bjDate": "2026-10-22",
+ "hourBJ": 16,
+ "threshold": 2.8,
+ "visibleNames": 20,
+ "capturedNames": 20,
+ "estimatedTotal": null,
+ "missingNames": [],
+ "recoveredExtra": 0,
+ "captureComplete": null,
+ "captured": [
+  {
+   "bondName": "26陕建集团SCP008",
+   "bondCode": "012681270.IB",
+   "maxVal": 4.55,
+   "pass": true
+  },
+  {
+   "bondName": "25华发04",
+   "bondCode": "243864.SH",
+   "maxVal": 4.1,
+   "pass": true
+  },
+  {
+   "bondName": "25华发06",
+   "bondCode": "280283.SH",
+   "maxVal": 4.1,
+   "pass": true
+  },
+  {
+   "bondName": "25西地02",
+   "bondCode": "280858.SH",
+   "maxVal": 3.57,
+   "pass": true
+  },
+  {
+   "bondName": "21钟山01",
+   "bondCode": "178037.SH",
+   "maxVal": 3.5,
+   "pass": true
+  },
+  {
+   "bondName": "25矿盛01",
+   "bondCode": "258759.SH",
+   "maxVal": 3.4,
+   "pass": true
+  },
+  {
+   "bondName": "25辽成大MTN001",
+   "bondCode": "102585309.IB",
+   "maxVal": 3.33,
+   "pass": true
+  },
+  {
+   "bondName": "24信泰01",
+   "bondCode": "255016.SH",
+   "maxVal": 3.2,
+   "pass": true
+  },
+  {
+   "bondName": "25铜仁02",
+   "bondCode": "258966.SH",
+   "maxVal": 3.15,
+   "pass": true
+  },
+  {
+   "bondName": "26中交房产MTN003B",
+   "bondCode": "102602045.IB",
+   "maxVal": 3.13,
+   "pass": true
+  },
+  {
+   "bondName": "26济工02",
+   "bondCode": "284042.SH",
+   "maxVal": 3.12,
+   "pass": true
+  },
+  {
+   "bondName": "23曲江金融MTN001",
+   "bondCode": "102383335.IB",
+   "maxVal": 2.9,
+   "pass": true
+  },
+  {
+   "bondName": "25西咸01",
+   "bondCode": "259880.SH",
+   "maxVal": 2.82,
+   "pass": true
+  },
+  {
+   "bondName": "25鲁中投资MTN001(科创债)",
+   "bondCode": "102582757.IB",
+   "maxVal": 2.8,
+   "pass": true
+  },
+  {
+   "bondName": "24鲁中投资PPN004",
+   "bondCode": "032480813.IB",
+   "maxVal": 2.8,
+   "pass": true
+  },
+  {
+   "bondName": "24中化08",
+   "bondCode": "241135.SH",
+   "maxVal": 2.54,
+   "pass": false
+  },
+  {
+   "bondName": "25胶州湾PPN003",
+   "bondCode": "032501356.IB",
+   "maxVal": 2.51,
+   "pass": false
+  },
+  {
+   "bondName": "24中交地产PPN001",
+   "bondCode": "032480826.IB",
+   "maxVal": 2.5,
+   "pass": false
+  },
+  {
+   "bondName": "26太重MTN011(科创债)",
+   "bondCode": "102683912.IB",
+   "maxVal": 2.5,
+   "pass": false
+  },
+  {
+   "bondName": "26金丽01",
+   "bondCode": "281443.SH",
+   "maxVal": 2.5,
+   "pass": false
+  }
+ ]
+}
