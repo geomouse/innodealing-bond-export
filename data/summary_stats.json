@@ -1,15 +1,12 @@
 {
- "date": "2026-10-22",
- "total": 85,
- "new_today": 4,
+ "date": "2026-10-23",
+ "total": 86,
+ "new_today": 1,
  "new_names": [
-  "26中信银行三农债01BC",
-  "26中信银行三农债BC",
-  "26浙商银行债02",
-  "26重庆三峡银行债02"
+  "26国耀融汇MTN005"
  ],
- "missing_rate_count": 14,
+ "missing_rate_count": 13,
  "cross_failed": false,
- "forecast_sheet_count": 26,
- "forecast_summary_count": 613
+ "forecast_sheet_count": 8,
+ "forecast_summary_count": 621
 }
