@@ -1,13 +1,10 @@
 {
- "date": "2026-10-23",
+ "date": "2026-10-26",
  "total": 87,
- "new_today": 2,
- "new_names": [
-  "26国耀融汇GN005",
-  "26国耀融汇MTN005"
- ],
- "missing_rate_count": 14,
+ "new_today": 0,
+ "new_names": [],
+ "missing_rate_count": 13,
  "cross_failed": false,
- "forecast_sheet_count": 11,
- "forecast_summary_count": 624
+ "forecast_sheet_count": 12,
+ "forecast_summary_count": 635
 }
