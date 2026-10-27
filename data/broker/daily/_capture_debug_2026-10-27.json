@@ -1,0 +1,133 @@
+{
+ "bjDate": "2026-10-27",
+ "hourBJ": 16,
+ "threshold": 2.8,
+ "visibleNames": 20,
+ "capturedNames": 20,
+ "estimatedTotal": null,
+ "missingNames": [],
+ "recoveredExtra": 0,
+ "captureComplete": null,
+ "captured": [
+  {
+   "bondName": "26豫园商城CP002",
+   "bondCode": "042680328.IB",
+   "maxVal": 4.65,
+   "pass": true
+  },
+  {
+   "bondName": "25铜仁02",
+   "bondCode": "258966.SH",
+   "maxVal": 3.15,
+   "pass": true
+  },
+  {
+   "bondName": "PR遵交旅",
+   "bondCode": "152268.SH",
+   "maxVal": 3.15,
+   "pass": true
+  },
+  {
+   "bondName": "25铜仁01",
+   "bondCode": "258578.SH",
+   "maxVal": 3.15,
+   "pass": true
+  },
+  {
+   "bondName": "26昆投03",
+   "bondCode": "520357.SZ",
+   "maxVal": 3.1,
+   "pass": true
+  },
+  {
+   "bondName": "25遵旅02",
+   "bondCode": "257340.SH",
+   "maxVal": 3,
+   "pass": true
+  },
+  {
+   "bondName": "21遵旅03",
+   "bondCode": "197932.SH",
+   "maxVal": 2.9,
+   "pass": true
+  },
+  {
+   "bondName": "25西咸01",
+   "bondCode": "259880.SH",
+   "maxVal": 2.79,
+   "pass": false
+  },
+  {
+   "bondName": "26天津创投MTN001(科创债)",
+   "bondCode": "102683840.IB",
+   "maxVal": 2.76,
+   "pass": false
+  },
+  {
+   "bondName": "26金融街MTN004B",
+   "bondCode": "102683031.IB",
+   "maxVal": 2.75,
+   "pass": false
+  },
+  {
+   "bondName": "24金辉集团MTN001",
+   "bondCode": "102400853.IB",
+   "maxVal": 2.65,
+   "pass": false
+  },
+  {
+   "bondName": "24中化股MTN004",
+   "bondCode": "102483342.IB",
+   "maxVal": 2.58,
+   "pass": false
+  },
+  {
+   "bondName": "24川能投GN001",
+   "bondCode": "132480065.IB",
+   "maxVal": 2.55,
+   "pass": false
+  },
+  {
+   "bondName": "24中化08",
+   "bondCode": "241135.SH",
+   "maxVal": 2.545,
+   "pass": false
+  },
+  {
+   "bondName": "26昆高01",
+   "bondCode": "283866.SH",
+   "maxVal": 2.5,
+   "pass": false
+  },
+  {
+   "bondName": "24诚通控股MTN013B",
+   "bondCode": "102482012.IB",
+   "maxVal": 2.43,
+   "pass": false
+  },
+  {
+   "bondName": "26皖国资MTN002(科创债)",
+   "bondCode": "102681513.IB",
+   "maxVal": 2.425,
+   "pass": false
+  },
+  {
+   "bondName": "26吉利GN004(科创债)",
+   "bondCode": "132680104.IB",
+   "maxVal": 2.41,
+   "pass": false
+  },
+  {
+   "bondName": "22宏利债",
+   "bondCode": "184245.SH",
+   "maxVal": 2.4,
+   "pass": false
+  },
+  {
+   "bondName": "23烟台银行永续债01",
+   "bondCode": "242380027.IB",
+   "maxVal": 2.36,
+   "pass": false
+  }
+ ]
+}
