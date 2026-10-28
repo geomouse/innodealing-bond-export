@@ -1,0 +1,133 @@
+{
+ "bjDate": "2026-10-28",
+ "hourBJ": 16,
+ "threshold": 2.8,
+ "visibleNames": 20,
+ "capturedNames": 20,
+ "estimatedTotal": null,
+ "missingNames": [],
+ "recoveredExtra": 0,
+ "captureComplete": null,
+ "captured": [
+  {
+   "bondName": "PR遵交旅",
+   "bondCode": "152268.SH",
+   "maxVal": 3.16,
+   "pass": true
+  },
+  {
+   "bondName": "23曲文01",
+   "bondCode": "114785.SH",
+   "maxVal": 2.9,
+   "pass": true
+  },
+  {
+   "bondName": "25昆投01",
+   "bondCode": "134530.SZ",
+   "maxVal": 2.88,
+   "pass": true
+  },
+  {
+   "bondName": "PR皖新1A",
+   "bondCode": "142491.SH",
+   "maxVal": 2.72,
+   "pass": false
+  },
+  {
+   "bondName": "23空港04",
+   "bondCode": "253381.SH",
+   "maxVal": 2.65,
+   "pass": false
+  },
+  {
+   "bondName": "24中化股MTN004",
+   "bondCode": "102483342.IB",
+   "maxVal": 2.57,
+   "pass": false
+  },
+  {
+   "bondName": "23潍坊滨投PPN001",
+   "bondCode": "032300551.IB",
+   "maxVal": 2.45,
+   "pass": false
+  },
+  {
+   "bondName": "25天恒置业MTN005",
+   "bondCode": "102584460.IB",
+   "maxVal": 2.42,
+   "pass": false
+  },
+  {
+   "bondName": "26青创02",
+   "bondCode": "284231.SH",
+   "maxVal": 2.41,
+   "pass": false
+  },
+  {
+   "bondName": "25振业集团MTN001",
+   "bondCode": "102581954.IB",
+   "maxVal": 2.39,
+   "pass": false
+  },
+  {
+   "bondName": "26海鸿G3",
+   "bondCode": "245624.SH",
+   "maxVal": 2.35,
+   "pass": false
+  },
+  {
+   "bondName": "23电建04",
+   "bondCode": "148534.SZ",
+   "maxVal": 2.305,
+   "pass": false
+  },
+  {
+   "bondName": "26青城10",
+   "bondCode": "282440.SH",
+   "maxVal": 2.27,
+   "pass": false
+  },
+  {
+   "bondName": "26渝供销PPN001(乡村振兴)",
+   "bondCode": "032680400.IB",
+   "maxVal": 2.26,
+   "pass": false
+  },
+  {
+   "bondName": "华能YK35",
+   "bondCode": "246277.SH",
+   "maxVal": 2.255,
+   "pass": false
+  },
+  {
+   "bondName": "24陕西交通MTN006",
+   "bondCode": "102483003.IB",
+   "maxVal": 2.25,
+   "pass": false
+  },
+  {
+   "bondName": "26珠城轨MTN003",
+   "bondCode": "102683938.IB",
+   "maxVal": 2.22,
+   "pass": false
+  },
+  {
+   "bondName": "26甘肃银行二级资本债01",
+   "bondCode": "232680016.IB",
+   "maxVal": 2.21,
+   "pass": false
+  },
+  {
+   "bondName": "26遵资05",
+   "bondCode": "284336.SH",
+   "maxVal": 2.2,
+   "pass": false
+  },
+  {
+   "bondName": "24任丘经发PPN001",
+   "bondCode": "032480727.IB",
+   "maxVal": 2.2,
+   "pass": false
+  }
+ ]
+}
