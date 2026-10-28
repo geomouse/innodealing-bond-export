@@ -1,10 +1,12 @@
 {
- "date": "2026-10-27",
- "total": 88,
- "new_today": 0,
- "new_names": [],
- "missing_rate_count": 13,
+ "date": "2026-10-28",
+ "total": 89,
+ "new_today": 1,
+ "new_names": [
+  "26浙商银行债03"
+ ],
+ "missing_rate_count": 14,
  "cross_failed": false,
- "forecast_sheet_count": 12,
- "forecast_summary_count": 646
+ "forecast_sheet_count": 16,
+ "forecast_summary_count": 660
 }
