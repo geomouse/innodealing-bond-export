@@ -1,13 +1,10 @@
 {
- "date": "2026-10-29",
+ "date": "2026-10-30",
  "total": 91,
- "new_today": 2,
- "new_names": [
-  "26重庆三峡银行三农债02",
-  "26铜梁金龙PPN002"
- ],
+ "new_today": 0,
+ "new_names": [],
  "missing_rate_count": 15,
  "cross_failed": false,
- "forecast_sheet_count": 17,
- "forecast_summary_count": 679
+ "forecast_sheet_count": 5,
+ "forecast_summary_count": 683
 }
