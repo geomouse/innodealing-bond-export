@@ -1,0 +1,133 @@
+{
+ "bjDate": "2026-10-30",
+ "hourBJ": 16,
+ "threshold": 2.8,
+ "visibleNames": 20,
+ "capturedNames": 20,
+ "estimatedTotal": null,
+ "missingNames": [],
+ "recoveredExtra": 0,
+ "captureComplete": null,
+ "captured": [
+  {
+   "bondName": "17滨海农商二级01",
+   "bondCode": "1721031.IB",
+   "maxVal": 3.6,
+   "pass": true
+  },
+  {
+   "bondName": "24希望01",
+   "bondCode": "241845.SH",
+   "maxVal": 3.3,
+   "pass": true
+  },
+  {
+   "bondName": "25兰新02",
+   "bondCode": "280240.SH",
+   "maxVal": 2.91,
+   "pass": true
+  },
+  {
+   "bondName": "25兴安01",
+   "bondCode": "281145.SH",
+   "maxVal": 2.88,
+   "pass": true
+  },
+  {
+   "bondName": "26康达新材MTN001(科创债)",
+   "bondCode": "102681625.IB",
+   "maxVal": 2.76,
+   "pass": false
+  },
+  {
+   "bondName": "24怡亚通MTN001",
+   "bondCode": "102485474.IB",
+   "maxVal": 2.58,
+   "pass": false
+  },
+  {
+   "bondName": "24川能投GN001",
+   "bondCode": "132480065.IB",
+   "maxVal": 2.57,
+   "pass": false
+  },
+  {
+   "bondName": "24泾河02",
+   "bondCode": "256624.SH",
+   "maxVal": 2.53,
+   "pass": false
+  },
+  {
+   "bondName": "24诚通控股MTN012B",
+   "bondCode": "102481755.IB",
+   "maxVal": 2.48,
+   "pass": false
+  },
+  {
+   "bondName": "23青上05",
+   "bondCode": "253215.SH",
+   "maxVal": 2.45,
+   "pass": false
+  },
+  {
+   "bondName": "26中国平煤MTN008",
+   "bondCode": "102683130.IB",
+   "maxVal": 2.41,
+   "pass": false
+  },
+  {
+   "bondName": "23烟台银行永续债01",
+   "bondCode": "242380027.IB",
+   "maxVal": 2.4,
+   "pass": false
+  },
+  {
+   "bondName": "25抚财K1",
+   "bondCode": "258963.SH",
+   "maxVal": 2.3967,
+   "pass": false
+  },
+  {
+   "bondName": "26苏国信MTN016",
+   "bondCode": "102682686.IB",
+   "maxVal": 2.35,
+   "pass": false
+  },
+  {
+   "bondName": "华能YK35",
+   "bondCode": "246277.SH",
+   "maxVal": 2.33,
+   "pass": false
+  },
+  {
+   "bondName": "26济轨01",
+   "bondCode": "283900.SH",
+   "maxVal": 2.33,
+   "pass": false
+  },
+  {
+   "bondName": "华能YK37",
+   "bondCode": "246272.SH",
+   "maxVal": 2.3057,
+   "pass": false
+  },
+  {
+   "bondName": "24桂投资MTN007",
+   "bondCode": "102483329.IB",
+   "maxVal": 2.3,
+   "pass": false
+  },
+  {
+   "bondName": "24晋能煤业MTN011",
+   "bondCode": "102400885.IB",
+   "maxVal": 2.27,
+   "pass": false
+  },
+  {
+   "bondName": "26珠城轨MTN003",
+   "bondCode": "102683938.IB",
+   "maxVal": 2.2567,
+   "pass": false
+  }
+ ]
+}
