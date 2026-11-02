@@ -1,10 +1,12 @@
 {
- "date": "2026-10-30",
- "total": 91,
- "new_today": 0,
- "new_names": [],
- "missing_rate_count": 13,
+ "date": "2026-11-02",
+ "total": 92,
+ "new_today": 1,
+ "new_names": [
+  "26云能MTN007"
+ ],
+ "missing_rate_count": 14,
  "cross_failed": false,
- "forecast_sheet_count": 6,
- "forecast_summary_count": 684
+ "forecast_sheet_count": 15,
+ "forecast_summary_count": 699
 }
