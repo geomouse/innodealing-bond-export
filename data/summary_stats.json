@@ -1,10 +1,14 @@
 {
- "date": "2026-11-03",
- "total": 95,
- "new_today": 0,
- "new_names": [],
- "missing_rate_count": 15,
+ "date": "2026-11-04",
+ "total": 98,
+ "new_today": 3,
+ "new_names": [
+  "26国耀06",
+  "26海国11",
+  "26海国12"
+ ],
+ "missing_rate_count": 18,
  "cross_failed": false,
- "forecast_sheet_count": 10,
- "forecast_summary_count": 706
+ "forecast_sheet_count": 9,
+ "forecast_summary_count": 715
 }
