@@ -1,5 +1,5 @@
 {
- "bjDate": "2026-11-06",
+ "bjDate": "2026-11-07",
  "threshold": 2,
  "visibleNames": 17,
  "capturedNames": 17,
@@ -21,13 +21,13 @@
    "latest": "2.0500"
   },
   {
-   "bondName": "26武汉开投PPN002",
-   "bondCode": "032680168.IB",
+   "bondName": "26西安高新CP002",
+   "bondCode": "042680056.IB",
    "latest": "2.0000"
   },
   {
-   "bondName": "26西安高新CP002",
-   "bondCode": "042680056.IB",
+   "bondName": "26武汉开投PPN002",
+   "bondCode": "032680168.IB",
    "latest": "2.0000"
   },
   {
@@ -58,16 +58,16 @@
   {
    "bondName": "26江苏银行永续债01BC",
    "bondCode": "242680042.IB",
-   "latest": "1.7925"
-  },
-  {
-   "bondName": "26浙商银行永续债01BC",
-   "bondCode": "242680031.IB",
-   "latest": "1.7900"
+   "latest": "1.7950"
   },
   {
    "bondName": "26海淀国资MTN003(科创债)",
    "bondCode": "102681225.IB",
+   "latest": "1.7900"
+  },
+  {
+   "bondName": "26浙商银行永续债01BC",
+   "bondCode": "242680031.IB",
    "latest": "1.7900"
   },
   {
