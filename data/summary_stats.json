@@ -1,10 +1,13 @@
 {
- "date": "2026-11-05",
- "total": 99,
- "new_today": 0,
- "new_names": [],
- "missing_rate_count": 17,
+ "date": "2026-11-06",
+ "total": 101,
+ "new_today": 2,
+ "new_names": [
+  "26中信银行永续债03BC",
+  "26恒丰银行债02"
+ ],
+ "missing_rate_count": 19,
  "cross_failed": false,
- "forecast_sheet_count": 3,
- "forecast_summary_count": 718
+ "forecast_sheet_count": 5,
+ "forecast_summary_count": 723
 }
