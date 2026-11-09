@@ -1,10 +1,15 @@
 {
- "bjDate": "2026-11-09",
+ "bjDate": "2026-11-10",
  "threshold": 2,
- "visibleNames": 17,
- "capturedNames": 17,
+ "visibleNames": 16,
+ "capturedNames": 16,
  "missingNames": [],
  "captured": [
+  {
+   "bondName": "26重庆三峡银行三农债02",
+   "bondCode": "212680076.IB",
+   "latest": "100.0000"
+  },
   {
    "bondName": "26中信银行三农债01BC",
    "bondCode": "212680077.IB",
@@ -79,16 +84,6 @@
    "bondName": "24云能投MTN017",
    "bondCode": "102483339.IB",
    "latest": "1.7200"
-  },
-  {
-   "bondName": "26海淀国资MTN002A",
-   "bondCode": "102681156.IB",
-   "latest": "1.6600"
-  },
-  {
-   "bondName": "26重庆三峡银行三农债02",
-   "bondCode": "212680076.IB",
-   "latest": "1.6100"
   }
  ]
 }
