@@ -1,13 +1,14 @@
 {
  "date": "2026-11-11",
- "total": 103,
- "new_today": 2,
+ "total": 104,
+ "new_today": 3,
  "new_names": [
+  "26成经03",
   "26江苏银行债05",
   "26浙商银行债04"
  ],
  "missing_rate_count": 19,
  "cross_failed": false,
- "forecast_sheet_count": 15,
- "forecast_summary_count": 754
+ "forecast_sheet_count": 17,
+ "forecast_summary_count": 756
 }
