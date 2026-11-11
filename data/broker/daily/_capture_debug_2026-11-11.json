@@ -1,7 +1,7 @@
 {
  "bjDate": "2026-11-11",
- "hourBJ": 0,
- "threshold": 2.4,
+ "hourBJ": 16,
+ "threshold": 2.8,
  "visibleNames": 20,
  "capturedNames": 20,
  "estimatedTotal": null,
@@ -10,80 +10,116 @@
  "captureComplete": null,
  "captured": [
   {
-   "bondName": "21遵桥13",
-   "bondCode": "197950.SH",
-   "maxVal": 3.5,
+   "bondName": "24青上06",
+   "bondCode": "256375.SH",
+   "maxVal": 3,
    "pass": true
   },
   {
-   "bondName": "24联储02",
-   "bondCode": "254188.SH",
-   "maxVal": 3.15,
+   "bondName": "24动投06",
+   "bondCode": "256657.SH",
+   "maxVal": 2.9,
    "pass": true
   },
   {
-   "bondName": "25绿城地产MTN007",
-   "bondCode": "102583944.IB",
-   "maxVal": 3.09,
-   "pass": true
-  },
-  {
-   "bondName": "25绿城地产MTN005",
-   "bondCode": "102501449.IB",
-   "maxVal": 3.08,
-   "pass": true
-  },
-  {
-   "bondName": "26武发02",
-   "bondCode": "283056.SH",
-   "maxVal": 2.6,
-   "pass": true
-  },
-  {
-   "bondName": "24红河04",
-   "bondCode": "256383.SH",
-   "maxVal": 2.55,
-   "pass": true
-  },
-  {
-   "bondName": "G19青州",
-   "bondCode": "152217.SH",
-   "maxVal": 2.5,
-   "pass": true
-  },
-  {
-   "bondName": "24齐商银行永续债01",
-   "bondCode": "242400010.IB",
-   "maxVal": 2.355,
+   "bondName": "26绿城地产MTN001",
+   "bondCode": "102680351.IB",
+   "maxVal": 2.77,
    "pass": false
   },
   {
-   "bondName": "24楚雄01",
-   "bondCode": "254558.SH",
+   "bondName": "22潍滨发",
+   "bondCode": "184535.SH",
+   "maxVal": 2.6,
+   "pass": false
+  },
+  {
+   "bondName": "24中化股MTN004",
+   "bondCode": "102483342.IB",
+   "maxVal": 2.585,
+   "pass": false
+  },
+  {
+   "bondName": "24胶州01",
+   "bondCode": "253987.SH",
+   "maxVal": 2.5,
+   "pass": false
+  },
+  {
+   "bondName": "24诚通控股MTN009B",
+   "bondCode": "102480956.IB",
+   "maxVal": 2.48,
+   "pass": false
+  },
+  {
+   "bondName": "26汴投02",
+   "bondCode": "283556.SH",
+   "maxVal": 2.45,
+   "pass": false
+  },
+  {
+   "bondName": "24诚通控股MTN012B",
+   "bondCode": "102481755.IB",
+   "maxVal": 2.45,
+   "pass": false
+  },
+  {
+   "bondName": "17西安高新MTN002",
+   "bondCode": "101758010.IB",
+   "maxVal": 2.4,
+   "pass": false
+  },
+  {
+   "bondName": "25寿光金旭MTN001",
+   "bondCode": "102581402.IB",
+   "maxVal": 2.4,
+   "pass": false
+  },
+  {
+   "bondName": "24安阳钢铁MTN001(可持续挂钩)",
+   "bondCode": "102481539.IB",
+   "maxVal": 2.4,
+   "pass": false
+  },
+  {
+   "bondName": "25浦鑫归航6优先",
+   "bondCode": "2589347.IB",
+   "maxVal": 2.4,
+   "pass": false
+  },
+  {
+   "bondName": "25潍水01",
+   "bondCode": "258161.SH",
    "maxVal": 2.35,
    "pass": false
   },
   {
-   "bondName": "GK隆基01",
-   "bondCode": "244101.SH",
-   "maxVal": 2.33,
+   "bondName": "25济城02",
+   "bondCode": "257150.SH",
+   "maxVal": 2.34,
    "pass": false
   },
   {
-   "bondName": "23张家口银行二级资本债01",
-   "bondCode": "232380011.IB",
+   "bondName": "26郑州市投PPN001",
+   "bondCode": "032680010.IB",
    "maxVal": 2.3,
    "pass": false
   },
   {
-   "bondName": "26甘资01",
-   "bondCode": "282954.SH",
+   "bondName": "24文蓝01",
+   "bondCode": "133868.SZ",
    "maxVal": 2.3,
    "pass": false
   },
   {
-   "bondName": "26长铁01",
-   "bondCode": "283985.SH",
+   "bondName": "25象金Y2",
+   "bondCode": "243315.SH",
+   "maxVal": 2.3,
+   "pass": false
+  },
+  {
+   "bondName": "26甘肃银行二级资本债01",
+   "bondCode": "232680016.IB",
    "maxVal": 2.3,
    "pass": false
   },
@@ -91,42 +127,6 @@
    "bondName": "24钦投01",
    "bondCode": "133880.SZ",
    "maxVal": 2.28,
-   "pass": false
-  },
-  {
-   "bondName": "24新城控股MTN002",
-   "bondCode": "102401074.IB",
-   "maxVal": 2.27,
-   "pass": false
-  },
-  {
-   "bondName": "23康田置业MTN001",
-   "bondCode": "102381410.IB",
-   "maxVal": 2.26,
-   "pass": false
-  },
-  {
-   "bondName": "26中信04",
-   "bondCode": "246315.SH",
-   "maxVal": 2.25,
-   "pass": false
-  },
-  {
-   "bondName": "23平证15",
-   "bondCode": "240252.SH",
-   "maxVal": 2.25,
-   "pass": false
-  },
-  {
-   "bondName": "25滨江房产MTN001",
-   "bondCode": "102581415.IB",
-   "maxVal": 2.25,
-   "pass": false
-  },
-  {
-   "bondName": "25昆明产投MTN003",
-   "bondCode": "102585154.IB",
-   "maxVal": 2.23,
    "pass": false
   }
  ]
