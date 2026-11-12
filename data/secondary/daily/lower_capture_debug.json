@@ -1,5 +1,5 @@
 {
- "bjDate": "2026-11-12",
+ "bjDate": "2026-11-13",
  "threshold": 2,
  "visibleNames": 17,
  "capturedNames": 17,
@@ -9,6 +9,11 @@
    "bondName": "26中信银行三农债01BC",
    "bondCode": "212680077.IB",
    "latest": "99.9800"
+  },
+  {
+   "bondName": "24高控03",
+   "bondCode": "134104.SZ",
+   "latest": "3.0000"
   },
   {
    "bondName": "17西安高新MTN002",
@@ -83,11 +88,6 @@
   {
    "bondName": "24云能投MTN016",
    "bondCode": "102483111.IB",
-   "latest": "1.7500"
-  },
-  {
-   "bondName": "25云能投MTN005",
-   "bondCode": "102584296.IB",
    "latest": "1.7500"
   }
  ]
