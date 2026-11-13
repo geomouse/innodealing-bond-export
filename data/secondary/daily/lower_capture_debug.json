@@ -1,5 +1,5 @@
 {
- "bjDate": "2026-11-13",
+ "bjDate": "2026-11-14",
  "threshold": 2,
  "visibleNames": 17,
  "capturedNames": 17,
@@ -36,6 +36,11 @@
    "latest": "1.9300"
   },
   {
+   "bondName": "26中信银行永续债02BC",
+   "bondCode": "242680015.IB",
+   "latest": "1.9200"
+  },
+  {
    "bondName": "25云能投MTN007",
    "bondCode": "102501683.IB",
    "latest": "1.9200"
@@ -43,11 +48,6 @@
   {
    "bondName": "26中信银行永续债03BC",
    "bondCode": "242680056.IB",
-   "latest": "1.9000"
-  },
-  {
-   "bondName": "26中信银行永续债02BC",
-   "bondCode": "242680015.IB",
    "latest": "1.9000"
   },
   {
