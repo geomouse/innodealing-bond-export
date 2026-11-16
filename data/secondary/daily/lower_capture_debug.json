@@ -1,10 +1,25 @@
 {
- "bjDate": "2026-11-16",
+ "bjDate": "2026-11-17",
  "threshold": 2,
  "visibleNames": 17,
  "capturedNames": 17,
  "missingNames": [],
  "captured": [
+  {
+   "bondName": "26西安高新MTN012",
+   "bondCode": "102684304.IB",
+   "latest": "3.8000"
+  },
+  {
+   "bondName": "26西安高新MTN001A",
+   "bondCode": "102680696.IB",
+   "latest": "3.7000"
+  },
+  {
+   "bondName": "24西安高新MTN011B",
+   "bondCode": "102482719.IB",
+   "latest": "3.7000"
+  },
   {
    "bondName": "25西安高新MTN014",
    "bondCode": "102583050.IB",
@@ -14,6 +29,11 @@
    "bondName": "24云能投MTN015",
    "bondCode": "102482996.IB",
    "latest": "3.1100"
+  },
+  {
+   "bondName": "24西安高新MTN001",
+   "bondCode": "102480264.IB",
+   "latest": "2.9000"
   },
   {
    "bondName": "26恒丰银行永续债01",
@@ -69,26 +89,6 @@
    "bondName": "25中信银行二级资本债01BC",
    "bondCode": "232580009.IB",
    "latest": "1.8000"
-  },
-  {
-   "bondName": "24江苏银行永续债02",
-   "bondCode": "242400019.IB",
-   "latest": "1.7800"
-  },
-  {
-   "bondName": "24国药租赁MTN003",
-   "bondCode": "102481072.IB",
-   "latest": "1.7700"
-  },
-  {
-   "bondName": "24眉天01",
-   "bondCode": "254434.SH",
-   "latest": "1.7500"
-  },
-  {
-   "bondName": "24恒丰银行二级资本债01",
-   "bondCode": "232480003.IB",
-   "latest": "1.7500"
   }
  ]
 }
