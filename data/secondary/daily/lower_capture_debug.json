@@ -1,14 +1,19 @@
 {
- "bjDate": "2026-11-17",
+ "bjDate": "2026-11-18",
  "threshold": 2,
- "visibleNames": 17,
- "capturedNames": 17,
+ "visibleNames": 16,
+ "capturedNames": 16,
  "missingNames": [],
  "captured": [
   {
    "bondName": "25西安高新MTN012A",
    "bondCode": "102582837.IB",
    "latest": "3.8000"
+  },
+  {
+   "bondName": "26西安高新MTN002A",
+   "bondCode": "102680803.IB",
+   "latest": "3.7000"
   },
   {
    "bondName": "24高控03",
@@ -78,17 +83,7 @@
   {
    "bondName": "26浙商银行永续债01BC",
    "bondCode": "242680031.IB",
-   "latest": "1.9600"
-  },
-  {
-   "bondName": "25恒丰银行二级资本债01",
-   "bondCode": "232580041.IB",
-   "latest": "1.9400"
-  },
-  {
-   "bondName": "26江苏银行永续债01BC",
-   "bondCode": "242680042.IB",
-   "latest": "1.9400"
+   "latest": "1.9550"
   }
  ]
 }
