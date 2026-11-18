@@ -1,10 +1,12 @@
 {
- "date": "2026-11-17",
- "total": 106,
- "new_today": 0,
- "new_names": [],
- "missing_rate_count": 17,
+ "date": "2026-11-18",
+ "total": 107,
+ "new_today": 1,
+ "new_names": [
+  "26齐商银行永续债02"
+ ],
+ "missing_rate_count": 18,
  "cross_failed": false,
- "forecast_sheet_count": 15,
- "forecast_summary_count": 800
+ "forecast_sheet_count": 19,
+ "forecast_summary_count": 817
 }
