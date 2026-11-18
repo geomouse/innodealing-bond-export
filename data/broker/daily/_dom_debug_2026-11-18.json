@@ -1,5 +1,5 @@
 {
- "agGridCount": 213,
+ "agGridCount": 209,
  "agRows": 0,
  "tabs": [
   {
@@ -55,12 +55,8 @@
  },
  "fixedCols": [
   {
-   "name": "all",
-   "x": 146
-  },
-  {
-   "name": "all-A",
-   "x": 187
+   "name": "类型",
+   "x": 127
   },
   {
    "name": "债券简称",
