@@ -1,8 +1,8 @@
 {
- "bjDate": "2026-11-18",
+ "bjDate": "2026-11-19",
  "threshold": 2,
- "visibleNames": 17,
- "capturedNames": 17,
+ "visibleNames": 16,
+ "capturedNames": 16,
  "missingNames": [],
  "captured": [
   {
@@ -56,6 +56,11 @@
    "latest": "2.0500"
   },
   {
+   "bondName": "24仁寿01",
+   "bondCode": "134125.SZ",
+   "latest": "2.0300"
+  },
+  {
    "bondName": "25云能投MTN007",
    "bondCode": "102501683.IB",
    "latest": "2.0300"
@@ -79,16 +84,6 @@
    "bondName": "25鸿飞01",
    "bondCode": "257724.SH",
    "latest": "1.9200"
-  },
-  {
-   "bondName": "25恒丰银行二级资本债01",
-   "bondCode": "232580041.IB",
-   "latest": "1.9000"
-  },
-  {
-   "bondName": "26中信银行永续债03BC",
-   "bondCode": "242680056.IB",
-   "latest": "1.8900"
   }
  ]
 }
