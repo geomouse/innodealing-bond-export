@@ -1,10 +1,12 @@
 {
  "date": "2026-11-20",
- "total": 108,
- "new_today": 0,
- "new_names": [],
- "missing_rate_count": 17,
+ "total": 109,
+ "new_today": 1,
+ "new_names": [
+  "26高控04"
+ ],
+ "missing_rate_count": 18,
  "cross_failed": false,
- "forecast_sheet_count": 15,
- "forecast_summary_count": 854
+ "forecast_sheet_count": 17,
+ "forecast_summary_count": 856
 }
