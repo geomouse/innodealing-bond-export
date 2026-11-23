@@ -1,0 +1,133 @@
+{
+ "bjDate": "2026-11-23",
+ "hourBJ": 16,
+ "threshold": 2.8,
+ "visibleNames": 20,
+ "capturedNames": 20,
+ "estimatedTotal": null,
+ "missingNames": [],
+ "recoveredExtra": 0,
+ "captureComplete": null,
+ "captured": [
+  {
+   "bondName": "21遵桥13",
+   "bondCode": "197950.SH",
+   "maxVal": 3.8,
+   "pass": true
+  },
+  {
+   "bondName": "21遵桥12",
+   "bondCode": "197755.SH",
+   "maxVal": 3.6,
+   "pass": true
+  },
+  {
+   "bondName": "24西安高新MTN013A",
+   "bondCode": "102483009.IB",
+   "maxVal": 3.3,
+   "pass": true
+  },
+  {
+   "bondName": "24西安高新MTN010A",
+   "bondCode": "102482326.IB",
+   "maxVal": 3.2,
+   "pass": true
+  },
+  {
+   "bondName": "24西安高新MTN011A",
+   "bondCode": "102482718.IB",
+   "maxVal": 3.2,
+   "pass": true
+  },
+  {
+   "bondName": "24中交地产MTN004B",
+   "bondCode": "102485596.IB",
+   "maxVal": 3,
+   "pass": true
+  },
+  {
+   "bondName": "24西安高新MTN008",
+   "bondCode": "102481163.IB",
+   "maxVal": 3,
+   "pass": true
+  },
+  {
+   "bondName": "24胶州03",
+   "bondCode": "255451.SH",
+   "maxVal": 2.98,
+   "pass": true
+  },
+  {
+   "bondName": "26绿城地产MTN001",
+   "bondCode": "102680351.IB",
+   "maxVal": 2.96,
+   "pass": true
+  },
+  {
+   "bondName": "26云投MTN006",
+   "bondCode": "102683298.IB",
+   "maxVal": 2.69,
+   "pass": false
+  },
+  {
+   "bondName": "24云投MTN012",
+   "bondCode": "102483726.IB",
+   "maxVal": 2.65,
+   "pass": false
+  },
+  {
+   "bondName": "26长铁01",
+   "bondCode": "283985.SH",
+   "maxVal": 2.65,
+   "pass": false
+  },
+  {
+   "bondName": "25腾达04",
+   "bondCode": "259717.SH",
+   "maxVal": 2.63,
+   "pass": false
+  },
+  {
+   "bondName": "25冶高02",
+   "bondCode": "280054.SH",
+   "maxVal": 2.6,
+   "pass": false
+  },
+  {
+   "bondName": "26云投MTN003",
+   "bondCode": "102680323.IB",
+   "maxVal": 2.56,
+   "pass": false
+  },
+  {
+   "bondName": "23钦临01",
+   "bondCode": "253460.SH",
+   "maxVal": 2.55,
+   "pass": false
+  },
+  {
+   "bondName": "25银创01",
+   "bondCode": "280926.SH",
+   "maxVal": 2.5,
+   "pass": false
+  },
+  {
+   "bondName": "25长开G4",
+   "bondCode": "242999.SH",
+   "maxVal": 2.48,
+   "pass": false
+  },
+  {
+   "bondName": "26建发Y4",
+   "bondCode": "520369.SZ",
+   "maxVal": 2.48,
+   "pass": false
+  },
+  {
+   "bondName": "25津金03",
+   "bondCode": "134275.SZ",
+   "maxVal": 2.47,
+   "pass": false
+  }
+ ]
+}
