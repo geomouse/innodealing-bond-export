@@ -1,0 +1,133 @@
+{
+ "bjDate": "2026-11-25",
+ "hourBJ": 3,
+ "threshold": 2.4,
+ "visibleNames": 20,
+ "capturedNames": 20,
+ "estimatedTotal": null,
+ "missingNames": [],
+ "recoveredExtra": 0,
+ "captureComplete": null,
+ "captured": [
+  {
+   "bondName": "26西安高新MTN011",
+   "bondCode": "102684119.IB",
+   "maxVal": 4.5,
+   "pass": true
+  },
+  {
+   "bondName": "24西安高新MTN005",
+   "bondCode": "102480475.IB",
+   "maxVal": 4,
+   "pass": true
+  },
+  {
+   "bondName": "24高科A3",
+   "bondCode": "144963.SZ",
+   "maxVal": 3.97,
+   "pass": true
+  },
+  {
+   "bondName": "21遵桥12",
+   "bondCode": "197755.SH",
+   "maxVal": 3.6,
+   "pass": true
+  },
+  {
+   "bondName": "22宏利债",
+   "bondCode": "184245.SH",
+   "maxVal": 3,
+   "pass": true
+  },
+  {
+   "bondName": "24东阳光MTN001",
+   "bondCode": "102483121.IB",
+   "maxVal": 3,
+   "pass": true
+  },
+  {
+   "bondName": "26新疆城建MTN004",
+   "bondCode": "102690107.IB",
+   "maxVal": 2.88,
+   "pass": true
+  },
+  {
+   "bondName": "25即墨城投PPN001A",
+   "bondCode": "032501038.IB",
+   "maxVal": 2.75,
+   "pass": true
+  },
+  {
+   "bondName": "25冶高02",
+   "bondCode": "280054.SH",
+   "maxVal": 2.65,
+   "pass": true
+  },
+  {
+   "bondName": "25陕有色MTN003",
+   "bondCode": "102582636.IB",
+   "maxVal": 2.58,
+   "pass": true
+  },
+  {
+   "bondName": "25雁新02",
+   "bondCode": "134686.SZ",
+   "maxVal": 2.52,
+   "pass": true
+  },
+  {
+   "bondName": "24泰安金控PPN003",
+   "bondCode": "032481012.IB",
+   "maxVal": 2.51,
+   "pass": true
+  },
+  {
+   "bondName": "22兖投01",
+   "bondCode": "185326.SH",
+   "maxVal": 2.5,
+   "pass": true
+  },
+  {
+   "bondName": "25渤投01",
+   "bondCode": "257555.SH",
+   "maxVal": 2.5,
+   "pass": true
+  },
+  {
+   "bondName": "25智光02",
+   "bondCode": "280181.SH",
+   "maxVal": 2.5,
+   "pass": true
+  },
+  {
+   "bondName": "24阳安交通MTN001",
+   "bondCode": "102485610.IB",
+   "maxVal": 2.5,
+   "pass": true
+  },
+  {
+   "bondName": "25株洲金城MTN001",
+   "bondCode": "102585104.IB",
+   "maxVal": 2.5,
+   "pass": true
+  },
+  {
+   "bondName": "25马经01",
+   "bondCode": "259201.SH",
+   "maxVal": 2.48,
+   "pass": true
+  },
+  {
+   "bondName": "21聊城03",
+   "bondCode": "196074.SH",
+   "maxVal": 2.48,
+   "pass": true
+  },
+  {
+   "bondName": "25甘电投MTN001",
+   "bondCode": "102580238.IB",
+   "maxVal": 2.46,
+   "pass": true
+  }
+ ]
+}
