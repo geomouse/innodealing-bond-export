@@ -1,0 +1,133 @@
+{
+ "bjDate": "2026-11-26",
+ "hourBJ": 2,
+ "threshold": 2.4,
+ "visibleNames": 20,
+ "capturedNames": 20,
+ "estimatedTotal": null,
+ "missingNames": [],
+ "recoveredExtra": 0,
+ "captureComplete": null,
+ "captured": [
+  {
+   "bondName": "24空港01",
+   "bondCode": "253815.SH",
+   "maxVal": 5,
+   "pass": true
+  },
+  {
+   "bondName": "25铜仁02",
+   "bondCode": "258966.SH",
+   "maxVal": 4,
+   "pass": true
+  },
+  {
+   "bondName": "26绿城地产MTN001",
+   "bondCode": "102680351.IB",
+   "maxVal": 3.01,
+   "pass": true
+  },
+  {
+   "bondName": "25冶高01",
+   "bondCode": "259091.SH",
+   "maxVal": 3,
+   "pass": true
+  },
+  {
+   "bondName": "26青信14",
+   "bondCode": "246260.SH",
+   "maxVal": 2.98,
+   "pass": true
+  },
+  {
+   "bondName": "25冀中能源MTN005A(科创债)",
+   "bondCode": "102582213.IB",
+   "maxVal": 2.8,
+   "pass": true
+  },
+  {
+   "bondName": "26建发Y2",
+   "bondCode": "245932.SH",
+   "maxVal": 2.8,
+   "pass": true
+  },
+  {
+   "bondName": "25高创03",
+   "bondCode": "259767.SH",
+   "maxVal": 2.7,
+   "pass": true
+  },
+  {
+   "bondName": "22哈尔滨银行永续债01",
+   "bondCode": "242280006.IB",
+   "maxVal": 2.66,
+   "pass": true
+  },
+  {
+   "bondName": "26佛慈01",
+   "bondCode": "520008.SZ",
+   "maxVal": 2.62,
+   "pass": true
+  },
+  {
+   "bondName": "24筑城04",
+   "bondCode": "241461.SH",
+   "maxVal": 2.6,
+   "pass": true
+  },
+  {
+   "bondName": "26南阳优",
+   "bondCode": "269147.SH",
+   "maxVal": 2.6,
+   "pass": true
+  },
+  {
+   "bondName": "25菏泽02",
+   "bondCode": "280336.SH",
+   "maxVal": 2.57,
+   "pass": true
+  },
+  {
+   "bondName": "25津金03",
+   "bondCode": "134275.SZ",
+   "maxVal": 2.56,
+   "pass": true
+  },
+  {
+   "bondName": "22遂平01",
+   "bondCode": "184226.SH",
+   "maxVal": 2.55,
+   "pass": true
+  },
+  {
+   "bondName": "25常山K1",
+   "bondCode": "280351.SH",
+   "maxVal": 2.55,
+   "pass": true
+  },
+  {
+   "bondName": "22兴蜀投资PPN001",
+   "bondCode": "032281083.IB",
+   "maxVal": 2.53,
+   "pass": true
+  },
+  {
+   "bondName": "25津静02",
+   "bondCode": "257918.SH",
+   "maxVal": 2.5,
+   "pass": true
+  },
+  {
+   "bondName": "24邵新02",
+   "bondCode": "256195.SH",
+   "maxVal": 2.5,
+   "pass": true
+  },
+  {
+   "bondName": "22兰考02",
+   "bondCode": "184488.SH",
+   "maxVal": 2.5,
+   "pass": true
+  }
+ ]
+}
