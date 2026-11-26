@@ -1,7 +1,7 @@
 {
  "bjDate": "2026-11-26",
- "hourBJ": 2,
- "threshold": 2.4,
+ "hourBJ": 16,
+ "threshold": 2.8,
  "visibleNames": 20,
  "capturedNames": 20,
  "estimatedTotal": null,
@@ -10,124 +10,124 @@
  "captureComplete": null,
  "captured": [
   {
-   "bondName": "24空港01",
-   "bondCode": "253815.SH",
-   "maxVal": 5,
+   "bondName": "25铜仁03",
+   "bondCode": "281157.SH",
+   "maxVal": 4.3,
    "pass": true
   },
   {
-   "bondName": "25铜仁02",
-   "bondCode": "258966.SH",
-   "maxVal": 4,
+   "bondName": "25寿光金旭MTN001",
+   "bondCode": "102581402.IB",
+   "maxVal": 3.2,
    "pass": true
   },
   {
-   "bondName": "26绿城地产MTN001",
-   "bondCode": "102680351.IB",
-   "maxVal": 3.01,
+   "bondName": "25许新01",
+   "bondCode": "258549.SH",
+   "maxVal": 2.9,
    "pass": true
   },
   {
-   "bondName": "25冶高01",
-   "bondCode": "259091.SH",
-   "maxVal": 3,
-   "pass": true
-  },
-  {
-   "bondName": "26青信14",
-   "bondCode": "246260.SH",
-   "maxVal": 2.98,
-   "pass": true
-  },
-  {
-   "bondName": "25冀中能源MTN005A(科创债)",
-   "bondCode": "102582213.IB",
+   "bondName": "26临桂城投MTN001",
+   "bondCode": "102681025.IB",
    "maxVal": 2.8,
-   "pass": true
-  },
-  {
-   "bondName": "26建发Y2",
-   "bondCode": "245932.SH",
-   "maxVal": 2.8,
-   "pass": true
-  },
-  {
-   "bondName": "25高创03",
-   "bondCode": "259767.SH",
-   "maxVal": 2.7,
    "pass": true
   },
   {
    "bondName": "22哈尔滨银行永续债01",
    "bondCode": "242280006.IB",
+   "maxVal": 2.76,
+   "pass": false
+  },
+  {
+   "bondName": "25宁国建投MTN002",
+   "bondCode": "102585189.IB",
+   "maxVal": 2.75,
+   "pass": false
+  },
+  {
+   "bondName": "26西发02",
+   "bondCode": "284239.SH",
+   "maxVal": 2.73,
+   "pass": false
+  },
+  {
+   "bondName": "24中化股MTN004",
+   "bondCode": "102483342.IB",
+   "maxVal": 2.71,
+   "pass": false
+  },
+  {
+   "bondName": "24鼎力投资MTN002",
+   "bondCode": "102482870.IB",
+   "maxVal": 2.7,
+   "pass": false
+  },
+  {
+   "bondName": "24豫港04",
+   "bondCode": "241597.SH",
+   "maxVal": 2.69,
+   "pass": false
+  },
+  {
+   "bondName": "26豫航空港MTN001",
+   "bondCode": "102680025.IB",
    "maxVal": 2.66,
-   "pass": true
+   "pass": false
   },
   {
-   "bondName": "26佛慈01",
-   "bondCode": "520008.SZ",
-   "maxVal": 2.62,
-   "pass": true
+   "bondName": "24豫航空港MTN016",
+   "bondCode": "102483574.IB",
+   "maxVal": 2.65,
+   "pass": false
   },
   {
-   "bondName": "24筑城04",
-   "bondCode": "241461.SH",
+   "bondName": "24豫航空港MTN017",
+   "bondCode": "102483897.IB",
+   "maxVal": 2.626,
+   "pass": false
+  },
+  {
+   "bondName": "24咸阳金控PPN001B",
+   "bondCode": "032482013.IB",
    "maxVal": 2.6,
-   "pass": true
+   "pass": false
   },
   {
-   "bondName": "26南阳优",
-   "bondCode": "269147.SH",
+   "bondName": "26潇湘源MTN001",
+   "bondCode": "102680295.IB",
    "maxVal": 2.6,
-   "pass": true
+   "pass": false
   },
   {
-   "bondName": "25菏泽02",
-   "bondCode": "280336.SH",
-   "maxVal": 2.57,
-   "pass": true
+   "bondName": "25滨海01",
+   "bondCode": "257338.SH",
+   "maxVal": 2.6,
+   "pass": false
   },
   {
-   "bondName": "25津金03",
-   "bondCode": "134275.SZ",
-   "maxVal": 2.56,
-   "pass": true
+   "bondName": "24昆明轨道MTN004",
+   "bondCode": "102483123.IB",
+   "maxVal": 2.6,
+   "pass": false
   },
   {
-   "bondName": "22遂平01",
-   "bondCode": "184226.SH",
+   "bondName": "25平顶发展MTN003",
+   "bondCode": "102583155.IB",
+   "maxVal": 2.59,
+   "pass": false
+  },
+  {
+   "bondName": "26淄博04",
+   "bondCode": "283612.SH",
    "maxVal": 2.55,
-   "pass": true
+   "pass": false
   },
   {
-   "bondName": "25常山K1",
-   "bondCode": "280351.SH",
+   "bondName": "26淄博05",
+   "bondCode": "283967.SH",
    "maxVal": 2.55,
-   "pass": true
-  },
-  {
-   "bondName": "22兴蜀投资PPN001",
-   "bondCode": "032281083.IB",
-   "maxVal": 2.53,
-   "pass": true
-  },
-  {
-   "bondName": "25津静02",
-   "bondCode": "257918.SH",
-   "maxVal": 2.5,
-   "pass": true
-  },
-  {
-   "bondName": "24邵新02",
-   "bondCode": "256195.SH",
-   "maxVal": 2.5,
-   "pass": true
-  },
-  {
-   "bondName": "22兰考02",
-   "bondCode": "184488.SH",
-   "maxVal": 2.5,
-   "pass": true
+   "pass": false
   }
  ]
 }
