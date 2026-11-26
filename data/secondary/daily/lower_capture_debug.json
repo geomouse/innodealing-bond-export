@@ -1,8 +1,8 @@
 {
- "bjDate": "2026-11-26",
+ "bjDate": "2026-11-27",
  "threshold": 2,
- "visibleNames": 16,
- "capturedNames": 17,
+ "visibleNames": 15,
+ "capturedNames": 16,
  "missingNames": [],
  "captured": [
   {
@@ -84,11 +84,6 @@
    "bondName": "26海淀国资MTN005A",
    "bondCode": "102602173.IB",
    "latest": "1.8400"
-  },
-  {
-   "bondName": "25中信银行二级资本债01BC",
-   "bondCode": "232580009.IB",
-   "latest": "1.8100"
   }
  ]
 }
