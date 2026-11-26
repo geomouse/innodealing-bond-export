@@ -1,13 +1,10 @@
 {
- "date": "2026-11-25",
+ "date": "2026-11-26",
  "total": 112,
- "new_today": 2,
- "new_names": [
-  "26江苏银行债06",
-  "26赣州银行绿色债01"
- ],
+ "new_today": 0,
+ "new_names": [],
  "missing_rate_count": 18,
  "cross_failed": false,
- "forecast_sheet_count": 19,
- "forecast_summary_count": 919
+ "forecast_sheet_count": 38,
+ "forecast_summary_count": 955
 }
